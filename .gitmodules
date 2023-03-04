@@ -1,0 +1,3 @@
+[submodule "cores/Template"]
+	path = cores/Template
+	url = https://github.com/MiSTeX-devel/Template_MiSTeX
