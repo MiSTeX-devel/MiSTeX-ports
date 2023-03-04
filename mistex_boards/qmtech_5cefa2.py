@@ -82,42 +82,42 @@ class Top(Module):
             o_SDRAM_CLK = platform.request("sdram_clock"),
             o_SDRAM_CKE = sdram.cke,
 
-            o_VGA_R=vga.r,
-            o_VGA_G=vga.g,
-            o_VGA_B=vga.b,
-            io_VGA_HS=vga.hsync_n,  # VGA_HS is secondary SD card detect when VGA_EN = 1 (inactive)
-            o_VGA_VS=vga.vsync_n,
+            o_VGA_R = vga.r,
+            o_VGA_G = vga.g,
+            o_VGA_B = vga.b,
+            io_VGA_HS = vga.hsync_n,  # VGA_HS is secondary SD card detect when VGA_EN  =  1 (inactive)
+            o_VGA_VS = vga.vsync_n,
 
-            o_AUDIO_L=audio.l,
-            o_AUDIO_R=audio.r,
-            o_AUDIO_SPDIF=audio.spdif,
+            o_AUDIO_L = audio.l,
+            o_AUDIO_R = audio.r,
+            o_AUDIO_SPDIF = audio.spdif,
 
-            o_LED_USER=platform.request("user_led", 0),
-            o_LED_HDD=platform.request("user_led", 1),
-            o_LED_POWER=platform.request("user_led", 2),
-            i_BTN_USER=platform.request("user_btn", 0),
-            i_BTN_OSD=platform.request("user_btn", 1),
-            i_BTN_RESET=platform.request("user_btn", 2),
+            o_LED_USER = platform.request("user_led", 0),
+            o_LED_HDD = platform.request("user_led", 1),
+            o_LED_POWER = platform.request("user_led", 2),
+            i_BTN_USER = platform.request("user_btn", 0),
+            i_BTN_OSD = platform.request("user_btn", 1),
+            i_BTN_RESET = platform.request("user_btn", 2),
 
-            o_SD_SPI_CS=sdcard.cd,
-            i_SD_SPI_MISO=sdcard.data[0],
-            o_SD_SPI_CLK=sdcard.clk,
-            o_SD_SPI_MOSI=sdcard.cmd,
+            o_SD_SPI_CS = sdcard.cd,
+            i_SD_SPI_MISO = sdcard.data[0],
+            o_SD_SPI_CLK = sdcard.clk,
+            o_SD_SPI_MOSI = sdcard.cmd,
 
-            io_SDCD_SPDIF=audio.sbcd_spdif,
+            io_SDCD_SPDIF = audio.sbcd_spdif,
 
-            o_LED=seven_seg,
+            o_LED = seven_seg,
 
-            i_HPS_SPI_MOSI=hps_spi.mosi,
-            o_HPS_SPI_MISO=hps_spi.miso,
-            i_HPS_SPI_CLK=hps_spi.clk,
-            i_HPS_SPI_CS=hps_spi.cs_n,
+            i_HPS_SPI_MOSI = hps_spi.mosi,
+            o_HPS_SPI_MISO = hps_spi.miso,
+            i_HPS_SPI_CLK = hps_spi.clk,
+            i_HPS_SPI_CS = hps_spi.cs_n,
 
-            i_HPS_FPGA_ENABLE=hps_control.fpga_enable,
-            i_HPS_OSD_ENABLE=hps_control.osd_enable,
-            i_HPS_IO_ENABLE=hps_control.io_enable,
-            i_HPS_CORE_RESET=hps_control.core_reset,
-            o_DEBUG=debug
+            i_HPS_FPGA_ENABLE = hps_control.fpga_enable,
+            i_HPS_OSD_ENABLE = hps_control.osd_enable,
+            i_HPS_IO_ENABLE = hps_control.io_enable,
+            i_HPS_CORE_RESET = hps_control.core_reset,
+            o_DEBUG = debug
         )
 
         self.specials += sys_top
@@ -158,12 +158,16 @@ def main(core):
 
     # disable bilinear filtering when downscaling
     platform.add_platform_command('set_global_assignment -name VERILOG_MACRO "MISTER_DOWNSCALE_NN=1"')
+
     # disable adaptive scanline filtering
     #platform.add_platform_command('set_global_assignment -name VERILOG_MACRO "MISTER_DISABLE_ADAPTIVE=1"')
-    #use only 1MB per frame for scaler to free ~21MB DDR3 RAM
+
+    # use only 1MB per frame for scaler to free ~21MB DDR3 RAM
     #platform.add_platform_command('set_global_assignment -name VERILOG_MACRO "MISTER_SMALL_VBUF=1"')
+
     # Disable YC / Composite output to save some resources
     platform.add_platform_command('set_global_assignment -name VERILOG_MACRO "MISTER_DISABLE_YC=1"')
+
     # Disable ALSA audio output to save some resources
     platform.add_platform_command('set_global_assignment -name VERILOG_MACRO "MISTER_DISABLE_ALSA=1"')
 
