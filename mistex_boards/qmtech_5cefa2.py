@@ -6,14 +6,19 @@
 # SPDX-License-Identifier: BSD-2-Clause
 #
 
+from os.path import join
 import sys
-from datetime import date
+import yaml
+
+from colorama import Fore, Style
 
 from migen import *
 from litex.build.generic_platform import *
 from litex_boards.platforms import qmtech_5cefa2
 
 from litex.soc.cores.clock import CycloneVPLL
+
+from util import add_sources, generate_build_id, add_mainfile
 
 # CRG ----------------------------------------------------------------------------------------------
 
@@ -122,36 +127,32 @@ class Top(Module):
 
         self.specials += sys_top
 
-def add_sources(platform, coredir, subdir):
-    sourcedir=f"{coredir}/{subdir}"
-    for fname in os.listdir(sourcedir):
-        if not (fname.endswith(".sv") or
-                fname.endswith(".v") or
-                fname.endswith(".sdc") or
-                fname.endswith(".vhd")):
-            continue
-
-        fpath = f"{sourcedir}/{fname}"
-        print(f"Adding source file {fpath}")
-        platform.add_source(fpath)
-
 def main(core):
-    coredir = f"cores/{core}"
+    coredir = join("cores", core)
+
+    mistex_yaml = yaml.load(open(join(coredir, "MiSTeX.yaml"), 'r'), Loader=yaml.FullLoader)
 
     platform = qmtech_5cefa2.Platform(with_daughterboard=True)
-    add_sources(platform, coredir, "sys")
-    add_sources(platform, coredir, "rtl")
 
-    build_id = f"{coredir}/build_id.v"
-    platform.add_source(build_id)
-    print(f"Generating {build_id}..")
-    with open(build_id, "w") as f:
-        today = date.today()
-        f.write(f'`define BUILD_DATE "{today.year}{today.month:02}{today.day:02}"')
+    boardspecific = mistex_yaml['quartus']
+    boardspecific_sources = boardspecific['sourcefiles']
 
-    mainfile = coredir + '/' + [f for f in os.listdir(coredir) if f.endswith(".sv")][0]
-    print(f"Adding main file {mainfile}")
-    platform.add_source(mainfile)
+    for sourcedir in mistex_yaml['sourcedirs']:
+        print(f"\n{Style.DIM}******** source directory {sourcedir} ********{Style.RESET_ALL}")
+        add_sources(platform, coredir, sourcedir, boardspecific_sources)
+
+    print(f"\n{Style.DIM}******** board specific sources ********{Style.RESET_ALL}")
+    for source in boardspecific_sources:
+        sourcepath = join(coredir, source)
+        print(f" -> {sourcepath}")
+        platform.add_source(sourcepath)
+
+    generate_build_id(platform, coredir)
+    add_mainfile(platform, coredir, mistex_yaml)
+
+    defines = mistex_yaml.get('defines', [])
+    for define in defines:
+        platform.add_platform_command(f'set_global_assignment -name VERILOG_MACRO "{define}=1"')
 
     # do not enable DEBUG_NOHDMI in release!
     platform.add_platform_command('set_global_assignment -name VERILOG_MACRO "MISTER_DEBUG_NOHDMI=1"')
