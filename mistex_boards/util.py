@@ -3,6 +3,19 @@ from os.path import join
 from datetime import date
 from colorama import Fore, Style
 
+def add_designfiles(platform, coredir, mistex_yaml, boardspecific):
+    boardspecific_sources = mistex_yaml[boardspecific]['sourcefiles']
+
+    for sourcedir in mistex_yaml['sourcedirs']:
+        print(f"\n{Style.DIM}******** source directory {sourcedir} ********{Style.RESET_ALL}")
+        add_sources(platform, coredir, sourcedir, boardspecific_sources)
+
+    print(f"\n{Style.DIM}******** board specific sources ********{Style.RESET_ALL}")
+    for source in boardspecific_sources:
+        sourcepath = join(coredir, source)
+        print(f" -> {sourcepath}")
+        platform.add_source(sourcepath)
+
 def add_sources(platform, coredir, subdir, excludes):
     sourcedir=join(coredir, subdir)
     for fname in os.listdir(sourcedir):

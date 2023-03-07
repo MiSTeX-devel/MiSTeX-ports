@@ -18,7 +18,7 @@ from litex_boards.platforms import qmtech_5cefa2
 
 from litex.soc.cores.clock import CycloneVPLL
 
-from util import add_sources, generate_build_id, add_mainfile
+from util import add_sources, generate_build_id, add_mainfile, add_designfiles
 
 # CRG ----------------------------------------------------------------------------------------------
 
@@ -134,18 +134,7 @@ def main(core):
 
     platform = qmtech_5cefa2.Platform(with_daughterboard=True)
 
-    boardspecific = mistex_yaml['quartus']
-    boardspecific_sources = boardspecific['sourcefiles']
-
-    for sourcedir in mistex_yaml['sourcedirs']:
-        print(f"\n{Style.DIM}******** source directory {sourcedir} ********{Style.RESET_ALL}")
-        add_sources(platform, coredir, sourcedir, boardspecific_sources)
-
-    print(f"\n{Style.DIM}******** board specific sources ********{Style.RESET_ALL}")
-    for source in boardspecific_sources:
-        sourcepath = join(coredir, source)
-        print(f" -> {sourcepath}")
-        platform.add_source(sourcepath)
+    add_designfiles(platform, coredir, mistex_yaml, 'quartus')
 
     generate_build_id(platform, coredir)
     add_mainfile(platform, coredir, mistex_yaml)
