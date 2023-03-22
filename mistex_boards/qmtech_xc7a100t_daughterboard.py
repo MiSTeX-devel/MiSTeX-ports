@@ -64,10 +64,10 @@ class Top(Module):
             #o_SDRAM_CLK = platform.request("sdram_clock"),
             #o_SDRAM_CKE = sdram.cke,
 
-            o_VGA_R = vga.r,
-            o_VGA_G = vga.g,
-            o_VGA_B = vga.b,
-            io_VGA_HS = vga.hsync_n,  # VGA_HS is secondary SD card detect when VGA_EN  =  1 (inactive)
+            o_VGA_R = Cat(False, [s for s in reversed(vga.r)]),
+            o_VGA_G = Cat(       [s for s in reversed(vga.g)]),
+            o_VGA_B = Cat(False, [s for s in reversed(vga.b)]),
+            io_VGA_HS = vga.hsync_n,
             o_VGA_VS = vga.vsync_n,
 
             o_AUDIO_L = audio.l,
@@ -116,6 +116,8 @@ def main(core):
     defines = [
         ('XILINX', 1),
 
+        # ('DEBUG_HPS_OP', 1),
+
         # do not enable DEBUG_NOHDMI in release!
         ('MISTER_DEBUG_NOHDMI', 1),
 
@@ -136,7 +138,12 @@ def main(core):
     ]
 
     build_id_path = generate_build_id(platform, coredir, defines)
-    platform.add_platform_command(f'set_property is_global_include true [get_files {build_id_path}]')
+    platform.toolchain.pre_synthesis_commands += [
+        f'set_property is_global_include true [get_files "../{build_id_path}"]'
+    ]
+
+    # TODO
+    # platform.add_platform_command('set_false_path -from [get_clocks clk_sys] -to [get_clocks clk_audio]')
 
     add_mainfile(platform, coredir, mistex_yaml)
 

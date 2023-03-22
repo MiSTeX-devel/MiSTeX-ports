@@ -5,7 +5,7 @@ from colorama import Fore, Style
 
 def add_designfiles(platform, coredir, mistex_yaml, boardspecific):
     boardspecific_sources = mistex_yaml[boardspecific]['sourcefiles']
-    excludes = mistex_yaml['quartus' if boardspecific == 'vivado' else 'vivado']['sourcefiles']
+    excludes = mistex_yaml['quartus']['sourcefiles'] + mistex_yaml['vivado']['sourcefiles']
 
     for sourcedir in mistex_yaml['sourcedirs']:
         print(f"\n{Style.DIM}******** source directory {sourcedir} ********{Style.RESET_ALL}")
@@ -15,13 +15,19 @@ def add_designfiles(platform, coredir, mistex_yaml, boardspecific):
     for source in mistex_yaml.get('sourcefiles', []):
         sourcepath = join(coredir, source)
         print(f" -> {sourcepath}")
-        platform.add_source(sourcepath)
+        add_source(platform, sourcepath)
 
     print(f"\n{Style.DIM}******** board specific sources ********{Style.RESET_ALL}")
     for source in boardspecific_sources:
         sourcepath = join(coredir, source)
         print(f" -> {sourcepath}")
-        platform.add_source(sourcepath)
+        add_source(platform, sourcepath)
+
+def add_source(platform, fpath):
+    if fpath.endswith(".sdc"):
+        platform.add_platform_command(f"set_global_assignment -name SDC_FILE {fpath}")
+    else:
+        platform.add_source(fpath)
 
 def add_sources(platform, coredir, subdir, excludes):
     sourcedir=join(coredir, subdir)
@@ -30,15 +36,16 @@ def add_sources(platform, coredir, subdir, excludes):
         excluded = any([fpath.endswith(e) for e in excludes])
         if not (fname.endswith(".sv") or
                 fname.endswith(".v") or
+                fname.endswith(".sdc") or
                 fname.endswith(".vhd")) or excluded:
             if excluded: print(f"{Fore.RED}    {fpath} is excluded...{Style.RESET_ALL}")
             continue
 
         print(f" -> {fpath}")
-        platform.add_source(fpath)
+        add_source(platform, fpath)
 
 def generate_build_id(platform, coredir, defines=[]):
-    build_id = join(coredir, "build_id.v")
+    build_id = join(coredir, "build_id.vh")
     platform.add_source(build_id)
     print(f"\nGenerating {build_id}..")
     with open(build_id, "w") as f:
