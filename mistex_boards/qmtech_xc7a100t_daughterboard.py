@@ -14,40 +14,17 @@ from colorama import Fore, Style
 
 from migen import *
 from litex.build.generic_platform import *
-from litex_boards.platforms import qmtech_5cefa2
+from litex_boards.platforms import qmtech_artix7_fgg676
 
-from litex.soc.cores.clock import CycloneVPLL
+from litex.soc.cores.clock import S7PLL
 
 from util import add_sources, generate_build_id, add_mainfile, add_designfiles
-
-# CRG ----------------------------------------------------------------------------------------------
-
-# TODO: currently unused, replace top PLL
-class CRG(Module):
-    def __init__(self, platform):
-        # self.rst    = Signal()
-        self.cd_clk1 = ClockDomain()
-        self.cd_clk2 = ClockDomain()
-        self.cd_clk3 = ClockDomain()
-        self.cd_spi  = ClockDomain()
-
-        # Clk / Rst
-        clk50 = platform.request("clk50")
-
-        # PLL
-        self.pll = pll = CycloneVPLL(speedgrade="-C8")
-        self.comb += pll.reset.eq(self.rst)
-        pll.register_clkin(clk50, 50e6)
-        pll.create_clkout(self.cd_clk1, 50e6)
-        pll.create_clkout(self.cd_clk2, 50e6)
-        pll.create_clkout(self.cd_clk3, 50e6)
-        pll.create_clkout(self.cd_spi, 100e6)
 
 # Build --------------------------------------------------------------------------------------------
 
 class Top(Module):
     def __init__(self, platform) -> None:
-        sdram       = platform.request("sdram")
+        #sdram       = platform.request("sdram")
         vga         = platform.request("vga")
         sdcard      = platform.request("sdcard")
         seven_seg   = platform.request("seven_seg")
@@ -75,17 +52,17 @@ class Top(Module):
             #o_HDMI_TX_VS,
             #i_HDMI_TX_INT,
 
-            o_SDRAM_A = sdram.a,
-            io_SDRAM_DQ = sdram.dq,
-            o_SDRAM_DQML = sdram.dm[0],
-            o_SDRAM_DQMH = sdram.dm[1],
-            o_SDRAM_nWE = sdram.we_n,
-            o_SDRAM_nCAS = sdram.cas_n,
-            o_SDRAM_nRAS = sdram.ras_n,
-            o_SDRAM_nCS = sdram.cs_n,
-            o_SDRAM_BA = sdram.ba,
-            o_SDRAM_CLK = platform.request("sdram_clock"),
-            o_SDRAM_CKE = sdram.cke,
+            #o_SDRAM_A = sdram.a,
+            #io_SDRAM_DQ = sdram.dq,
+            #o_SDRAM_DQML = sdram.dm[0],
+            #o_SDRAM_DQMH = sdram.dm[1],
+            #o_SDRAM_nWE = sdram.we_n,
+            #o_SDRAM_nCAS = sdram.cas_n,
+            #o_SDRAM_nRAS = sdram.ras_n,
+            #o_SDRAM_nCS = sdram.cs_n,
+            #o_SDRAM_BA = sdram.ba,
+            #o_SDRAM_CLK = platform.request("sdram_clock"),
+            #o_SDRAM_CKE = sdram.cke,
 
             o_VGA_R = vga.r,
             o_VGA_G = vga.g,
@@ -132,34 +109,36 @@ def main(core):
 
     mistex_yaml = yaml.load(open(join(coredir, "MiSTeX.yaml"), 'r'), Loader=yaml.FullLoader)
 
-    platform = qmtech_5cefa2.Platform(with_daughterboard=True)
+    platform = qmtech_artix7_fgg676.Platform(with_daughterboard=True)
 
-    add_designfiles(platform, coredir, mistex_yaml, 'quartus')
+    add_designfiles(platform, coredir, mistex_yaml, 'vivado')
 
-    generate_build_id(platform, coredir)
+    defines = [
+        ('XILINX', 1),
+
+        # do not enable DEBUG_NOHDMI in release!
+        ('MISTER_DEBUG_NOHDMI', 1),
+
+        # disable bilinear filtering when downscaling
+        ('MISTER_DOWNSCALE_NN', 1),
+
+        # disable adaptive scanline filtering
+        #('MISTER_DISABLE_ADAPTIVE', 1),
+
+        # use only 1MB per frame for scaler to free ~21MB DDR3 RAM
+        #('MISTER_SMALL_VBUF', 1),
+
+        # Disable YC / Composite output to save some resources
+        ('MISTER_DISABLE_YC', 1),
+
+        # Disable ALSA audio output to save some resources
+        ('MISTER_DISABLE_ALSA', 1),
+    ]
+
+    build_id_path = generate_build_id(platform, coredir, defines)
+    platform.add_platform_command(f'set_property is_global_include true [get_files {build_id_path}]')
+
     add_mainfile(platform, coredir, mistex_yaml)
-
-    defines = mistex_yaml.get('defines', [])
-    for define in defines:
-        platform.add_platform_command(f'set_global_assignment -name VERILOG_MACRO "{define}=1"')
-
-    # do not enable DEBUG_NOHDMI in release!
-    platform.add_platform_command('set_global_assignment -name VERILOG_MACRO "MISTER_DEBUG_NOHDMI=1"')
-
-    # disable bilinear filtering when downscaling
-    platform.add_platform_command('set_global_assignment -name VERILOG_MACRO "MISTER_DOWNSCALE_NN=1"')
-
-    # disable adaptive scanline filtering
-    #platform.add_platform_command('set_global_assignment -name VERILOG_MACRO "MISTER_DISABLE_ADAPTIVE=1"')
-
-    # use only 1MB per frame for scaler to free ~21MB DDR3 RAM
-    #platform.add_platform_command('set_global_assignment -name VERILOG_MACRO "MISTER_SMALL_VBUF=1"')
-
-    # Disable YC / Composite output to save some resources
-    platform.add_platform_command('set_global_assignment -name VERILOG_MACRO "MISTER_DISABLE_YC=1"')
-
-    # Disable ALSA audio output to save some resources
-    platform.add_platform_command('set_global_assignment -name VERILOG_MACRO "MISTER_DISABLE_ALSA=1"')
 
     platform.add_extension([
         ("audio", 0,
@@ -167,24 +146,24 @@ def main(core):
             Subsignal("r",          Pins("pmoda:1")),
             Subsignal("spdif",      Pins("pmoda:2")),
             Subsignal("sbcd_spdif", Pins("pmoda:3")),
-            IOStandard("3.3-V LVTTL")
+            IOStandard("LVCMOS33")
         ),
         ("hps_spi", 0,
             Subsignal("mosi", Pins("pmodb:0")),
             Subsignal("miso", Pins("pmodb:1")),
             Subsignal("clk",  Pins("pmodb:2")),
             Subsignal("cs_n", Pins("pmodb:3")),
-            IOStandard("3.3-V LVTTL"),
+            IOStandard("LVCMOS33"),
         ),
         ("hps_control", 0,
             Subsignal("fpga_enable", Pins("pmodb:4")),
             Subsignal("osd_enable",  Pins("pmodb:5")),
             Subsignal("io_enable",   Pins("pmodb:6")),
             Subsignal("core_reset",  Pins("pmodb:7")),
-            IOStandard("3.3-V LVTTL"),
+            IOStandard("LVCMOS33"),
         ),
         ("debug", 0, Pins("J1:18 J1:16 J1:14 J1:12"),
-                     IOStandard("3.3-V LVTTL")),
+                     IOStandard("LVCMOS33")),
     ])
 
     platform.build(Top(platform))
