@@ -139,7 +139,7 @@ def main(core):
 
     build_id_path = generate_build_id(platform, coredir, defines)
     platform.toolchain.pre_synthesis_commands += [
-        f'set_property is_global_include true [get_files "../../{build_id_path}"]'
+        f'set_property is_global_include true [get_files "../../../{build_id_path}"]'
     ]
 
     # TODO
@@ -173,7 +173,7 @@ def main(core):
                      IOStandard("LVCMOS33")),
     ])
 
-    platform.build(Top(platform), build_dir=get_build_dir(), build_name=core)
+    platform.build(Top(platform), build_dir=get_build_dir(core), build_name=core)
 
 if __name__ == "__main__":
     handle_main(main)
