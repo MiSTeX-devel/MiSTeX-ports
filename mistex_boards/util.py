@@ -1,4 +1,5 @@
 import os
+import sys
 from os.path import join
 from datetime import date
 from colorama import Fore, Style
@@ -64,3 +65,13 @@ def add_mainfile(platform, coredir, mistex_yaml):
         mainpath = coredir + '/' + mainfile
         print(f"\nAdding main file {mainpath}\n")
         platform.add_source(mainpath)
+
+def handle_main():
+    if len(sys.argv) != 2:
+        print(f"Usage: {sys.argv[0]} <core-name>")
+        print("Available cores:")
+        for core in os.listdir("cores"):
+            print(f"   * {core}")
+        sys.exit(1)
+
+    main(core=sys.argv[1])

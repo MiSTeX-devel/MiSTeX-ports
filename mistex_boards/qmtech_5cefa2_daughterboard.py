@@ -18,7 +18,7 @@ from litex_boards.platforms import qmtech_5cefa2
 
 from litex.soc.cores.clock import CycloneVPLL
 
-from util import add_sources, generate_build_id, add_mainfile, add_designfiles
+from util import *
 
 # CRG ----------------------------------------------------------------------------------------------
 
@@ -193,11 +193,4 @@ def main(core):
     platform.build(Top(platform))
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print(f"Usage: {sys.argv[0]} <core-name>")
-        print("Available cores:")
-        for core in os.listdir("cores"):
-            print(f"   * {core}\n")
-        sys.exit(1)
-
-    main(core=sys.argv[1])
+    handle_main()
