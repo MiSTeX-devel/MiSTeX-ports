@@ -77,5 +77,4 @@ def handle_main(main):
     main(core=sys.argv[1])
 
 def get_build_dir(core):
-    core = core.split('/')[-1]
     return os.path.join("build", sys.argv[0].split('.')[0].split('/')[1], core)
