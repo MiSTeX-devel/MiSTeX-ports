@@ -66,7 +66,7 @@ def add_mainfile(platform, coredir, mistex_yaml):
         print(f"\nAdding main file {mainpath}\n")
         platform.add_source(mainpath)
 
-def handle_main():
+def handle_main(main):
     if len(sys.argv) != 2:
         print(f"Usage: {sys.argv[0]} <core-name>")
         print("Available cores:")
@@ -75,3 +75,6 @@ def handle_main():
         sys.exit(1)
 
     main(core=sys.argv[1])
+
+def get_build_dir():
+    return os.path.join("build", sys.argv[0].split('.')[0].split('/')[1])
