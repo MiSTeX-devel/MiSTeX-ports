@@ -4,3 +4,6 @@
 [submodule "cores/Menu"]
 	path = cores/Menu
 	url = https://github.com/MiSTeX-devel/Menu_MiSTeX
+[submodule "cores/Arcade-BombJack"]
+	path = cores/Arcade-BombJack
+	url = https://github.com/MiSTeX-devel/Arcade-BombJack_MiSTeX

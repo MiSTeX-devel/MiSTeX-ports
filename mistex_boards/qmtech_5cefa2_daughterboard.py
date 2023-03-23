@@ -190,7 +190,9 @@ def main(core):
                      IOStandard("3.3-V LVTTL")),
     ])
 
-    platform.build(Top(platform), build_dir=get_build_dir(core), build_name=core)
+    platform.build(Top(platform),
+        build_dir     = get_build_dir(core),
+        build_name    = core.replace("-", "_"))
 
 if __name__ == "__main__":
     handle_main(main)
