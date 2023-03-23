@@ -140,8 +140,8 @@ def main(core):
     add_mainfile(platform, coredir, mistex_yaml)
 
     defines = mistex_yaml.get('defines', [])
-    for define in defines:
-        platform.add_platform_command(f'set_global_assignment -name VERILOG_MACRO "{define}=1"')
+    for key, value in defines.items():
+        platform.add_platform_command(f'set_global_assignment -name VERILOG_MACRO "{key}={value}"')
 
     # do not enable DEBUG_NOHDMI in release!
     platform.add_platform_command('set_global_assignment -name VERILOG_MACRO "ALTERA=1"')

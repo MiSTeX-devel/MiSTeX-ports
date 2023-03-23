@@ -137,6 +137,9 @@ def main(core):
         ('MISTER_DISABLE_ALSA', 1),
     ]
 
+    for key, value in mistex_yaml['defines'].items():
+        defines.append((key, value))
+
     build_id_path = generate_build_id(platform, coredir, defines)
     platform.toolchain.pre_synthesis_commands += [
         f'set_property is_global_include true [get_files "../../../{build_id_path}"]'
