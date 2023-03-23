@@ -115,6 +115,7 @@ def main(core):
 
     defines = [
         ('XILINX', 1),
+        ('LARGE_FPGA', 1),
 
         # ('DEBUG_HPS_OP', 1),
 
@@ -142,7 +143,8 @@ def main(core):
 
     build_id_path = generate_build_id(platform, coredir, defines)
     platform.toolchain.pre_synthesis_commands += [
-        f'set_property is_global_include true [get_files "../../../{build_id_path}"]'
+        f'set_property is_global_include true [get_files "../../../{build_id_path}"]',
+        'set_property default_lib work [current_project]'
     ]
 
     # TODO
