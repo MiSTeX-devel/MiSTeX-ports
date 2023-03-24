@@ -139,7 +139,7 @@ def main(core):
     generate_build_id(platform, coredir)
     add_mainfile(platform, coredir, mistex_yaml)
 
-    defines = mistex_yaml.get('defines', [])
+    defines = mistex_yaml.get('defines', {})
     for key, value in defines.items():
         platform.add_platform_command(f'set_global_assignment -name VERILOG_MACRO "{key}={value}"')
 

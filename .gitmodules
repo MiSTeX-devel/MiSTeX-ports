@@ -7,3 +7,6 @@
 [submodule "cores/Arcade-BombJack"]
 	path = cores/Arcade-BombJack
 	url = https://github.com/MiSTeX-devel/Arcade-BombJack_MiSTeX
+[submodule "cores/Arcade-QBert"]
+	path = cores/Arcade-QBert
+	url = https://github.com/MiSTeX-devel/Arcade-QBert_MiSTeX/
