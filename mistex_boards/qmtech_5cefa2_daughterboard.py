@@ -140,29 +140,18 @@ def main(core):
     add_mainfile(platform, coredir, mistex_yaml)
 
     defines = mistex_yaml.get('defines', {})
+    defines.update({
+        "ALTERA": 1,
+        "MISTER_DEBUG_NOHDMI": 1,
+        "MISTER_DOWNSCALE_NN": 1,
+        # "MISTER_DISABLE_ADAPTIVE": 1,
+        # "MISTER_SMALL_VBUF": 1,
+        "MISTER_DISABLE_YC": 1,
+        "MISTER_DISABLE_ALSA": 1,
+    })
+
     for key, value in defines.items():
         platform.add_platform_command(f'set_global_assignment -name VERILOG_MACRO "{key}={value}"')
-
-    # do not enable DEBUG_NOHDMI in release!
-    platform.add_platform_command('set_global_assignment -name VERILOG_MACRO "ALTERA=1"')
-
-    # do not enable DEBUG_NOHDMI in release!
-    platform.add_platform_command('set_global_assignment -name VERILOG_MACRO "MISTER_DEBUG_NOHDMI=1"')
-
-    # disable bilinear filtering when downscaling
-    platform.add_platform_command('set_global_assignment -name VERILOG_MACRO "MISTER_DOWNSCALE_NN=1"')
-
-    # disable adaptive scanline filtering
-    #platform.add_platform_command('set_global_assignment -name VERILOG_MACRO "MISTER_DISABLE_ADAPTIVE=1"')
-
-    # use only 1MB per frame for scaler to free ~21MB DDR3 RAM
-    #platform.add_platform_command('set_global_assignment -name VERILOG_MACRO "MISTER_SMALL_VBUF=1"')
-
-    # Disable YC / Composite output to save some resources
-    platform.add_platform_command('set_global_assignment -name VERILOG_MACRO "MISTER_DISABLE_YC=1"')
-
-    # Disable ALSA audio output to save some resources
-    platform.add_platform_command('set_global_assignment -name VERILOG_MACRO "MISTER_DISABLE_ALSA=1"')
 
     platform.add_extension([
         ("audio", 0,
