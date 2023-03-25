@@ -15,12 +15,71 @@ from colorama import Fore, Style
 from migen import *
 from litex.build.generic_platform import *
 from litex_boards.platforms import qmtech_artix7_fgg676
-
-from litex.soc.cores.clock import S7PLL
+from litex.gen import LiteXModule
+from litex.soc.integration.soc_core import SoCCore
+from litex.soc.cores.clock import S7PLL, S7IDELAYCTRL
+from litex.soc.interconnect import wishbone
+from litedram.modules import MT41J128M16
+from litedram.phy import s7ddrphy
 
 from util import *
 
-# Build --------------------------------------------------------------------------------------------
+# CRG ----------------------------------------------------------------------------------------------
+
+class _CRG(LiteXModule):
+    def __init__(self, platform, clock_in, sys_clk_freq):
+        self.rst          = Signal()
+        self.cd_sys       = ClockDomain()
+        self.cd_sys4x     = ClockDomain()
+        self.cd_sys4x_dqs = ClockDomain()
+        self.cd_idelay    = ClockDomain()
+        self.cd_retro     = ClockDomain()
+
+        # # #
+
+        self.pll = pll = S7PLL(speedgrade=-1)
+        try:
+            reset_button = platform.request("cpu_reset")
+            self.comb += pll.reset.eq(~reset_button | self.rst)
+        except:
+            self.comb += pll.reset.eq(self.rst)
+
+        pll.register_clkin(clock_in, 50e6)
+        pll.create_clkout(self.cd_sys,       sys_clk_freq)
+        pll.create_clkout(self.cd_sys4x,     4*sys_clk_freq)
+        pll.create_clkout(self.cd_sys4x_dqs, 4*sys_clk_freq, phase=90)
+        pll.create_clkout(self.cd_idelay,    200e6)
+        pll.create_clkout(self.cd_retro,     50e6)
+        platform.add_false_path_constraints(self.cd_sys.clk, pll.clkin) # Ignore sys_clk to pll.clkin path created by SoC's rst.
+
+        self.idelayctrl = S7IDELAYCTRL(self.cd_idelay)
+
+# LiteX SoC to initialize DDR3 ------------------------------------------------------------------------------------------
+
+class BaseSoC(SoCCore):
+    def __init__(self, platform, clock_in, toolchain="vivado", kgates=100, sys_clk_freq=100e6,  **kwargs):
+        # CRG --------------------------------------------------------------------------------------
+        self.crg = _CRG(platform, clock_in, sys_clk_freq)
+
+        # SoCCore ----------------------------------------------------------------------------------
+        kwargs["uart_name"] = "serial"
+        kwargs["cpu_type"]  = "serv"
+        kwargs["l2_size"]   = 0
+        kwargs["cpu_reset_address"] = 0x01000000
+        SoCCore.__init__(self, platform, sys_clk_freq, ident = f"LiteX SoC on MiSTeX QMTech XC7A100T", **kwargs)
+
+        # DDR3 SDRAM -------------------------------------------------------------------------------
+        if not self.integrated_main_ram_size:
+            self.ddrphy = s7ddrphy.A7DDRPHY(platform.request("ddram"),
+                memtype        = "DDR3",
+                nphases        = 4,
+                sys_clk_freq   = sys_clk_freq)
+            self.add_sdram("sdram",
+                phy           = self.ddrphy,
+                module        = MT41J128M16(sys_clk_freq, "1:4"),
+                l2_cache_size = 0)
+
+# MiSTeX core --------------------------------------------------------------------------------------------
 
 class Top(Module):
     def __init__(self, platform) -> None:
@@ -32,9 +91,67 @@ class Top(Module):
         hps_spi     = platform.request("hps_spi")
         hps_control = platform.request("hps_control")
         debug       = platform.request("debug")
+        clk_in      = platform.request("clk50")
+
+        soc = BaseSoC(platform, clk_in)
+        self.submodules += soc
+
+        soc_bone = wishbone.Interface(data_width=32, adr_width=32)
+        soc.bus.add_master("mistex", soc_bone)
+
+        top_bone = wishbone.Interface(data_width=128, adr_width=28)
+
+        self.submodules += wishbone.Converter(top_bone, soc_bone)
+
+        DW = 128
+        AW = 28
+        avalon_address       = Signal(AW)
+        avalon_byteenable    = Signal(DW//8)
+        avalon_read          = Signal()
+        avalon_readdata      = Signal(DW)
+        avalon_burstcount    = Signal(8)
+        avalon_write         = Signal()
+        avalon_writedata     = Signal(DW)
+        avalon_waitrequest   = Signal()
+        avalon_readdatavalid = Signal()
+
+        avalon_to_wishbone = Instance("avalon_to_wb_bridge",
+            i_wb_clk_i = ClockSignal("sys"),
+            i_wb_rst_i = ResetSignal("sys"),
+
+            # avalon
+            i_s_av_address_i       = avalon_address,
+            i_s_av_byteenable_i    = avalon_byteenable,
+            i_s_av_read_i          = avalon_read,
+            o_s_av_readdata_o      = avalon_readdata,
+            i_s_av_burstcount_i    = avalon_burstcount,
+            i_s_av_write_i         = avalon_write,
+            i_s_av_writedata_i     = avalon_writedata,
+            o_s_av_waitrequest_o   = avalon_waitrequest,
+            o_s_av_readdatavalid_o = avalon_readdatavalid,
+
+            # wishbone
+            o_wbm_adr_o = top_bone.adr,
+            o_wbm_dat_o = top_bone.dat_w,
+            o_wbm_sel_o = top_bone.sel,
+            o_wbm_we_o  = top_bone.we,
+            o_wbm_cyc_o = top_bone.cyc,
+            o_wbm_stb_o = top_bone.stb,
+            o_wbm_cti_o = top_bone.cti,
+            o_wbm_bte_o = top_bone.bte,
+            i_wbm_dat_i = top_bone.dat_r,
+            i_wbm_ack_i = top_bone.ack,
+            i_wbm_err_i = top_bone.err,
+        )
+
+        self.specials += avalon_to_wishbone
 
         sys_top = Instance("sys_top",
-            i_CLK_50 = ClockSignal(),
+            p_DW = DW,
+            p_AW = AW,
+
+            i_CLK_50   = ClockSignal("retro"),
+            i_clk_100m = ClockSignal("sys"),
 
             # TODO: HDMI
             #o_HDMI_I2C_SCL,
@@ -74,16 +191,16 @@ class Top(Module):
             o_AUDIO_R = audio.r,
             o_AUDIO_SPDIF = audio.spdif,
 
-            o_LED_USER = platform.request("user_led", 0),
-            o_LED_HDD = platform.request("user_led", 1),
+            o_LED_USER  = platform.request("user_led", 0),
+            o_LED_HDD   = platform.request("user_led", 1),
             o_LED_POWER = platform.request("user_led", 2),
-            i_BTN_USER = platform.request("user_btn", 0),
-            i_BTN_OSD = platform.request("user_btn", 1),
+            i_BTN_USER  = platform.request("user_btn", 0),
+            i_BTN_OSD   = platform.request("user_btn", 1),
             i_BTN_RESET = platform.request("user_btn", 2),
 
-            o_SD_SPI_CS = sdcard.cd,
+            o_SD_SPI_CS   = sdcard.cd,
             i_SD_SPI_MISO = sdcard.data[0],
-            o_SD_SPI_CLK = sdcard.clk,
+            o_SD_SPI_CLK  = sdcard.clk,
             o_SD_SPI_MOSI = sdcard.cmd,
 
             io_SDCD_SPDIF = audio.sbcd_spdif,
@@ -92,14 +209,25 @@ class Top(Module):
 
             i_HPS_SPI_MOSI = hps_spi.mosi,
             o_HPS_SPI_MISO = hps_spi.miso,
-            i_HPS_SPI_CLK = hps_spi.clk,
-            i_HPS_SPI_CS = hps_spi.cs_n,
+            i_HPS_SPI_CLK  = hps_spi.clk,
+            i_HPS_SPI_CS   = hps_spi.cs_n,
 
             i_HPS_FPGA_ENABLE = hps_control.fpga_enable,
-            i_HPS_OSD_ENABLE = hps_control.osd_enable,
-            i_HPS_IO_ENABLE = hps_control.io_enable,
-            i_HPS_CORE_RESET = hps_control.core_reset,
-            o_DEBUG = debug
+            i_HPS_OSD_ENABLE  = hps_control.osd_enable,
+            i_HPS_IO_ENABLE   = hps_control.io_enable,
+            i_HPS_CORE_RESET  = hps_control.core_reset,
+
+            o_DEBUG = debug,
+
+            o_ddr3_address_o       = avalon_address,
+            o_ddr3_byteenable_o    = avalon_byteenable,
+            o_ddr3_read_o          = avalon_read,
+            i_ddr3_readdata_i      = avalon_readdata,
+            o_ddr3_burstcount_o    = avalon_burstcount,
+            o_ddr3_write_o         = avalon_write,
+            o_ddr3_writedata_o     = avalon_writedata,
+            i_ddr3_waitrequest_i   = avalon_waitrequest,
+            i_ddr3_readdatavalid_i = avalon_readdatavalid,
         )
 
         self.specials += sys_top
@@ -112,6 +240,7 @@ def main(core):
     platform = qmtech_artix7_fgg676.Platform(with_daughterboard=True)
 
     add_designfiles(platform, coredir, mistex_yaml, 'vivado')
+    platform.add_source("rtl/avalon_to_wb_bridge.v")
 
     defines = [
         ('XILINX', 1),
