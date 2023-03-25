@@ -138,7 +138,7 @@ def main(core):
         ('MISTER_DISABLE_ALSA', 1),
     ]
 
-    for key, value in mistex_yaml['defines'].items():
+    for key, value in mistex_yaml.get('defines', {}).items():
         defines.append((key, value))
 
     build_id_path = generate_build_id(platform, coredir, defines)
