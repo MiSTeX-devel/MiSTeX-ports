@@ -113,7 +113,7 @@ class Top(Module):
         avalon_waitrequest   = Signal()
         avalon_readdatavalid = Signal()
 
-        avalon_to_wishbone = Instance("avalon_to_wb_bridge",
+        self.specials += Instance("avalon_to_wb_bridge",
             i_wb_clk_i = ClockSignal("sys"),
             i_wb_rst_i = ResetSignal("sys"),
 
@@ -141,8 +141,6 @@ class Top(Module):
             i_wbm_ack_i = soc_bone.ack,
             i_wbm_err_i = soc_bone.err,
         )
-
-        self.specials += avalon_to_wishbone
 
         sys_top = Instance("sys_top",
             p_DW = DW,
