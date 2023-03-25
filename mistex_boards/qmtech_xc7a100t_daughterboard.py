@@ -57,15 +57,17 @@ class _CRG(LiteXModule):
 # LiteX SoC to initialize DDR3 ------------------------------------------------------------------------------------------
 
 class BaseSoC(SoCCore):
-    def __init__(self, platform, clock_in, toolchain="vivado", kgates=100, sys_clk_freq=100e6,  **kwargs):
+    def __init__(self, platform, clock_in,  DW, AW, toolchain="vivado", kgates=100, sys_clk_freq=100e6,  **kwargs):
         # CRG --------------------------------------------------------------------------------------
         self.crg = _CRG(platform, clock_in, sys_clk_freq)
 
         # SoCCore ----------------------------------------------------------------------------------
-        kwargs["uart_name"] = "serial"
-        kwargs["cpu_type"]  = "serv"
-        kwargs["l2_size"]   = 0
+        kwargs["uart_name"]         = "serial"
+        kwargs["cpu_type"]          = "serv"
+        kwargs["l2_size"]           = 0
         kwargs["cpu_reset_address"] = 0x01000000
+        kwargs["bus_data_width"]    = DW
+        kwargs["bus_address_width"] = AW
         SoCCore.__init__(self, platform, sys_clk_freq, ident = f"LiteX SoC on MiSTeX QMTech XC7A100T", **kwargs)
 
         # DDR3 SDRAM -------------------------------------------------------------------------------
@@ -93,18 +95,14 @@ class Top(Module):
         debug       = platform.request("debug")
         clk_in      = platform.request("clk50")
 
-        soc = BaseSoC(platform, clk_in)
-        self.submodules += soc
-
-        soc_bone = wishbone.Interface(data_width=32, adr_width=32)
-        soc.bus.add_master("mistex", soc_bone)
-
-        top_bone = wishbone.Interface(data_width=128, adr_width=28)
-
-        self.submodules += wishbone.Converter(top_bone, soc_bone)
-
         DW = 128
         AW = 28
+        soc = BaseSoC(platform, clk_in, DW, 32)
+        self.submodules += soc
+
+        soc_bone = wishbone.Interface(data_width=DW, adr_width=AW)
+        soc.bus.add_master("mistex", soc_bone)
+
         avalon_address       = Signal(AW)
         avalon_byteenable    = Signal(DW//8)
         avalon_read          = Signal()
@@ -131,17 +129,17 @@ class Top(Module):
             o_s_av_readdatavalid_o = avalon_readdatavalid,
 
             # wishbone
-            o_wbm_adr_o = top_bone.adr,
-            o_wbm_dat_o = top_bone.dat_w,
-            o_wbm_sel_o = top_bone.sel,
-            o_wbm_we_o  = top_bone.we,
-            o_wbm_cyc_o = top_bone.cyc,
-            o_wbm_stb_o = top_bone.stb,
-            o_wbm_cti_o = top_bone.cti,
-            o_wbm_bte_o = top_bone.bte,
-            i_wbm_dat_i = top_bone.dat_r,
-            i_wbm_ack_i = top_bone.ack,
-            i_wbm_err_i = top_bone.err,
+            o_wbm_adr_o = soc_bone.adr,
+            o_wbm_dat_o = soc_bone.dat_w,
+            o_wbm_sel_o = soc_bone.sel,
+            o_wbm_we_o  = soc_bone.we,
+            o_wbm_cyc_o = soc_bone.cyc,
+            o_wbm_stb_o = soc_bone.stb,
+            o_wbm_cti_o = soc_bone.cti,
+            o_wbm_bte_o = soc_bone.bte,
+            i_wbm_dat_i = soc_bone.dat_r,
+            i_wbm_ack_i = soc_bone.ack,
+            i_wbm_err_i = soc_bone.err,
         )
 
         self.specials += avalon_to_wishbone
