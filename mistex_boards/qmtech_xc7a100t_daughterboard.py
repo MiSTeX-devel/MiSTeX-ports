@@ -17,6 +17,7 @@ from litex.build.generic_platform import *
 from litex_boards.platforms import qmtech_artix7_fgg676
 from litex.gen import LiteXModule
 from litex.soc.integration.soc_core import SoCCore
+from litex.soc.integration.builder import *
 from litex.soc.cores.clock import S7PLL, S7IDELAYCTRL
 from litex.soc.interconnect import wishbone
 from litedram.modules import MT41J128M16
@@ -27,7 +28,7 @@ from util import *
 # CRG ----------------------------------------------------------------------------------------------
 
 class _CRG(LiteXModule):
-    def __init__(self, platform, clock_in, sys_clk_freq):
+    def __init__(self, platform, sys_clk_freq):
         self.rst          = Signal()
         self.cd_sys       = ClockDomain()
         self.cd_sys4x     = ClockDomain()
@@ -35,6 +36,7 @@ class _CRG(LiteXModule):
         self.cd_idelay    = ClockDomain()
         self.cd_retro     = ClockDomain()
 
+        clk_in            = platform.request("clk50")
         # # #
 
         self.pll = pll = S7PLL(speedgrade=-1)
@@ -44,12 +46,12 @@ class _CRG(LiteXModule):
         except:
             self.comb += pll.reset.eq(self.rst)
 
-        pll.register_clkin(clock_in, 50e6)
-        pll.create_clkout(self.cd_sys,       sys_clk_freq)
-        pll.create_clkout(self.cd_sys4x,     4*sys_clk_freq)
-        pll.create_clkout(self.cd_sys4x_dqs, 4*sys_clk_freq, phase=90)
-        pll.create_clkout(self.cd_idelay,    200e6)
-        pll.create_clkout(self.cd_retro,     50e6)
+        pll.register_clkin(clk_in,            50e6)
+        pll.create_clkout (self.cd_sys,       sys_clk_freq)
+        pll.create_clkout (self.cd_sys4x,     4*sys_clk_freq)
+        pll.create_clkout (self.cd_sys4x_dqs, 4*sys_clk_freq, phase=90)
+        pll.create_clkout (self.cd_idelay,    200e6)
+        pll.create_clkout (self.cd_retro,     50e6)
         platform.add_false_path_constraints(self.cd_sys.clk, pll.clkin) # Ignore sys_clk to pll.clkin path created by SoC's rst.
 
         self.idelayctrl = S7IDELAYCTRL(self.cd_idelay)
@@ -57,9 +59,12 @@ class _CRG(LiteXModule):
 # LiteX SoC to initialize DDR3 ------------------------------------------------------------------------------------------
 
 class BaseSoC(SoCCore):
-    def __init__(self, platform, clock_in,  DW, AW, toolchain="vivado", kgates=100, sys_clk_freq=100e6,  **kwargs):
+    def __init__(self, platform, toolchain="vivado", kgates=100, sys_clk_freq=100e6,  **kwargs):
         # CRG --------------------------------------------------------------------------------------
-        self.crg = _CRG(platform, clock_in, sys_clk_freq)
+        self.crg = _CRG(platform, sys_clk_freq)
+        self.platform = platform
+
+        DW = 128
 
         # SoCCore ----------------------------------------------------------------------------------
         kwargs["uart_name"]         = "serial"
@@ -67,24 +72,26 @@ class BaseSoC(SoCCore):
         kwargs["l2_size"]           = 0
         kwargs["cpu_reset_address"] = 0x01000000
         kwargs["bus_data_width"]    = DW
-        kwargs["bus_address_width"] = AW
+        kwargs["bus_address_width"] = 32
         SoCCore.__init__(self, platform, sys_clk_freq, ident = f"LiteX SoC on MiSTeX QMTech XC7A100T", **kwargs)
 
         # DDR3 SDRAM -------------------------------------------------------------------------------
-        if not self.integrated_main_ram_size:
-            self.ddrphy = s7ddrphy.A7DDRPHY(platform.request("ddram"),
-                memtype        = "DDR3",
-                nphases        = 4,
-                sys_clk_freq   = sys_clk_freq)
-            self.add_sdram("sdram",
-                phy           = self.ddrphy,
-                module        = MT41J128M16(sys_clk_freq, "1:4"),
-                l2_cache_size = 0)
+        self.ddrphy = s7ddrphy.A7DDRPHY(platform.request("ddram"),
+            memtype        = "DDR3",
+            nphases        = 4,
+            sys_clk_freq   = sys_clk_freq)
+        self.add_sdram("sdram",
+            phy           = self.ddrphy,
+            module        = MT41J128M16(sys_clk_freq, "1:4"),
+            l2_cache_size = 0)
+
+        self.gamecore = Gamecore(platform, self, DW)
+
 
 # MiSTeX core --------------------------------------------------------------------------------------------
 
-class Top(Module):
-    def __init__(self, platform) -> None:
+class Gamecore(Module):
+    def __init__(self, platform, soc, DW) -> None:
         #sdram       = platform.request("sdram")
         vga         = platform.request("vga")
         sdcard      = platform.request("sdcard")
@@ -93,12 +100,8 @@ class Top(Module):
         hps_spi     = platform.request("hps_spi")
         hps_control = platform.request("hps_control")
         debug       = platform.request("debug")
-        clk_in      = platform.request("clk50")
 
-        DW = 128
         AW = 28
-        soc = BaseSoC(platform, clk_in, DW, 32)
-        self.submodules += soc
 
         soc_bone = wishbone.Interface(data_width=DW, adr_width=AW)
         soc.bus.add_master("mistex", soc_bone)
@@ -303,9 +306,17 @@ def main(core):
                      IOStandard("LVCMOS33")),
     ])
 
-    platform.build(Top(platform),
-        build_dir     = get_build_dir(core),
-        build_name    = core.replace("-", "_"))
+    build_dir = get_build_dir(core)
+
+    soc = BaseSoC(platform)
+    builder = Builder(soc,
+        build_backend="litex",
+        gateware_dir=build_dir,
+        software_dir=os.path.join(build_dir, 'software'),
+        compile_gateware=True,
+        compile_software=True,
+        bios_console="lite")
+    builder.build(build_name  = core.replace("-", "_"))
 
 if __name__ == "__main__":
     handle_main(main)
