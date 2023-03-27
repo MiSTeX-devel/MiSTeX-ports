@@ -67,12 +67,12 @@ class BaseSoC(SoCCore):
         DW = 128
 
         # SoCCore ----------------------------------------------------------------------------------
-        kwargs["uart_name"]         = "serial"
-        kwargs["cpu_type"]          = "serv"
-        kwargs["l2_size"]           = 0
-        kwargs["cpu_reset_address"] = 0x01000000
-        kwargs["bus_data_width"]    = DW
-        kwargs["bus_address_width"] = 32
+        kwargs["uart_name"]            = "serial"
+        kwargs["cpu_type"]             = "serv"
+        kwargs["l2_size"]              = 0
+        kwargs["bus_data_width"]       = DW
+        kwargs["bus_address_width"]    = 32
+        kwargs['integrated_rom_size']  = 131072
         SoCCore.__init__(self, platform, sys_clk_freq, ident = f"LiteX SoC on MiSTeX QMTech XC7A100T", **kwargs)
 
         # DDR3 SDRAM -------------------------------------------------------------------------------
