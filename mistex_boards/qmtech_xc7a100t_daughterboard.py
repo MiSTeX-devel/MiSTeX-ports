@@ -72,7 +72,8 @@ class BaseSoC(SoCCore):
         kwargs["l2_size"]              = 0
         kwargs["bus_data_width"]       = DW
         kwargs["bus_address_width"]    = 32
-        kwargs['integrated_rom_size']  = 131072
+        kwargs['integrated_rom_size']  = 0x8000
+        kwargs['integrated_sram_size'] = 0x1000
         SoCCore.__init__(self, platform, sys_clk_freq, ident = f"LiteX SoC on MiSTeX QMTech XC7A100T", **kwargs)
 
         # DDR3 SDRAM -------------------------------------------------------------------------------
