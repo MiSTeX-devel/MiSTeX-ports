@@ -220,7 +220,7 @@ def main(core):
     defines = mistex_yaml.get('defines', {})
     defines.update({
         "ALTERA": 1,
-        "MAX10":  1,
+        "CRG_AUDIO_CLK": 1,
         "HARDWARE_HDMI_INIT": 1,
         # "MISTER_DOWNSCALE_NN": 1,
         # "SKIP_ASCAL": 1,
