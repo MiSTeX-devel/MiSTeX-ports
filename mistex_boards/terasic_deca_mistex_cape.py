@@ -21,31 +21,13 @@ from litex.soc.cores.clock import Max10PLL
 
 from util import *
 
-# CRG ----------------------------------------------------------------------------------------------
-
-# TODO: currently unused, replace top PLL
-class _CRG(Module):
-    def __init__(self, platform):
-        self.rst      = ResetSignal()
-        self.cd_sys   = ClockDomain()
-        self.cd_spi   = ClockDomain()
-
-        # Clk / Rst
-        clk50 = platform.request("clk50")
-
-        # PLL
-        pll = Max10PLL(speedgrade="-6")
-        self.submodules += pll
-        self.comb += pll.reset.eq(self.rst)
-        pll.register_clkin(clk50, 50e6)
-        pll.create_clkout(self.cd_sys, 50e6)
-        pll.create_clkout(self.cd_spi, 100e6)
-
 # Build --------------------------------------------------------------------------------------------
 
 class Top(LiteXModule):
     def __init__(self, platform) -> None:
         sdram       = platform.request("sdram")
+        ddram       = platform.request("ddram")
+        hps_i2c     = platform.request("hps_i2c")
         hdmi        = platform.request("hdmi")
         hdmi_i2c    = platform.request("hdmi_i2c")
         hdmi_i2s    = platform.request("hdmi_i2s")
@@ -53,12 +35,100 @@ class Top(LiteXModule):
         hps_spi     = platform.request("hps_spi")
         hps_control = platform.request("hps_control")
 
-        crg = _CRG(platform)
-        self.submodules += crg
+        leds = Signal(8)
+        self.comb += Cat([platform.request("user_led", l) for l in range(8)]).eq(~leds)
+
+        clk50 = Signal()
+        self.comb += clk50.eq(platform.request("clk50"))
+
+        AW = 26
+        DW = 64
+
+        avalon_clock         = Signal()
+        avalon_address       = Signal(AW)
+        avalon_byteenable    = Signal(DW//8)
+        avalon_read          = Signal()
+        avalon_readdata      = Signal(DW)
+        avalon_burstcount    = Signal(8)
+        avalon_write         = Signal()
+        avalon_writedata     = Signal(DW)
+        avalon_ready         = Signal()
+        avalon_readdatavalid = Signal()
+        avalon_burstbegin    = Signal()
+        avalon_waitrequest   = Signal()
+
+        afi_half_clk = Signal()
+        afi_reset_export_n = Signal()
+        afi_reset_n = Signal()
+
+        if False:
+            i2c_repeater = Instance("i2crepeater",
+                 i_reset             = ResetSignal(),
+                 i_system_clk        = crg.cd_sys.clk,
+                 i_master_scl        = hps_i2c.scl,
+                 io_master_sda       = hps_i2c.sda,
+                 o_slave_scl         = hdmi_i2c.scl,
+                 io_slave_sda        = hdmi_i2c.sda,
+            )
+            self.specials += i2c_repeater
+        else:
+            pass
+
+        ddr3 = Instance("ddr3",
+            i_pll_ref_clk         = clk50,
+            i_global_reset_n      = ~ResetSignal(),
+            i_soft_reset_n        = ~ResetSignal(),
+            o_afi_clk             = avalon_clock,
+            o_afi_half_clk        = afi_half_clk,
+            o_afi_reset_n         = afi_reset_export_n,
+            o_afi_reset_export_n  = afi_reset_n,
+
+            o_mem_a               = ddram.a,
+            o_mem_ba              = ddram.ba,
+            io_mem_ck             = ddram.clk_p,
+            io_mem_ck_n           = ddram.clk_n,
+            o_mem_cke             = ddram.cke,
+            o_mem_cs_n            = ddram.cs_n,
+            o_mem_dm              = ddram.dm,
+            o_mem_ras_n           = ddram.ras_n,
+            o_mem_cas_n           = ddram.cas_n,
+            o_mem_we_n            = ddram.we_n,
+            o_mem_reset_n         = ddram.reset_n,
+            io_mem_dq             = ddram.dq,
+            io_mem_dqs            = ddram.dqs_p,
+            io_mem_dqs_n          = ddram.dqs_n,
+            o_mem_odt             = ddram.odt,
+
+            o_avl_ready           = avalon_ready,
+            i_avl_burstbegin      = avalon_burstbegin,
+            i_avl_addr            = avalon_address,
+            o_avl_rdata_valid     = avalon_readdatavalid,
+            o_avl_rdata           = avalon_readdata,
+            i_avl_wdata           = avalon_writedata,
+            i_avl_be              = avalon_byteenable,
+            i_avl_read_req        = avalon_read,
+            i_avl_write_req       = avalon_write,
+            i_avl_size            = avalon_burstcount,
+            o_local_init_done     = leds[5],
+            o_local_cal_success   = leds[6],
+            o_local_cal_fail      = leds[7],
+            # o_pll_mem_clk         = 
+            # o_pll_write_clk       = 
+            o_pll_locked          = leds[4],
+            # o_pll_capture0_clk    = 
+            # o_pll_capture1_clk    = 
+        )
+        self.specials += ddr3
+
+        self.comb += [
+            avalon_burstbegin.eq(avalon_write & avalon_read),
+            avalon_waitrequest.eq(~avalon_ready),
+        ]
 
         sys_top = Instance("sys_top",
-            i_CLK_50   = crg.cd_sys.clk,
-            i_clk_100m = crg.cd_spi.clk,
+            p_DW            = DW,
+            p_AW            = AW,
+            i_CLK_50        = clk50,
 
             # HDMI I2C
             o_HDMI_I2C_SCL  = hdmi_i2c.scl,
@@ -69,7 +139,7 @@ class Top(LiteXModule):
             o_HDMI_LRCLK    = hdmi_i2s.lrclk,
             o_HDMI_I2S      = hdmi_i2s.i2s,
             # HDMI VIDEO
-            o_HDMI_TX_D     = Cat(hdmi.b, hdmi.g, hdmi.r),
+            o_HDMI_TX_D     = Cat(hdmi.r, hdmi.g, hdmi.b),
             o_HDMI_TX_CLK   = hdmi.clk,
             o_HDMI_TX_DE    = hdmi.de,
             o_HDMI_TX_HS    = hdmi.hsync,
@@ -95,9 +165,9 @@ class Top(LiteXModule):
             # o_AUDIO_SPDIF = audio.spdif,
             # io_SDCD_SPDIF = audio.sbcd_spdif,
 
-            o_LED_USER  = platform.request("user_led", 0),
-            o_LED_HDD   = platform.request("user_led", 1),
-            o_LED_POWER = platform.request("user_led", 2),
+            o_LED_USER  = leds[2],
+            o_LED_HDD   = leds[1],
+            o_LED_POWER = leds[0],
             # i_BTN_USER  = platform.request("user_btn", 0),
             i_BTN_OSD   = platform.request("user_btn", 0),
             i_BTN_RESET = platform.request("user_btn", 1),
@@ -107,7 +177,7 @@ class Top(LiteXModule):
             o_SD_SPI_CLK  = sdcard.clk,
             o_SD_SPI_MOSI = sdcard.cmd,
 
-            o_LED = Cat([platform.request("user_led", led) for led in range(3, 5)]),
+            #o_LED = Cat([leds[l]) for led in range(3, 5)]),
 
             i_HPS_SPI_MOSI = hps_spi.mosi,
             o_HPS_SPI_MISO = hps_spi.miso,
@@ -119,8 +189,18 @@ class Top(LiteXModule):
             i_HPS_IO_ENABLE = hps_control.io_enable,
             i_HPS_CORE_RESET = hps_control.core_reset,
             # o_DEBUG = N/C
-        )
 
+            i_ddr3_clk_i           = avalon_clock,
+            o_ddr3_address_o       = avalon_address,
+            o_ddr3_byteenable_o    = avalon_byteenable,
+            o_ddr3_read_o          = avalon_read,
+            i_ddr3_readdata_i      = avalon_readdata,
+            o_ddr3_burstcount_o    = avalon_burstcount,
+            o_ddr3_write_o         = avalon_write,
+            o_ddr3_writedata_o     = avalon_writedata,
+            i_ddr3_waitrequest_i   = avalon_waitrequest,
+            i_ddr3_readdatavalid_i = avalon_readdatavalid,
+        )
         self.specials += sys_top
 
 def main(core):
@@ -135,11 +215,15 @@ def main(core):
     generate_build_id(platform, coredir)
     add_mainfile(platform, coredir, mistex_yaml)
 
+    platform.add_platform_command(f"set_global_assignment -name QIP_FILE {os.getcwd()}/rtl/deca-ddr3/ddr3.qip")
+
     defines = mistex_yaml.get('defines', {})
     defines.update({
         "ALTERA": 1,
         "MAX10":  1,
-        "MISTER_DOWNSCALE_NN": 1,
+        "HARDWARE_HDMI_INIT": 1,
+        # "MISTER_DOWNSCALE_NN": 1,
+        # "SKIP_ASCAL": 1,
         # "MISTER_DISABLE_ADAPTIVE": 1,
         # "MISTER_SMALL_VBUF": 1,
         "MISTER_DISABLE_YC": 1,
@@ -150,6 +234,11 @@ def main(core):
         platform.add_platform_command(f'set_global_assignment -name VERILOG_MACRO "{key}={value}"')
 
     platform.add_extension([
+        ("hps_i2c", 0,
+            Subsignal("sda", Pins("P9:26")),
+            Subsignal("scl", Pins("P9:27")),
+            IOStandard("3.3-V LVTTL"),
+        ),
         ("hps_spi", 0,
             Subsignal("mosi", Pins("P9:23")),
             Subsignal("miso", Pins("P9:24")),
