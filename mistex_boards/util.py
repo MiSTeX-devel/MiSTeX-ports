@@ -5,32 +5,36 @@ from datetime import date
 from colorama import Fore, Style
 
 def add_designfiles(platform, coredir, mistex_yaml, boardspecific):
+    use_template_sys = mistex_yaml.get('use-template-sys', False)
+
     boardspecific_sources = mistex_yaml[boardspecific]['sourcefiles']
     excludes = mistex_yaml['quartus']['sourcefiles'] + mistex_yaml['vivado']['sourcefiles']
 
     for sourcedir in mistex_yaml['sourcedirs']:
         print(f"\n{Style.DIM}******** source directory {sourcedir} ********{Style.RESET_ALL}")
-        add_sources(platform, coredir, sourcedir, excludes)
+        add_sources(platform, coredir, sourcedir, excludes, use_template_sys)
 
     print(f"\n{Style.DIM}******** source files ********{Style.RESET_ALL}")
     for source in mistex_yaml.get('sourcefiles', []):
         sourcepath = join(coredir, source)
-        print(f" -> {sourcepath}")
-        add_source(platform, sourcepath)
+        add_source(platform, sourcepath, coredir, use_template_sys)
 
     print(f"\n{Style.DIM}******** board specific sources ********{Style.RESET_ALL}")
     for source in boardspecific_sources:
         sourcepath = join(coredir, source)
-        print(f" -> {sourcepath}")
-        add_source(platform, sourcepath)
+        add_source(platform, sourcepath, coredir, use_template_sys)
 
-def add_source(platform, fpath):
+def add_source(platform, fpath, coredir, use_template_sys):
+    if fpath.startswith(os.path.join(coredir, "sys")):
+        fpath = fpath.replace(coredir, "cores/Template")
+
+    print(f" -> {fpath}")
     if fpath.endswith(".sdc"):
         platform.add_platform_command(f"set_global_assignment -name SDC_FILE {fpath}")
     else:
         platform.add_source(fpath)
 
-def add_sources(platform, coredir, subdir, excludes):
+def add_sources(platform, coredir, subdir, excludes, use_template_sys):
     sourcedir=join(coredir, subdir)
     for fname in os.listdir(sourcedir):
         fpath = join(sourcedir, fname)
@@ -42,8 +46,7 @@ def add_sources(platform, coredir, subdir, excludes):
             if excluded: print(f"{Fore.RED}    {fpath} is excluded...{Style.RESET_ALL}")
             continue
 
-        print(f" -> {fpath}")
-        add_source(platform, fpath)
+        add_source(platform, fpath, coredir, use_template_sys)
 
 def generate_build_id(platform, coredir, defines=[]):
     build_id = join(coredir, "build_id.vh")
