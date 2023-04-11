@@ -142,6 +142,7 @@ def main(core):
     defines = mistex_yaml.get('defines', {})
     defines.update({
         "ALTERA": 1,
+        "CYCLONEV": 1,
         "MISTER_DEBUG_NOHDMI": 1,
         "MISTER_DOWNSCALE_NN": 1,
         # "MISTER_DISABLE_ADAPTIVE": 1,
