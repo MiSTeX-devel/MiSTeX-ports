@@ -216,12 +216,16 @@ def main(core):
     add_mainfile(platform, coredir, mistex_yaml)
 
     platform.add_platform_command(f"set_global_assignment -name QIP_FILE {os.getcwd()}/rtl/deca-ddr3/ddr3.qip")
+    platform.add_platform_command("set_global_assignment -name AUTO_RAM_TO_LCELL_CONVERSION ON")
 
     defines = mistex_yaml.get('defines', {})
     defines.update({
         "ALTERA": 1,
         "CRG_AUDIO_CLK": 1,
         "HARDWARE_HDMI_INIT": 1,
+        "NO_SCANDOUBLER": 1,
+        "DISBALE_VGA": 1,
+        "ASCAL_HRES": 1024,
         # "MISTER_DOWNSCALE_NN": 1,
         # "SKIP_ASCAL": 1,
         # "MISTER_DISABLE_ADAPTIVE": 1,
