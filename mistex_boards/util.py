@@ -25,7 +25,7 @@ def add_designfiles(platform, coredir, mistex_yaml, boardspecific):
         add_source(platform, sourcepath, coredir, use_template_sys)
 
 def add_source(platform, fpath, coredir, use_template_sys):
-    if fpath.startswith(os.path.join(coredir, "sys")):
+    if use_template_sys and fpath.startswith(os.path.join(coredir, "sys")):
         fpath = fpath.replace(coredir, "cores/Template")
 
     print(f" -> {fpath}")

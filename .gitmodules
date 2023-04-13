@@ -13,3 +13,9 @@
 [submodule "cores/SMS"]
 	path = cores/SMS
 	url = https://github.com/MiSTeX-devel/SMS_MiSTeX
+[submodule "cores/InputTest"]
+	path = cores/InputTest
+	url = https://github.com/MiSTeX-devel/InputTest_MiSTeX
+[submodule "cores/MemTest"]
+	path = cores/MemTest
+	url = https://github.com/MiSTeX-devel/MemTest_MiSTeX
