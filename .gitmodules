@@ -9,4 +9,7 @@
 	url = https://github.com/MiSTeX-devel/Arcade-BombJack_MiSTeX
 [submodule "cores/Arcade-QBert"]
 	path = cores/Arcade-QBert
-	url = https://github.com/MiSTeX-devel/Arcade-QBert_MiSTeX/
+	url = https://github.com/MiSTeX-devel/Arcade-QBert_MiSTeX
+[submodule "cores/SMS"]
+	path = cores/SMS
+	url = https://github.com/MiSTeX-devel/SMS_MiSTeX
