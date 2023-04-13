@@ -12,7 +12,8 @@ def add_designfiles(platform, coredir, mistex_yaml, boardspecific):
 
     for sourcedir in mistex_yaml['sourcedirs']:
         print(f"\n{Style.DIM}******** source directory {sourcedir} ********{Style.RESET_ALL}")
-        add_sources(platform, coredir, sourcedir, excludes, use_template_sys)
+        the_coredir = "cores/Template" if use_template_sys and sourcedir == "sys" else coredir
+        add_sources(platform, the_coredir, sourcedir, excludes, use_template_sys)
 
     print(f"\n{Style.DIM}******** source files ********{Style.RESET_ALL}")
     for source in mistex_yaml.get('sourcefiles', []):
