@@ -13,9 +13,10 @@ import yaml
 from colorama import Fore, Style
 
 from migen import *
+from litex.gen.fhdl.module import LiteXModule
 from litex.build.generic_platform import *
 from litex_boards.platforms import qmtech_artix7_fgg676
-from litex.gen import LiteXModule
+
 from litex.soc.integration.soc_core import SoCCore
 from litex.soc.integration.builder import *
 from litex.soc.cores.clock import S7PLL, S7IDELAYCTRL

@@ -65,13 +65,11 @@ class BaseSoC(SoCCore):
         self.crg = _CRG(platform, sys_clk_freq)
         self.platform = platform
 
-        DW = 64
-
         # SoCCore ----------------------------------------------------------------------------------
         kwargs["uart_name"]            = "serial"
         kwargs["cpu_type"]             = "serv"
         kwargs["l2_size"]              = 0
-        kwargs["bus_data_width"]       = DW
+        kwargs["bus_data_width"]       = 128
         kwargs["bus_address_width"]    = 32
         kwargs['integrated_rom_size']  = 0x8000
         kwargs['integrated_sram_size'] = 0x1000
@@ -82,18 +80,18 @@ class BaseSoC(SoCCore):
             memtype        = "DDR3",
             nphases        = 4,
             sys_clk_freq   = sys_clk_freq)
-        self.add_sdram("ddram",
+        self.add_sdram("sdram",
             phy           = self.ddrphy,
             module        = MT41J128M16(sys_clk_freq, "1:4"),
             l2_cache_size = 0)
 
-        self.gamecore = Gamecore(platform, self, DW)
+        self.gamecore = Gamecore(platform, self)
 
 
 # MiSTeX core --------------------------------------------------------------------------------------------
 
 class Gamecore(Module):
-    def __init__(self, platform, soc, DW) -> None:
+    def __init__(self, platform, soc) -> None:
         #sdram       = platform.request("sdram")
         vga         = platform.request("vga")
         sdcard      = platform.request("sdcard")
@@ -103,15 +101,25 @@ class Gamecore(Module):
         hps_control = platform.request("hps_control")
         debug       = platform.request("debug")
 
-        AW = 28
+        # ascal can't take more than 28 bits of address width
+        avalon_address_width = 28
 
-        self.submodules.avl2wb = avl2wb = AvalonMM2Wishbone(data_width=DW, address_width=AW)
+        self.submodules.avl2wb = avl2wb = AvalonMM2Wishbone(
+            data_width=128, address_width=avalon_address_width,
+            wishbone_base_address=0x40000000,
+            # wishbone address bus is 32 bits, word addressed
+            # since ascal has max 28 bits avalon address, that gives 24 wishbone
+            # bits, because data width is 128
+            # so we have to extend the wishbone side of the bridge by 8
+            wishbone_extend_address_bits=8,
+            avoid_combinatorial_loop=False)
+
         soc.bus.add_master("mistex", avl2wb.wishbone)
-        avalon = avl2wb.avalon
 
         sys_top = Instance("sys_top",
-            p_DW = DW,
-            p_AW = AW,
+            p_DW = 128,
+            p_AW = avalon_address_width,
+            p_ASCAL_RAMBASE = 0x0,
 
             i_CLK_50   = ClockSignal("retro"),
             i_CLK_100  = ClockSignal("sys"),
@@ -182,15 +190,15 @@ class Gamecore(Module):
 
             o_DEBUG = debug,
 
-            o_ddr3_address_o       = avalon.address,
-            o_ddr3_byteenable_o    = avalon.byteenable,
-            o_ddr3_read_o          = avalon.read,
-            i_ddr3_readdata_i      = avalon.readdata,
-            o_ddr3_burstcount_o    = avalon.burstcount,
-            o_ddr3_write_o         = avalon.write,
-            o_ddr3_writedata_o     = avalon.writedata,
-            i_ddr3_waitrequest_i   = avalon.waitrequest,
-            i_ddr3_readdatavalid_i = avalon.readdatavalid,
+            o_ddr3_address_o       = avl2wb.avalon.address,
+            o_ddr3_byteenable_o    = avl2wb.avalon.byteenable,
+            o_ddr3_read_o          = avl2wb.avalon.read,
+            i_ddr3_readdata_i      = avl2wb.avalon.readdata,
+            o_ddr3_burstcount_o    = avl2wb.avalon.burstcount,
+            o_ddr3_write_o         = avl2wb.avalon.write,
+            o_ddr3_writedata_o     = avl2wb.avalon.writedata,
+            i_ddr3_waitrequest_i   = avl2wb.avalon.waitrequest,
+            i_ddr3_readdatavalid_i = avl2wb.avalon.readdatavalid,
         )
 
         self.specials += sys_top
