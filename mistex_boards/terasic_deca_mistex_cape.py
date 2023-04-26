@@ -225,8 +225,6 @@ def main(core):
         "HARDWARE_HDMI_INIT": 1,
         "NO_SCANDOUBLER": 1,
         "DISBALE_VGA": 1,
-        # "ASCAL_HRES": 1024,
-        # "MISTER_DOWNSCALE_NN": 1,
         # "SKIP_ASCAL": 1,
         # "MISTER_DISABLE_ADAPTIVE": 1,
         # "MISTER_SMALL_VBUF": 1,
@@ -282,7 +280,7 @@ def main(core):
         build_dir  = build_dir,
         build_name = build_name)
 
-    os.system(f"quartus_cpf -c -q 24.0MHz -g 3.3 -n p {build_dir}/{core}.sof {build_dir}/{build_name}.svf")
+    os.system(f"quartus_cpf -c -q 24.0MHz -g 3.3 -n p {build_dir}/{build_name}.sof {build_dir}/{build_name}.svf")
 
 if __name__ == "__main__":
     handle_main(main)
