@@ -5,6 +5,14 @@
 # Copyright (c) 2023 Hans Baier <hansfbaier@gmail.com>
 # SPDX-License-Identifier: BSD-2-Clause
 #
+# Terasic DECA retro cape board definition by @somhi
+#
+# DECA Retro Cape 2 is an addon for the Terasic DECA FPGA development kit. This cape adds IO interface to the 
+# DECA board with all what is needed to implement retro computers like DB15 for VGA, PS2 for keyboard and mouse, 
+# DB9 for joystick, MiSTer memory connector, MiSTer user port.
+# See more information at https://github.com/somhi/DECA_retro_cape_2
+#
+# Find non-MiSTeX cores to use with MiSTeX menu and this cape at https://github.com/decafpga
 
 from os.path import join
 import sys
