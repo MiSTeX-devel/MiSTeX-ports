@@ -335,7 +335,7 @@ def main(core):
         compile_gateware=True,
         compile_software=True,
         bios_console="lite")
-    builder.build(build_name  = core.replace("-", "_"))
+    builder.build(build_name = get_build_name(core))
 
 if __name__ == "__main__":
     handle_main(main)
