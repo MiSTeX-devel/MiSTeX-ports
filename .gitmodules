@@ -19,3 +19,12 @@
 [submodule "cores/MemTest"]
 	path = cores/MemTest
 	url = https://github.com/MiSTeX-devel/MemTest_MiSTeX
+[submodule "cores/Arcade-Pacman"]
+	path = cores/Arcade-Pacman
+	url = https://github.com/MiSTeX-devel/Arcade-Pacman_MiSTeX.git
+[submodule "cores/Arcade-Pong"]
+	path = cores/Arcade-Pong
+	url = https://github.com/MiSTeX-devel/Arcade-Pong_MiSTeX.git
+[submodule "cores/NES"]
+	path = cores/NES
+	url = https://github.com/MiSTeX-devel/NES_MiSTeX.git
