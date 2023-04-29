@@ -82,3 +82,6 @@ def handle_main(main):
 
 def get_build_dir(core):
     return os.path.join("build", sys.argv[0].split('.')[0].split('/')[1], core)
+
+def get_build_name(core):
+    return core.replace("-", "_") + "_MiSTeX"

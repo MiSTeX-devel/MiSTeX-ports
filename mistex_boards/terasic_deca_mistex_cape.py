@@ -225,6 +225,7 @@ def main(core):
         "HARDWARE_HDMI_INIT": 1,
         "NO_SCANDOUBLER": 1,
         "DISBALE_VGA": 1,
+        "SKIP_SHADOWMASK": 1,
         # "SKIP_ASCAL": 1,
         # "MISTER_DISABLE_ADAPTIVE": 1,
         # "MISTER_SMALL_VBUF": 1,
@@ -275,7 +276,7 @@ def main(core):
     ])
 
     build_dir  = get_build_dir(core)
-    build_name = core.replace("-", "_")
+    build_name = get_build_name(core)
     platform.build(Top(platform),
         build_dir  = build_dir,
         build_name = build_name)
