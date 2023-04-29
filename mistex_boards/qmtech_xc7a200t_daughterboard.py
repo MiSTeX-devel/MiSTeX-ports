@@ -19,7 +19,7 @@ from litex_boards.platforms import qmtech_artix7_fbg484
 
 from litex.soc.integration.soc_core import SoCCore
 from litex.soc.integration.builder import *
-from litex.soc.cores.clock import S7PLL, S7IDELAYCTRL
+from litex.soc.cores.clock import S7PLL, S7IDELAYCTRL, S7MMCM
 from litex.soc.interconnect.avalon import AvalonMM2Wishbone
 from litedram.modules import MT41J128M16
 from litedram.phy import s7ddrphy
@@ -29,7 +29,7 @@ from util import *
 # CRG ----------------------------------------------------------------------------------------------
 
 class _CRG(LiteXModule):
-    def __init__(self, platform, sys_clk_freq):
+    def __init__(self, platform, sys_clk_freq, with_ethernet=False):
         self.rst          = Signal()
         self.cd_sys       = ClockDomain()
         self.cd_sys4x     = ClockDomain()
@@ -53,6 +53,13 @@ class _CRG(LiteXModule):
         pll.create_clkout (self.cd_sys4x_dqs, 4*sys_clk_freq, phase=90)
         pll.create_clkout (self.cd_idelay,    200e6)
         pll.create_clkout (self.cd_retro,     50e6)
+
+        if with_ethernet:
+            self.cd_eth = ClockDomain()
+            self.ethpll = ethpll = S7PLL(speedgrade=-1)
+            ethpll.register_clkin(ClockSignal("sys"), sys_clk_freq)
+            ethpll.create_clkout(self.cd_eth, 25e6)
+
         platform.add_false_path_constraints(self.cd_sys.clk, pll.clkin) # Ignore sys_clk to pll.clkin path created by SoC's rst.
 
         self.idelayctrl = S7IDELAYCTRL(self.cd_idelay)
@@ -61,8 +68,10 @@ class _CRG(LiteXModule):
 
 class BaseSoC(SoCCore):
     def __init__(self, platform, toolchain="vivado", kgates=200, sys_clk_freq=100e6,  **kwargs):
+        self.debug = False
+
         # CRG --------------------------------------------------------------------------------------
-        self.crg = _CRG(platform, sys_clk_freq)
+        self.crg = _CRG(platform, sys_clk_freq, with_ethernet=self.debug)
         self.platform = platform
 
         # SoCCore ----------------------------------------------------------------------------------
@@ -87,6 +96,41 @@ class BaseSoC(SoCCore):
 
         self.gamecore = Gamecore(platform, self)
 
+        if self.debug:
+            from liteeth.phy.mii import LiteEthPHYMII
+            self.ethphy = LiteEthPHYMII(
+                clock_pads = self.platform.request("eth_clocks"),
+                pads       = self.platform.request("eth"))
+            self.add_etherbone(phy=self.ethphy, ip_address="192.168.1.99")
+            # The daughterboard has the tx clock wired to a non-clock pin, so we can't help it
+            self.platform.add_platform_command("set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets eth_clocks_tx_IBUF]")
+
+            from litescope import LiteScopeAnalyzer
+            analyzer_signals = [
+                # DBus (could also just added as self.cpu.dbus)
+                self.gamecore.avl2wb.a2w_wb.adr,
+                self.gamecore.avl2wb.a2w_wb.dat_w,
+                self.gamecore.avl2wb.a2w_wb.dat_r,
+                self.gamecore.avl2wb.a2w_wb.we,
+                self.gamecore.avl2wb.a2w_wb.cyc,
+                self.gamecore.avl2wb.a2w_wb.stb,
+                self.gamecore.avl2wb.a2w_wb.ack,
+                self.gamecore.avl2wb.a2w_wb.sel,
+                self.gamecore.avl2wb.a2w_avl.address,
+                self.gamecore.avl2wb.a2w_avl.readdata,
+                self.gamecore.avl2wb.a2w_avl.readdatavalid,
+                self.gamecore.avl2wb.a2w_avl.writedata,
+                self.gamecore.avl2wb.a2w_avl.read,
+                self.gamecore.avl2wb.a2w_avl.write,
+                self.gamecore.avl2wb.a2w_avl.waitrequest,
+                self.gamecore.avl2wb.a2w_avl.burstcount,
+                self.gamecore.avl2wb.a2w_avl.byteenable,
+            ]
+            self.analyzer = LiteScopeAnalyzer(analyzer_signals,
+                depth        = 512,
+                clock_domain = "sys",
+                csr_csv      = "analyzer.csv")
+
 
 # MiSTeX core --------------------------------------------------------------------------------------------
 
@@ -104,9 +148,9 @@ class Gamecore(Module):
         # ascal can't take more than 28 bits of address width
         avalon_address_width = 28
 
-        self.submodules.avl2wb = avl2wb = AvalonMM2Wishbone(
+        self.avl2wb = avl2wb = AvalonMM2Wishbone(
             data_width=128, address_width=avalon_address_width,
-            wishbone_base_address=0x40000000,
+            wishbone_base_address=0x4_010_000, # this is 0x40_xxx_xxx byte addressed
             # wishbone address bus is 32 bits, word addressed
             # since ascal has max 28 bits avalon address, that gives 24 wishbone
             # bits, because data width is 128
@@ -114,7 +158,7 @@ class Gamecore(Module):
             wishbone_extend_address_bits=8,
             avoid_combinatorial_loop=False)
 
-        soc.bus.add_master("mistex", avl2wb.wishbone)
+        soc.bus.add_master("mistex", avl2wb.a2w_wb)
 
         sys_top = Instance("sys_top",
             p_DW = 128,
@@ -190,15 +234,15 @@ class Gamecore(Module):
 
             o_DEBUG = debug,
 
-            o_ddr3_address_o       = avl2wb.avalon.address,
-            o_ddr3_byteenable_o    = avl2wb.avalon.byteenable,
-            o_ddr3_read_o          = avl2wb.avalon.read,
-            i_ddr3_readdata_i      = avl2wb.avalon.readdata,
-            o_ddr3_burstcount_o    = avl2wb.avalon.burstcount,
-            o_ddr3_write_o         = avl2wb.avalon.write,
-            o_ddr3_writedata_o     = avl2wb.avalon.writedata,
-            i_ddr3_waitrequest_i   = avl2wb.avalon.waitrequest,
-            i_ddr3_readdatavalid_i = avl2wb.avalon.readdatavalid,
+            o_ddr3_address_o       = avl2wb.a2w_avl.address,
+            o_ddr3_byteenable_o    = avl2wb.a2w_avl.byteenable,
+            o_ddr3_read_o          = avl2wb.a2w_avl.read,
+            i_ddr3_readdata_i      = avl2wb.a2w_avl.readdata,
+            o_ddr3_burstcount_o    = avl2wb.a2w_avl.burstcount,
+            o_ddr3_write_o         = avl2wb.a2w_avl.write,
+            o_ddr3_writedata_o     = avl2wb.a2w_avl.writedata,
+            i_ddr3_waitrequest_i   = avl2wb.a2w_avl.waitrequest,
+            i_ddr3_readdatavalid_i = avl2wb.a2w_avl.readdatavalid,
         )
 
         self.specials += sys_top
@@ -251,6 +295,7 @@ def main(core):
 
     # TODO
     # platform.add_platform_command('set_false_path -from [get_clocks clk_sys] -to [get_clocks clk_audio]')
+    # platform.add_platform_command('set_property ALLOW_COMBINATORIAL_LOOPS TRUE [get_nets serv_rf_top/cpu/bufreg/D[2]]')
 
     add_mainfile(platform, coredir, mistex_yaml)
 
