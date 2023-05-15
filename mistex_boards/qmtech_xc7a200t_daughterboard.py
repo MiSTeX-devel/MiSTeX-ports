@@ -17,12 +17,15 @@ from litex.gen.fhdl.module import LiteXModule
 from litex.build.generic_platform import *
 from litex_boards.platforms import qmtech_artix7_fbg484
 
+from litex.soc.cores.clock import S7PLL, S7IDELAYCTRL, S7MMCM
+from litex.soc.cores.video import VideoS7HDMIPHY
 from litex.soc.integration.soc_core import SoCCore
 from litex.soc.integration.builder import *
-from litex.soc.cores.clock import S7PLL, S7IDELAYCTRL, S7MMCM
 from litex.soc.interconnect.avalon import AvalonMM2Wishbone
+
 from litedram.modules import MT41J128M16
 from litedram.phy import s7ddrphy
+
 
 from util import *
 
@@ -36,6 +39,8 @@ class _CRG(LiteXModule):
         self.cd_sys4x_dqs = ClockDomain()
         self.cd_idelay    = ClockDomain()
         self.cd_retro     = ClockDomain()
+        self.cd_hdmi      = ClockDomain()
+        self.cd_hdmi5x    = ClockDomain()
 
         clk_in            = platform.request("clk50")
         # # #
@@ -53,6 +58,11 @@ class _CRG(LiteXModule):
         pll.create_clkout (self.cd_sys4x_dqs, 4*sys_clk_freq, phase=90)
         pll.create_clkout (self.cd_idelay,    200e6)
         pll.create_clkout (self.cd_retro,     50e6)
+
+        self.hdmipll = hdmipll = S7PLL(speedgrade=-1)
+        hdmipll.register_clkin(clk_in,            50e6)
+        hdmipll.create_clkout(self.cd_hdmi,       74.25e6)
+        hdmipll.create_clkout(self.cd_hdmi5x,     5*74.25e6)
 
         if with_ethernet:
             self.cd_eth = ClockDomain()
@@ -141,6 +151,7 @@ class Gamecore(Module):
         sdcard      = platform.request("sdcard")
         seven_seg   = platform.request("seven_seg")
         audio       = platform.request("audio")
+        hdmi        = platform.request("hdmi")
         hps_spi     = platform.request("hps_spi")
         hps_control = platform.request("hps_control")
         debug       = platform.request("debug")
@@ -149,16 +160,17 @@ class Gamecore(Module):
         avalon_address_width = 28
 
         self.avl2wb = avl2wb = AvalonMM2Wishbone(
-            data_width=128, address_width=avalon_address_width,
+            data_width=128, 
+            avalon_address_width=avalon_address_width,
+            wishbone_address_width=32,
             wishbone_base_address=0x4_010_000, # this is 0x40_xxx_xxx byte addressed
-            # wishbone address bus is 32 bits, word addressed
-            # since ascal has max 28 bits avalon address, that gives 24 wishbone
-            # bits, because data width is 128
-            # so we have to extend the wishbone side of the bridge by 8
-            wishbone_extend_address_bits=8,
             avoid_combinatorial_loop=False)
 
         soc.bus.add_master("mistex", avl2wb.a2w_wb)
+
+        self.videophy = VideoS7HDMIPHY(hdmi, clock_domain="hdmi")
+        video = self.videophy.sink
+        self.comb += video.valid.eq(1)
 
         sys_top = Instance("sys_top",
             p_DW = 128,
@@ -177,12 +189,13 @@ class Gamecore(Module):
             #o_HDMI_LRCLK,
             #o_HDMI_I2S,
             #
-            #o_HDMI_TX_CLK,
-            #o_HDMI_TX_DE,
-            #o_HDMI_TX_D,
-            #o_HDMI_TX_HS,
-            #o_HDMI_TX_VS,
-            #i_HDMI_TX_INT,
+            #o_HDMI_TX_CLK  = ,
+            o_HDMI_TX_DE  = video.de,
+            o_HDMI_TX_D   = Cat(video.b, video.g, video.r),
+            o_HDMI_TX_HS  = video.hsync,
+            o_HDMI_TX_VS  = video.vsync,
+            i_HDMI_CLK_IN = ClockSignal("hdmi"),
+            # i_HDMI_TX_INT
 
             #o_SDRAM_A = sdram.a,
             #io_SDRAM_DQ = sdram.dq,
@@ -258,7 +271,8 @@ def main(core):
 
     defines = [
         ('XILINX', 1),
-        # ('LARGE_FPGA', 1),
+        ('LARGE_FPGA', 1),
+        ('MISTEX_HDMI', 1),
 
         # ('DEBUG_HPS_OP', 1),
 
@@ -301,28 +315,42 @@ def main(core):
 
     platform.add_extension([
         ("audio", 0,
-            Subsignal("l",          Pins("pmoda:0")),
-            Subsignal("r",          Pins("pmoda:1")),
-            Subsignal("spdif",      Pins("pmoda:2")),
-            Subsignal("sbcd_spdif", Pins("pmoda:3")),
+            Subsignal("spdif",      Pins("J1:5")),
+            Subsignal("sbcd_spdif", Pins("J1:7")),
+            Subsignal("l",          Pins("J1:6")),
+            Subsignal("r",          Pins("J1:8")),
             IOStandard("LVCMOS33")
         ),
+
+        # MiSTeX Pmod on pmoda
         ("hps_spi", 0,
-            Subsignal("mosi", Pins("pmodb:0")),
-            Subsignal("miso", Pins("pmodb:1")),
-            Subsignal("clk",  Pins("pmodb:2")),
-            Subsignal("cs_n", Pins("pmodb:3")),
+            Subsignal("cs_n", Pins("pmoda:0")),
+            Subsignal("mosi", Pins("pmoda:1")),
+            Subsignal("miso", Pins("pmoda:2")),
+            Subsignal("clk",  Pins("pmoda:3")),
             IOStandard("LVCMOS33"),
         ),
         ("hps_control", 0,
-            Subsignal("fpga_enable", Pins("pmodb:4")),
-            Subsignal("osd_enable",  Pins("pmodb:5")),
-            Subsignal("io_enable",   Pins("pmodb:6")),
-            Subsignal("core_reset",  Pins("pmodb:7")),
+            Subsignal("core_reset",  Pins("pmoda:4")),
+            Subsignal("fpga_enable", Pins("pmoda:5")),
+            Subsignal("osd_enable",  Pins("pmoda:6")),
+            Subsignal("io_enable",   Pins("pmoda:7")),
             IOStandard("LVCMOS33"),
         ),
+        # HDMI Pmod
+        ("hdmi", 0,
+            Subsignal("clk_p",   Pins("pmodb:7"),   IOStandard("TMDS_33")),
+            Subsignal("clk_n",   Pins("pmodb:3"),   IOStandard("TMDS_33")),
+            Subsignal("data0_p", Pins("pmodb:6"),   IOStandard("TMDS_33")),
+            Subsignal("data0_n", Pins("pmodb:2"),   IOStandard("TMDS_33")),
+            Subsignal("data1_p", Pins("pmodb:5"),   IOStandard("TMDS_33")),
+            Subsignal("data1_n", Pins("pmodb:1"),   IOStandard("TMDS_33")),
+            Subsignal("data2_p", Pins("pmodb:4"),   IOStandard("TMDS_33")),
+            Subsignal("data2_n", Pins("pmodb:0"),   IOStandard("TMDS_33")),
+        ),
+
         ("debug", 0, Pins("J1:18 J1:16 J1:14 J1:12"),
-                     IOStandard("LVCMOS33")),
+            IOStandard("LVCMOS33")),
     ])
 
     build_dir = get_build_dir(core)
