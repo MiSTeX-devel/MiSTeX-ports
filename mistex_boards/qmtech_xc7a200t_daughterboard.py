@@ -17,6 +17,7 @@ from litex.gen.fhdl.module import LiteXModule
 from litex.build.generic_platform import *
 from litex_boards.platforms import qmtech_artix7_fbg484
 
+from litex.soc.cores.spi.spi_bone import SPIBone
 from litex.soc.cores.clock import S7PLL, S7IDELAYCTRL, S7MMCM
 from litex.soc.cores.video import VideoS7HDMIPHY
 from litex.soc.integration.soc_core import SoCCore
@@ -43,7 +44,6 @@ class _CRG(LiteXModule):
         self.cd_hdmi5x    = ClockDomain()
 
         clk_in            = platform.request("clk50")
-        # # #
 
         self.pll = pll = S7PLL(speedgrade=-1)
         try:
@@ -71,6 +71,7 @@ class _CRG(LiteXModule):
             ethpll.create_clkout(self.cd_eth, 25e6)
 
         platform.add_false_path_constraints(self.cd_sys.clk, pll.clkin) # Ignore sys_clk to pll.clkin path created by SoC's rst.
+        platform.add_false_path_constraints(self.cd_sys.clk, hdmipll.clkin)
 
         self.idelayctrl = S7IDELAYCTRL(self.cd_idelay)
 
@@ -78,10 +79,10 @@ class _CRG(LiteXModule):
 
 class BaseSoC(SoCCore):
     def __init__(self, platform, toolchain="vivado", kgates=200, sys_clk_freq=100e6,  **kwargs):
-        self.debug = False
+        self.debug = True
 
         # CRG --------------------------------------------------------------------------------------
-        self.crg = _CRG(platform, sys_clk_freq, with_ethernet=self.debug)
+        self.crg = _CRG(platform, sys_clk_freq, with_ethernet=False)
         self.platform = platform
 
         # SoCCore ----------------------------------------------------------------------------------
@@ -103,41 +104,44 @@ class BaseSoC(SoCCore):
             phy           = self.ddrphy,
             module        = MT41J128M16(sys_clk_freq, "1:4"),
             l2_cache_size = 0)
+        self.add_constant("SDRAM_TEST_DISABLE")
 
         self.gamecore = Gamecore(platform, self)
 
         if self.debug:
-            from liteeth.phy.mii import LiteEthPHYMII
-            self.ethphy = LiteEthPHYMII(
-                clock_pads = self.platform.request("eth_clocks"),
-                pads       = self.platform.request("eth"))
-            self.add_etherbone(phy=self.ethphy, ip_address="192.168.1.99")
-            # The daughterboard has the tx clock wired to a non-clock pin, so we can't help it
-            self.platform.add_platform_command("set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets eth_clocks_tx_IBUF]")
+            # SPIBone ----------------------------------------------------------------------------------
+            self.submodules.spibone = spibone = SPIBone(platform.request("spibone"))
+            self.add_wb_master(spibone.bus)
 
             from litescope import LiteScopeAnalyzer
             analyzer_signals = [
                 # DBus (could also just added as self.cpu.dbus)
-                self.gamecore.avl2wb.a2w_wb.adr,
-                self.gamecore.avl2wb.a2w_wb.dat_w,
-                self.gamecore.avl2wb.a2w_wb.dat_r,
-                self.gamecore.avl2wb.a2w_wb.we,
-                self.gamecore.avl2wb.a2w_wb.cyc,
-                self.gamecore.avl2wb.a2w_wb.stb,
-                self.gamecore.avl2wb.a2w_wb.ack,
-                self.gamecore.avl2wb.a2w_wb.sel,
-                self.gamecore.avl2wb.a2w_avl.address,
-                self.gamecore.avl2wb.a2w_avl.readdata,
-                self.gamecore.avl2wb.a2w_avl.readdatavalid,
-                self.gamecore.avl2wb.a2w_avl.writedata,
-                self.gamecore.avl2wb.a2w_avl.read,
-                self.gamecore.avl2wb.a2w_avl.write,
-                self.gamecore.avl2wb.a2w_avl.waitrequest,
-                self.gamecore.avl2wb.a2w_avl.burstcount,
-                self.gamecore.avl2wb.a2w_avl.byteenable,
+                #self.gamecore.avl2wb.a2w_wb.adr,
+                #self.gamecore.avl2wb.a2w_wb.dat_w,
+                #self.gamecore.avl2wb.a2w_wb.dat_r,
+                #self.gamecore.avl2wb.a2w_wb.we,
+                #self.gamecore.avl2wb.a2w_wb.cyc,
+                #self.gamecore.avl2wb.a2w_wb.stb,
+                #self.gamecore.avl2wb.a2w_wb.ack,
+                #self.gamecore.avl2wb.a2w_wb.sel,
+                #self.gamecore.avl2wb.a2w_avl.address,
+                #self.gamecore.avl2wb.a2w_avl.readdata,
+                #self.gamecore.avl2wb.a2w_avl.readdatavalid,
+                #self.gamecore.avl2wb.a2w_avl.writedata,
+                #self.gamecore.avl2wb.a2w_avl.read,
+                #self.gamecore.avl2wb.a2w_avl.write,
+                #self.gamecore.avl2wb.a2w_avl.waitrequest,
+                #self.gamecore.avl2wb.a2w_avl.burstcount,
+                #self.gamecore.avl2wb.a2w_avl.byteenable,
+                self.gamecore.videophy.sink.valid,
+                self.gamecore.videophy.sink.ready,
+                self.gamecore.videophy.sink.de,
+                self.gamecore.videophy.sink.hsync,
+                self.gamecore.videophy.sink.vsync,
             ]
             self.analyzer = LiteScopeAnalyzer(analyzer_signals,
-                depth        = 512,
+                depth        = 2048,
+                samplerate   = sys_clk_freq,
                 clock_domain = "sys",
                 csr_csv      = "analyzer.csv")
 
@@ -296,6 +300,9 @@ def main(core):
 
         # Disable ALSA audio output to save some resources
         ('MISTER_DISABLE_ALSA', 1),
+
+        # Speed up compilation, disable audio filter
+        ('SKIP_IIR_FILTER', 1),
     ]
 
     for key, value in mistex_yaml.get('defines', {}).items():
@@ -306,10 +313,6 @@ def main(core):
         f'set_property is_global_include true [get_files "../../../{build_id_path}"]',
         'set_property default_lib work [current_project]'
     ]
-
-    # TODO
-    # platform.add_platform_command('set_false_path -from [get_clocks clk_sys] -to [get_clocks clk_audio]')
-    # platform.add_platform_command('set_property ALLOW_COMBINATORIAL_LOOPS TRUE [get_nets serv_rf_top/cpu/bufreg/D[2]]')
 
     add_mainfile(platform, coredir, mistex_yaml)
 
@@ -337,6 +340,7 @@ def main(core):
             Subsignal("io_enable",   Pins("pmoda:7")),
             IOStandard("LVCMOS33"),
         ),
+
         # HDMI Pmod
         ("hdmi", 0,
             Subsignal("clk_p",   Pins("pmodb:7"),   IOStandard("TMDS_33")),
@@ -351,6 +355,12 @@ def main(core):
 
         ("debug", 0, Pins("J1:18 J1:16 J1:14 J1:12"),
             IOStandard("LVCMOS33")),
+        ("spibone", 0, 
+            Subsignal("clk",  Pins("J1:11")),
+            Subsignal("mosi", Pins("J1:13")),
+            Subsignal("miso", Pins("J1:15")),
+            Subsignal("cs_n", Pins("J1:17")),
+            IOStandard("LVCMOS33")),
     ])
 
     build_dir = get_build_dir(core)
@@ -362,6 +372,7 @@ def main(core):
         software_dir=os.path.join(build_dir, 'software'),
         compile_gateware=True,
         compile_software=True,
+        csr_csv="csr.csv",
         bios_console="lite")
     builder.build(build_name = get_build_name(core))
 
