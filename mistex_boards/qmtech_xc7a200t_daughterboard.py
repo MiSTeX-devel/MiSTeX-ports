@@ -124,20 +124,20 @@ class BaseSoC(SoCCore):
                 #self.gamecore.avl2wb.a2w_wb.stb,
                 #self.gamecore.avl2wb.a2w_wb.ack,
                 #self.gamecore.avl2wb.a2w_wb.sel,
-                #self.gamecore.avl2wb.a2w_avl.address,
-                #self.gamecore.avl2wb.a2w_avl.readdata,
-                #self.gamecore.avl2wb.a2w_avl.readdatavalid,
-                #self.gamecore.avl2wb.a2w_avl.writedata,
-                #self.gamecore.avl2wb.a2w_avl.read,
-                #self.gamecore.avl2wb.a2w_avl.write,
-                #self.gamecore.avl2wb.a2w_avl.waitrequest,
-                #self.gamecore.avl2wb.a2w_avl.burstcount,
-                #self.gamecore.avl2wb.a2w_avl.byteenable,
-                self.gamecore.videophy.sink.valid,
-                self.gamecore.videophy.sink.ready,
-                self.gamecore.videophy.sink.de,
-                self.gamecore.videophy.sink.hsync,
-                self.gamecore.videophy.sink.vsync,
+                self.gamecore.avl2wb.a2w_avl.address,
+                self.gamecore.avl2wb.a2w_avl.waitrequest,
+                self.gamecore.avl2wb.a2w_avl.read,
+                self.gamecore.avl2wb.a2w_avl.readdata,
+                self.gamecore.avl2wb.a2w_avl.readdatavalid,
+                self.gamecore.avl2wb.a2w_avl.write,
+                self.gamecore.avl2wb.a2w_avl.writedata,
+                self.gamecore.avl2wb.a2w_avl.burstcount,
+                self.gamecore.avl2wb.a2w_avl.byteenable,
+                #self.gamecore.videophy.sink.valid,
+                #self.gamecore.videophy.sink.ready,
+                #self.gamecore.videophy.sink.de,
+                #self.gamecore.videophy.sink.hsync,
+                #self.gamecore.videophy.sink.vsync,
             ]
             self.analyzer = LiteScopeAnalyzer(analyzer_signals,
                 depth        = 2048,
@@ -167,8 +167,10 @@ class Gamecore(Module):
             data_width=128, 
             avalon_address_width=avalon_address_width,
             wishbone_address_width=32,
-            wishbone_base_address=0x4_010_000, # this is 0x40_xxx_xxx byte addressed
+            wishbone_base_address=0x4_000_000, # this is 0x40_xxx_xxx byte addressed
             avoid_combinatorial_loop=False)
+
+        self.submodules += self.avl2wb
 
         soc.bus.add_master("mistex", avl2wb.a2w_wb)
 
@@ -251,6 +253,7 @@ class Gamecore(Module):
 
             o_DEBUG = debug,
 
+            i_ddr3_clk_i           = ClockSignal("sys"),
             o_ddr3_address_o       = avl2wb.a2w_avl.address,
             o_ddr3_byteenable_o    = avl2wb.a2w_avl.byteenable,
             o_ddr3_read_o          = avl2wb.a2w_avl.read,
