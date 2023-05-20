@@ -167,14 +167,12 @@ class Gamecore(Module):
         # ascal can't take more than 28 bits of address width
         avalon_address_width = 28
 
-        self.avl2wb = avl2wb = AvalonMM2Wishbone(
+        self.submodules.avl2wb = avl2wb = AvalonMM2Wishbone(
             data_width=128, 
             avalon_address_width=avalon_address_width,
             wishbone_address_width=32,
             wishbone_base_address=0x4_000_000, # this is 0x40_xxx_xxx byte addressed
             avoid_combinatorial_loop=False)
-
-        self.submodules += self.avl2wb
 
         spibone = platform.request("spibone")
         self.comb += [
@@ -190,14 +188,12 @@ class Gamecore(Module):
 
         soc.bus.add_master("mistex", avl2wb.a2w_wb)
 
-        self.videophy = VideoS7HDMIPHY(hdmi, clock_domain="hdmi", flip_diff_pairs=True)
-        self.submodules += self.videophy
-        video = self.videophy.sink
+        self.submodules.videophy = videophy = VideoS7HDMIPHY(hdmi, clock_domain="hdmi", flip_diff_pairs=True)
+        video = videophy.sink
         self.comb += video.valid.eq(1)
 
-        self.avalon_start_delay = start_delay = WaitTimer(int(6*sys_clk_freq))
+        self.submodules.avalon_start_delay = start_delay = WaitTimer(int(6*sys_clk_freq))
         self.comb += start_delay.wait.eq(~ResetSignal())
-        self.submodules += start_delay
 
         avalon_read  = Signal()
         avalon_write = Signal()
