@@ -13,6 +13,8 @@ import yaml
 from colorama import Fore, Style
 
 from migen import *
+from migen.genlib.misc import WaitTimer
+from litex.gen import Open
 from litex.gen.fhdl.module import LiteXModule
 from litex.build.generic_platform import *
 from litex_boards.platforms import qmtech_artix7_fbg484
@@ -79,7 +81,7 @@ class _CRG(LiteXModule):
 
 class BaseSoC(SoCCore):
     def __init__(self, platform, toolchain="vivado", kgates=200, sys_clk_freq=100e6,  **kwargs):
-        self.debug = True
+        self.debug = False
 
         # CRG --------------------------------------------------------------------------------------
         self.crg = _CRG(platform, sys_clk_freq, with_ethernet=False)
@@ -87,6 +89,7 @@ class BaseSoC(SoCCore):
 
         # SoCCore ----------------------------------------------------------------------------------
         kwargs["uart_name"]            = "serial"
+        kwargs["uart_baudrate"]        = 500e3
         kwargs["cpu_type"]             = "serv"
         kwargs["l2_size"]              = 0
         kwargs["bus_data_width"]       = 128
@@ -106,12 +109,13 @@ class BaseSoC(SoCCore):
             l2_cache_size = 0)
         self.add_constant("SDRAM_TEST_DISABLE")
 
-        self.gamecore = Gamecore(platform, self)
+        self.gamecore = Gamecore(platform, self, sys_clk_freq)
 
         if self.debug:
             # SPIBone ----------------------------------------------------------------------------------
             self.submodules.spibone = spibone = SPIBone(platform.request("spibone"))
             self.add_wb_master(spibone.bus)
+            #self.add_uartbone(name="serial", clk_freq=sys_clk_freq, baudrate=115200) #baudrate=500000)
 
             from litescope import LiteScopeAnalyzer
             analyzer_signals = [
@@ -149,7 +153,7 @@ class BaseSoC(SoCCore):
 # MiSTeX core --------------------------------------------------------------------------------------------
 
 class Gamecore(Module):
-    def __init__(self, platform, soc) -> None:
+    def __init__(self, platform, soc, sys_clk_freq) -> None:
         #sdram       = platform.request("sdram")
         vga         = platform.request("vga")
         sdcard      = platform.request("sdcard")
@@ -172,11 +176,36 @@ class Gamecore(Module):
 
         self.submodules += self.avl2wb
 
+        spibone = platform.request("spibone")
+        self.comb += [
+            # spibone.clk.eq(avl2wb.a2w_avl.waitrequest),
+            # spibone.mosi.eq(avl2wb.a2w_avl.read),
+            # spibone.miso.eq(avl2wb.a2w_avl.readdatavalid),
+            # spibone.cs_n.eq(avl2wb.a2w_avl.write),
+            spibone.clk.eq(avl2wb.a2w_wb.err),
+            spibone.mosi.eq(avl2wb.a2w_wb.stb),
+            spibone.miso.eq(avl2wb.a2w_wb.ack),
+            spibone.cs_n.eq(avl2wb.a2w_wb.we),
+        ]
+
         soc.bus.add_master("mistex", avl2wb.a2w_wb)
 
-        self.videophy = VideoS7HDMIPHY(hdmi, clock_domain="hdmi")
+        self.videophy = VideoS7HDMIPHY(hdmi, clock_domain="hdmi", flip_diff_pairs=True)
+        self.submodules += self.videophy
         video = self.videophy.sink
         self.comb += video.valid.eq(1)
+
+        self.avalon_start_delay = start_delay = WaitTimer(int(6*sys_clk_freq))
+        self.comb += start_delay.wait.eq(~ResetSignal())
+        self.submodules += start_delay
+
+        avalon_read  = Signal()
+        avalon_write = Signal()
+
+        self.comb += [
+            avl2wb.a2w_avl.read .eq(Mux(start_delay.done, avalon_read,  0)),
+            avl2wb.a2w_avl.write.eq(Mux(start_delay.done, avalon_write, 0)),
+        ]
 
         sys_top = Instance("sys_top",
             p_DW = 128,
@@ -256,13 +285,13 @@ class Gamecore(Module):
             i_ddr3_clk_i           = ClockSignal("sys"),
             o_ddr3_address_o       = avl2wb.a2w_avl.address,
             o_ddr3_byteenable_o    = avl2wb.a2w_avl.byteenable,
-            o_ddr3_read_o          = avl2wb.a2w_avl.read,
+            o_ddr3_read_o          = avalon_read,
             i_ddr3_readdata_i      = avl2wb.a2w_avl.readdata,
             o_ddr3_burstcount_o    = avl2wb.a2w_avl.burstcount,
-            o_ddr3_write_o         = avl2wb.a2w_avl.write,
+            o_ddr3_write_o         = avalon_write,
             o_ddr3_writedata_o     = avl2wb.a2w_avl.writedata,
-            i_ddr3_waitrequest_i   = avl2wb.a2w_avl.waitrequest,
-            i_ddr3_readdatavalid_i = avl2wb.a2w_avl.readdatavalid,
+            i_ddr3_waitrequest_i   = Mux(start_delay.done, avl2wb.a2w_avl.waitrequest, 1),
+            i_ddr3_readdatavalid_i = Mux(start_delay.done, avl2wb.a2w_avl.readdatavalid, 0),
         )
 
         self.specials += sys_top
