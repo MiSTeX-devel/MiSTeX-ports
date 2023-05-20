@@ -24,10 +24,11 @@ from litex.soc.cores.clock import S7PLL, S7IDELAYCTRL, S7MMCM
 from litex.soc.cores.video import VideoS7HDMIPHY
 from litex.soc.integration.soc_core import SoCCore
 from litex.soc.integration.builder import *
-from litex.soc.interconnect.avalon import AvalonMM2Wishbone
+from litex.soc.interconnect.avalon import AvalonMMInterface
 
 from litedram.modules import MT41J128M16
 from litedram.phy import s7ddrphy
+from litedram.frontend.avalon import LiteDRAMAvalonMM2Native
 
 
 from util import *
@@ -81,7 +82,7 @@ class _CRG(LiteXModule):
 
 class BaseSoC(SoCCore):
     def __init__(self, platform, toolchain="vivado", kgates=200, sys_clk_freq=100e6,  **kwargs):
-        self.debug = False
+        self.debug = True
 
         # CRG --------------------------------------------------------------------------------------
         self.crg = _CRG(platform, sys_clk_freq, with_ethernet=False)
@@ -92,7 +93,7 @@ class BaseSoC(SoCCore):
         kwargs["uart_baudrate"]        = 500e3
         kwargs["cpu_type"]             = "serv"
         kwargs["l2_size"]              = 0
-        kwargs["bus_data_width"]       = 128
+        kwargs["bus_data_width"]       = 32
         kwargs["bus_address_width"]    = 32
         kwargs['integrated_rom_size']  = 0x8000
         kwargs['integrated_sram_size'] = 0x1000
@@ -120,23 +121,15 @@ class BaseSoC(SoCCore):
             from litescope import LiteScopeAnalyzer
             analyzer_signals = [
                 # DBus (could also just added as self.cpu.dbus)
-                #self.gamecore.avl2wb.a2w_wb.adr,
-                #self.gamecore.avl2wb.a2w_wb.dat_w,
-                #self.gamecore.avl2wb.a2w_wb.dat_r,
-                #self.gamecore.avl2wb.a2w_wb.we,
-                #self.gamecore.avl2wb.a2w_wb.cyc,
-                #self.gamecore.avl2wb.a2w_wb.stb,
-                #self.gamecore.avl2wb.a2w_wb.ack,
-                #self.gamecore.avl2wb.a2w_wb.sel,
-                self.gamecore.avl2wb.a2w_avl.address,
-                self.gamecore.avl2wb.a2w_avl.waitrequest,
-                self.gamecore.avl2wb.a2w_avl.read,
-                self.gamecore.avl2wb.a2w_avl.readdata,
-                self.gamecore.avl2wb.a2w_avl.readdatavalid,
-                self.gamecore.avl2wb.a2w_avl.write,
-                self.gamecore.avl2wb.a2w_avl.writedata,
-                self.gamecore.avl2wb.a2w_avl.burstcount,
-                self.gamecore.avl2wb.a2w_avl.byteenable,
+                self.gamecore.avalon.address,
+                self.gamecore.avalon.waitrequest,
+                self.gamecore.avalon.read,
+                self.gamecore.avalon.readdata,
+                self.gamecore.avalon.readdatavalid,
+                self.gamecore.avalon.write,
+                self.gamecore.avalon.writedata,
+                self.gamecore.avalon.burstcount,
+                self.gamecore.avalon.byteenable,
                 #self.gamecore.videophy.sink.valid,
                 #self.gamecore.videophy.sink.ready,
                 #self.gamecore.videophy.sink.de,
@@ -154,7 +147,6 @@ class BaseSoC(SoCCore):
 
 class Gamecore(Module):
     def __init__(self, platform, soc, sys_clk_freq) -> None:
-        #sdram       = platform.request("sdram")
         vga         = platform.request("vga")
         sdcard      = platform.request("sdcard")
         seven_seg   = platform.request("seven_seg")
@@ -165,28 +157,12 @@ class Gamecore(Module):
         debug       = platform.request("debug")
 
         # ascal can't take more than 28 bits of address width
+        avalon_data_width = 64
         avalon_address_width = 28
 
-        self.submodules.avl2wb = avl2wb = AvalonMM2Wishbone(
-            data_width=128, 
-            avalon_address_width=avalon_address_width,
-            wishbone_address_width=32,
-            wishbone_base_address=0x4_000_000, # this is 0x40_xxx_xxx byte addressed
-            avoid_combinatorial_loop=False)
-
-        spibone = platform.request("spibone")
-        self.comb += [
-            # spibone.clk.eq(avl2wb.a2w_avl.waitrequest),
-            # spibone.mosi.eq(avl2wb.a2w_avl.read),
-            # spibone.miso.eq(avl2wb.a2w_avl.readdatavalid),
-            # spibone.cs_n.eq(avl2wb.a2w_avl.write),
-            spibone.clk.eq(avl2wb.a2w_wb.err),
-            spibone.mosi.eq(avl2wb.a2w_wb.stb),
-            spibone.miso.eq(avl2wb.a2w_wb.ack),
-            spibone.cs_n.eq(avl2wb.a2w_wb.we),
-        ]
-
-        soc.bus.add_master("mistex", avl2wb.a2w_wb)
+        sdram_port = soc.sdram.crossbar.get_port(data_width=avalon_data_width)
+        self.avalon = avalon = AvalonMMInterface(data_width=avalon_data_width, adr_width=avalon_address_width)
+        self.submodules.avalon_port = LiteDRAMAvalonMM2Native(avalon, sdram_port)
 
         self.submodules.videophy = videophy = VideoS7HDMIPHY(hdmi, clock_domain="hdmi", flip_diff_pairs=True)
         video = videophy.sink
@@ -199,12 +175,12 @@ class Gamecore(Module):
         avalon_write = Signal()
 
         self.comb += [
-            avl2wb.a2w_avl.read .eq(Mux(start_delay.done, avalon_read,  0)),
-            avl2wb.a2w_avl.write.eq(Mux(start_delay.done, avalon_write, 0)),
+            avalon.read .eq(Mux(start_delay.done, avalon_read,  0)),
+            avalon.write.eq(Mux(start_delay.done, avalon_write, 0)),
         ]
 
         sys_top = Instance("sys_top",
-            p_DW = 128,
+            p_DW = avalon_data_width,
             p_AW = avalon_address_width,
             p_ASCAL_RAMBASE = 0x0,
 
@@ -279,15 +255,15 @@ class Gamecore(Module):
             o_DEBUG = debug,
 
             i_ddr3_clk_i           = ClockSignal("sys"),
-            o_ddr3_address_o       = avl2wb.a2w_avl.address,
-            o_ddr3_byteenable_o    = avl2wb.a2w_avl.byteenable,
+            o_ddr3_address_o       = avalon.address,
+            o_ddr3_byteenable_o    = avalon.byteenable,
             o_ddr3_read_o          = avalon_read,
-            i_ddr3_readdata_i      = avl2wb.a2w_avl.readdata,
-            o_ddr3_burstcount_o    = avl2wb.a2w_avl.burstcount,
+            i_ddr3_readdata_i      = avalon.readdata,
+            o_ddr3_burstcount_o    = avalon.burstcount,
             o_ddr3_write_o         = avalon_write,
-            o_ddr3_writedata_o     = avl2wb.a2w_avl.writedata,
-            i_ddr3_waitrequest_i   = Mux(start_delay.done, avl2wb.a2w_avl.waitrequest, 1),
-            i_ddr3_readdatavalid_i = Mux(start_delay.done, avl2wb.a2w_avl.readdatavalid, 0),
+            o_ddr3_writedata_o     = avalon.writedata,
+            i_ddr3_waitrequest_i   = Mux(start_delay.done, avalon.waitrequest, 1),
+            i_ddr3_readdatavalid_i = Mux(start_delay.done, avalon.readdatavalid, 0),
         )
 
         self.specials += sys_top
