@@ -13,16 +13,22 @@ import yaml
 from colorama import Fore, Style
 
 from migen import *
+from migen.genlib.misc import WaitTimer
 from litex.gen.fhdl.module import LiteXModule
 from litex.build.generic_platform import *
 from litex_boards.platforms import qmtech_artix7_fgg676
 
+from litex.soc.cores.spi.spi_bone import SPIBone
+from litex.soc.cores.clock import S7PLL, S7IDELAYCTRL, S7MMCM
+from litex.soc.cores.video import VideoS7HDMIPHY
 from litex.soc.integration.soc_core import SoCCore
 from litex.soc.integration.builder import *
-from litex.soc.cores.clock import S7PLL, S7IDELAYCTRL
-from litex.soc.interconnect import wishbone
+from litex.soc.interconnect.avalon import AvalonMMInterface
+
 from litedram.modules import MT41J128M16
 from litedram.phy import s7ddrphy
+from litedram.frontend.avalon import LiteDRAMAvalonMM2Native
+
 
 from util import *
 
@@ -38,7 +44,6 @@ class _CRG(LiteXModule):
         self.cd_retro     = ClockDomain()
 
         clk_in            = platform.request("clk50")
-        # # #
 
         self.pll = pll = S7PLL(speedgrade=-1)
         try:
@@ -61,17 +66,17 @@ class _CRG(LiteXModule):
 
 class BaseSoC(SoCCore):
     def __init__(self, platform, toolchain="vivado", kgates=100, sys_clk_freq=100e6,  **kwargs):
+        self.debug = False
         # CRG --------------------------------------------------------------------------------------
         self.crg = _CRG(platform, sys_clk_freq)
         self.platform = platform
 
-        DW = 128
-
         # SoCCore ----------------------------------------------------------------------------------
         kwargs["uart_name"]            = "serial"
+        kwargs["uart_baudrate"]        = 500e3
         kwargs["cpu_type"]             = "serv"
         kwargs["l2_size"]              = 0
-        kwargs["bus_data_width"]       = DW
+        kwargs["bus_data_width"]       = 32
         kwargs["bus_address_width"]    = 32
         kwargs['integrated_rom_size']  = 0x8000
         kwargs['integrated_sram_size'] = 0x1000
@@ -86,15 +91,45 @@ class BaseSoC(SoCCore):
             phy           = self.ddrphy,
             module        = MT41J128M16(sys_clk_freq, "1:4"),
             l2_cache_size = 0)
+        self.add_constant("SDRAM_TEST_DISABLE")
 
-        self.gamecore = Gamecore(platform, self, DW)
+        self.gamecore = Gamecore(platform, self, sys_clk_freq)
+
+        if self.debug:
+            # SPIBone ----------------------------------------------------------------------------------
+            self.submodules.spibone = spibone = SPIBone(platform.request("spibone"))
+            self.add_wb_master(spibone.bus)
+            #self.add_uartbone(name="serial", clk_freq=sys_clk_freq, baudrate=115200) #baudrate=500000)
+
+            from litescope import LiteScopeAnalyzer
+            analyzer_signals = [
+                # DBus (could also just added as self.cpu.dbus)
+                self.gamecore.avalon.address,
+                self.gamecore.avalon.waitrequest,
+                self.gamecore.avalon.read,
+                self.gamecore.avalon.readdata,
+                self.gamecore.avalon.readdatavalid,
+                self.gamecore.avalon.write,
+                self.gamecore.avalon.writedata,
+                self.gamecore.avalon.burstcount,
+                self.gamecore.avalon.byteenable,
+                #self.gamecore.videophy.sink.valid,
+                #self.gamecore.videophy.sink.ready,
+                #self.gamecore.videophy.sink.de,
+                #self.gamecore.videophy.sink.hsync,
+                #self.gamecore.videophy.sink.vsync,
+            ]
+            self.analyzer = LiteScopeAnalyzer(analyzer_signals,
+                depth        = 2048,
+                samplerate   = sys_clk_freq,
+                clock_domain = "sys",
+                csr_csv      = "analyzer.csv")
 
 
 # MiSTeX core --------------------------------------------------------------------------------------------
 
 class Gamecore(Module):
-    def __init__(self, platform, soc, DW) -> None:
-        #sdram       = platform.request("sdram")
+    def __init__(self, platform, soc, sys_clk_freq) -> None:
         vga         = platform.request("vga")
         sdcard      = platform.request("sdcard")
         seven_seg   = platform.request("seven_seg")
@@ -103,56 +138,36 @@ class Gamecore(Module):
         hps_control = platform.request("hps_control")
         debug       = platform.request("debug")
 
-        AW = 28
+        # ascal can't take more than 28 bits of address width
+        avalon_data_width = 64
+        avalon_address_width = 28
 
-        soc_bone = wishbone.Interface(data_width=DW, adr_width=AW)
-        soc.bus.add_master("mistex", soc_bone)
+        sdram_port = soc.sdram.crossbar.get_port(data_width=avalon_data_width)
+        self.avalon = avalon = AvalonMMInterface(data_width=avalon_data_width, adr_width=avalon_address_width)
+        self.submodules.avalon_port = LiteDRAMAvalonMM2Native(avalon, sdram_port)
 
-        avalon_address       = Signal(AW)
-        avalon_byteenable    = Signal(DW//8)
-        avalon_read          = Signal()
-        avalon_readdata      = Signal(DW)
-        avalon_burstcount    = Signal(8)
-        avalon_write         = Signal()
-        avalon_writedata     = Signal(DW)
-        avalon_waitrequest   = Signal()
-        avalon_readdatavalid = Signal()
+        # self.submodules.videophy = videophy = VideoS7HDMIPHY(hdmi, clock_domain="hdmi", flip_diff_pairs=True)
+        # video = videophy.sink
+        # self.comb += video.valid.eq(1)
 
-        self.specials += Instance("avalon_to_wb_bridge",
-            i_wb_clk_i = ClockSignal("sys"),
-            i_wb_rst_i = ResetSignal("sys"),
+        self.submodules.avalon_start_delay = start_delay = WaitTimer(int(6*sys_clk_freq))
+        self.comb += start_delay.wait.eq(~ResetSignal())
 
-            # avalon
-            i_s_av_address_i       = avalon_address,
-            i_s_av_byteenable_i    = avalon_byteenable,
-            i_s_av_read_i          = avalon_read,
-            o_s_av_readdata_o      = avalon_readdata,
-            i_s_av_burstcount_i    = avalon_burstcount,
-            i_s_av_write_i         = avalon_write,
-            i_s_av_writedata_i     = avalon_writedata,
-            o_s_av_waitrequest_o   = avalon_waitrequest,
-            o_s_av_readdatavalid_o = avalon_readdatavalid,
+        avalon_read  = Signal()
+        avalon_write = Signal()
 
-            # wishbone
-            o_wbm_adr_o = soc_bone.adr,
-            o_wbm_dat_o = soc_bone.dat_w,
-            o_wbm_sel_o = soc_bone.sel,
-            o_wbm_we_o  = soc_bone.we,
-            o_wbm_cyc_o = soc_bone.cyc,
-            o_wbm_stb_o = soc_bone.stb,
-            o_wbm_cti_o = soc_bone.cti,
-            o_wbm_bte_o = soc_bone.bte,
-            i_wbm_dat_i = soc_bone.dat_r,
-            i_wbm_ack_i = soc_bone.ack,
-            i_wbm_err_i = soc_bone.err,
-        )
+        self.comb += [
+            avalon.read .eq(Mux(start_delay.done, avalon_read,  0)),
+            avalon.write.eq(Mux(start_delay.done, avalon_write, 0)),
+        ]
 
         sys_top = Instance("sys_top",
-            p_DW = DW,
-            p_AW = AW,
+            p_DW = avalon_data_width,
+            p_AW = avalon_address_width,
+            p_ASCAL_RAMBASE = 0x1000,
 
             i_CLK_50   = ClockSignal("retro"),
-            i_clk_100m = ClockSignal("sys"),
+            i_CLK_100  = ClockSignal("sys"),
 
             # TODO: HDMI
             #o_HDMI_I2C_SCL,
@@ -163,12 +178,13 @@ class Gamecore(Module):
             #o_HDMI_LRCLK,
             #o_HDMI_I2S,
             #
-            #o_HDMI_TX_CLK,
-            #o_HDMI_TX_DE,
-            #o_HDMI_TX_D,
-            #o_HDMI_TX_HS,
-            #o_HDMI_TX_VS,
-            #i_HDMI_TX_INT,
+            #o_HDMI_TX_CLK  = ,
+            # o_HDMI_TX_DE  = video.de,
+            # o_HDMI_TX_D   = Cat(video.b, video.g, video.r),
+            # o_HDMI_TX_HS  = video.hsync,
+            # o_HDMI_TX_VS  = video.vsync,
+            # i_HDMI_CLK_IN = ClockSignal("hdmi"),
+            # i_HDMI_TX_INT
 
             #o_SDRAM_A = sdram.a,
             #io_SDRAM_DQ = sdram.dq,
@@ -220,15 +236,16 @@ class Gamecore(Module):
 
             o_DEBUG = debug,
 
-            o_ddr3_address_o       = avalon_address,
-            o_ddr3_byteenable_o    = avalon_byteenable,
+            i_ddr3_clk_i           = ClockSignal("sys"),
+            o_ddr3_address_o       = avalon.address,
+            o_ddr3_byteenable_o    = avalon.byteenable,
             o_ddr3_read_o          = avalon_read,
-            i_ddr3_readdata_i      = avalon_readdata,
-            o_ddr3_burstcount_o    = avalon_burstcount,
+            i_ddr3_readdata_i      = avalon.readdata,
+            o_ddr3_burstcount_o    = avalon.burstcount,
             o_ddr3_write_o         = avalon_write,
-            o_ddr3_writedata_o     = avalon_writedata,
-            i_ddr3_waitrequest_i   = avalon_waitrequest,
-            i_ddr3_readdatavalid_i = avalon_readdatavalid,
+            o_ddr3_writedata_o     = avalon.writedata,
+            i_ddr3_waitrequest_i   = Mux(start_delay.done, avalon.waitrequest, 1),
+            i_ddr3_readdatavalid_i = Mux(start_delay.done, avalon.readdatavalid, 0),
         )
 
         self.specials += sys_top
@@ -241,16 +258,19 @@ def main(core):
     platform = qmtech_artix7_fgg676.Platform(with_daughterboard=True)
 
     add_designfiles(platform, coredir, mistex_yaml, 'vivado')
-    platform.add_source("rtl/avalon_to_wb_bridge.v")
 
     defines = [
         ('XILINX', 1),
-        # ('LARGE_FPGA', 1),
+        ('LARGE_FPGA', 1),
+        # ('MISTEX_HDMI', 1),
 
         # ('DEBUG_HPS_OP', 1),
 
+        # On Xilinx we need this to get a proper clock tree
+        ('CLK_100_EXT', 1),
+
         # do not enable DEBUG_NOHDMI in release!
-        ('MISTER_DEBUG_NOHDMI', 1),
+        # ('MISTER_DEBUG_NOHDMI', 1),
 
         # disable bilinear filtering when downscaling
         ('MISTER_DOWNSCALE_NN', 1),
@@ -266,6 +286,9 @@ def main(core):
 
         # Disable ALSA audio output to save some resources
         ('MISTER_DISABLE_ALSA', 1),
+
+        # Speed up compilation, disable audio filter
+        ('SKIP_IIR_FILTER', 1),
     ]
 
     for key, value in mistex_yaml.get('defines', {}).items():
@@ -277,35 +300,53 @@ def main(core):
         'set_property default_lib work [current_project]'
     ]
 
-    # TODO
-    # platform.add_platform_command('set_false_path -from [get_clocks clk_sys] -to [get_clocks clk_audio]')
-
     add_mainfile(platform, coredir, mistex_yaml)
 
     platform.add_extension([
         ("audio", 0,
-            Subsignal("l",          Pins("pmoda:0")),
-            Subsignal("r",          Pins("pmoda:1")),
-            Subsignal("spdif",      Pins("pmoda:2")),
-            Subsignal("sbcd_spdif", Pins("pmoda:3")),
+            Subsignal("spdif",      Pins("J1:5")),
+            Subsignal("sbcd_spdif", Pins("J1:7")),
+            Subsignal("l",          Pins("J1:6")),
+            Subsignal("r",          Pins("J1:8")),
             IOStandard("LVCMOS33")
         ),
+
+        # MiSTeX Pmod on pmoda
         ("hps_spi", 0,
-            Subsignal("mosi", Pins("pmodb:0")),
-            Subsignal("miso", Pins("pmodb:1")),
-            Subsignal("clk",  Pins("pmodb:2")),
-            Subsignal("cs_n", Pins("pmodb:3")),
+            Subsignal("cs_n", Pins("pmoda:0")),
+            Subsignal("mosi", Pins("pmoda:1")),
+            Subsignal("miso", Pins("pmoda:2")),
+            Subsignal("clk",  Pins("pmoda:3")),
             IOStandard("LVCMOS33"),
         ),
         ("hps_control", 0,
-            Subsignal("fpga_enable", Pins("pmodb:4")),
-            Subsignal("osd_enable",  Pins("pmodb:5")),
-            Subsignal("io_enable",   Pins("pmodb:6")),
-            Subsignal("core_reset",  Pins("pmodb:7")),
+            Subsignal("core_reset",  Pins("pmoda:4")),
+            Subsignal("fpga_enable", Pins("pmoda:5")),
+            Subsignal("osd_enable",  Pins("pmoda:6")),
+            Subsignal("io_enable",   Pins("pmoda:7")),
             IOStandard("LVCMOS33"),
         ),
+
+        # HDMI Pmod
+        ("hdmi", 0,
+            Subsignal("clk_p",   Pins("pmodb:7"),   IOStandard("TMDS_33")),
+            Subsignal("clk_n",   Pins("pmodb:3"),   IOStandard("TMDS_33")),
+            Subsignal("data0_p", Pins("pmodb:6"),   IOStandard("TMDS_33")),
+            Subsignal("data0_n", Pins("pmodb:2"),   IOStandard("TMDS_33")),
+            Subsignal("data1_p", Pins("pmodb:5"),   IOStandard("TMDS_33")),
+            Subsignal("data1_n", Pins("pmodb:1"),   IOStandard("TMDS_33")),
+            Subsignal("data2_p", Pins("pmodb:4"),   IOStandard("TMDS_33")),
+            Subsignal("data2_n", Pins("pmodb:0"),   IOStandard("TMDS_33")),
+        ),
+
         ("debug", 0, Pins("J1:18 J1:16 J1:14 J1:12"),
-                     IOStandard("LVCMOS33")),
+            IOStandard("LVCMOS33")),
+        ("spibone", 0, 
+            Subsignal("clk",  Pins("J1:11")),
+            Subsignal("mosi", Pins("J1:13")),
+            Subsignal("miso", Pins("J1:15")),
+            Subsignal("cs_n", Pins("J1:17")),
+            IOStandard("LVCMOS33")),
     ])
 
     build_dir = get_build_dir(core)
@@ -317,8 +358,9 @@ def main(core):
         software_dir=os.path.join(build_dir, 'software'),
         compile_gateware=True,
         compile_software=True,
+        csr_csv="csr.csv",
         bios_console="lite")
-    builder.build(build_name  = core.replace("-", "_"))
+    builder.build(build_name = get_build_name(core))
 
 if __name__ == "__main__":
     handle_main(main)
