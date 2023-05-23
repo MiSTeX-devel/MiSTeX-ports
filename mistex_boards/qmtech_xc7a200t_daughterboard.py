@@ -14,7 +14,6 @@ from colorama import Fore, Style
 
 from migen import *
 from migen.genlib.misc import WaitTimer
-from litex.gen import Open
 from litex.gen.fhdl.module import LiteXModule
 from litex.build.generic_platform import *
 from litex_boards.platforms import qmtech_artix7_fbg484
@@ -43,6 +42,7 @@ class _CRG(LiteXModule):
         self.cd_sys4x_dqs = ClockDomain()
         self.cd_idelay    = ClockDomain()
         self.cd_retro     = ClockDomain()
+        self.cd_video     = ClockDomain()
         self.cd_hdmi      = ClockDomain()
         self.cd_hdmi5x    = ClockDomain()
 
@@ -91,7 +91,7 @@ class BaseSoC(SoCCore):
         # SoCCore ----------------------------------------------------------------------------------
         kwargs["uart_name"]            = "serial"
         kwargs["uart_baudrate"]        = 500e3
-        kwargs["cpu_type"]             = "serv"
+        kwargs["cpu_type"]             = "femtorv"
         kwargs["l2_size"]              = 0
         kwargs["bus_data_width"]       = 32
         kwargs["bus_address_width"]    = 32
@@ -108,9 +108,12 @@ class BaseSoC(SoCCore):
             phy           = self.ddrphy,
             module        = MT41J128M16(sys_clk_freq, "1:4"),
             l2_cache_size = 0)
-        self.add_constant("SDRAM_TEST_DISABLE")
+        #self.add_constant("SDRAM_TEST_DISABLE")
 
         self.gamecore = Gamecore(platform, self, sys_clk_freq)
+
+        the_video_clk = Signal()
+        self.comb += the_video_clk.eq(ClockSignal("video"))
 
         if self.debug:
             # SPIBone ----------------------------------------------------------------------------------
@@ -121,15 +124,25 @@ class BaseSoC(SoCCore):
             from litescope import LiteScopeAnalyzer
             analyzer_signals = [
                 # DBus (could also just added as self.cpu.dbus)
-                self.gamecore.avalon.address,
-                self.gamecore.avalon.waitrequest,
-                self.gamecore.avalon.read,
-                self.gamecore.avalon.readdata,
-                self.gamecore.avalon.readdatavalid,
-                self.gamecore.avalon.write,
-                self.gamecore.avalon.writedata,
-                self.gamecore.avalon.burstcount,
-                self.gamecore.avalon.byteenable,
+                #self.gamecore.scaler_ram.address,
+                #self.gamecore.scaler_ram.waitrequest,
+                #self.gamecore.scaler_ram.read,
+                ##self.gamecore.scaler_ram.readdata,
+                #self.gamecore.scaler_ram.readdatavalid,
+                #self.gamecore.scaler_ram.write,
+                ##self.gamecore.scaler_ram.writedata,
+                #self.gamecore.scaler_ram.burstcount,
+
+                the_video_clk,
+                self.gamecore.emu_ram.address,
+                self.gamecore.emu_ram.waitrequest,
+                self.gamecore.emu_ram.read,
+                #self.gamecore.emu_ram.readdata,
+                self.gamecore.emu_ram.readdatavalid,
+                self.gamecore.emu_ram.write,
+                #self.gamecore.emu_ram.writedata,
+                self.gamecore.emu_ram.burstcount,
+
                 #self.gamecore.videophy.sink.valid,
                 #self.gamecore.videophy.sink.ready,
                 #self.gamecore.videophy.sink.de,
@@ -137,7 +150,7 @@ class BaseSoC(SoCCore):
                 #self.gamecore.videophy.sink.vsync,
             ]
             self.analyzer = LiteScopeAnalyzer(analyzer_signals,
-                depth        = 2048,
+                depth        = 4096,
                 samplerate   = sys_clk_freq,
                 clock_domain = "sys",
                 csr_csv      = "analyzer.csv")
@@ -160,32 +173,41 @@ class Gamecore(Module):
         avalon_data_width = 64
         avalon_address_width = 28
 
-        sdram_port = soc.sdram.crossbar.get_port(data_width=avalon_data_width)
-        self.avalon = avalon = AvalonMMInterface(data_width=avalon_data_width, adr_width=avalon_address_width)
-        self.submodules.avalon_port = LiteDRAMAvalonMM2Native(avalon, sdram_port)
+        scaler_sdram_port  = soc.sdram.crossbar.get_port(data_width=avalon_data_width)
+        self.scaler_ram = scaler_ram       = AvalonMMInterface(data_width=avalon_data_width, adr_width=avalon_address_width)
+        self.submodules.scaler_avalon_port = LiteDRAMAvalonMM2Native(scaler_ram, scaler_sdram_port)
+
+        emu_sdram_port = soc.sdram.crossbar.get_port(data_width=avalon_data_width, clock_domain="video")
+        self.emu_ram   = emu_ram        = AvalonMMInterface(data_width=avalon_data_width, adr_width=avalon_address_width)
+        self.submodules.emu_avalon_port = ClockDomainsRenamer("video")(LiteDRAMAvalonMM2Native(emu_ram, emu_sdram_port))
 
         self.submodules.videophy = videophy = VideoS7HDMIPHY(hdmi, clock_domain="hdmi", flip_diff_pairs=True)
         video = videophy.sink
         self.comb += video.valid.eq(1)
 
-        self.submodules.avalon_start_delay = start_delay = WaitTimer(int(6*sys_clk_freq))
+        self.submodules.avalon_start_delay = start_delay = WaitTimer(int(3*sys_clk_freq))
         self.comb += start_delay.wait.eq(~ResetSignal())
 
-        avalon_read  = Signal()
-        avalon_write = Signal()
+        scaler_avalon_read  = Signal()
+        scaler_avalon_write = Signal()
+        emu_avalon_read     = Signal()
+        emu_avalon_write    = Signal()
 
         self.comb += [
-            avalon.read .eq(Mux(start_delay.done, avalon_read,  0)),
-            avalon.write.eq(Mux(start_delay.done, avalon_write, 0)),
+            scaler_ram.read .eq(Mux(start_delay.done, scaler_avalon_read,  0)),
+            scaler_ram.write.eq(Mux(start_delay.done, scaler_avalon_write, 0)),
+            emu_ram   .read .eq(Mux(start_delay.done, emu_avalon_read,  0)),
+            emu_ram   .write.eq(Mux(start_delay.done, emu_avalon_write, 0)),
         ]
 
         sys_top = Instance("sys_top",
             p_DW = avalon_data_width,
             p_AW = avalon_address_width,
-            p_ASCAL_RAMBASE = 0x0,
+            p_ASCAL_RAMBASE = 0x400000,
 
-            i_CLK_50   = ClockSignal("retro"),
-            i_CLK_100  = ClockSignal("sys"),
+            i_CLK_50    = ClockSignal("retro"),
+            i_CLK_100   = ClockSignal("sys"),
+            o_CLK_VIDEO = ClockSignal("video"),
 
             # TODO: HDMI
             #o_HDMI_I2C_SCL,
@@ -255,15 +277,25 @@ class Gamecore(Module):
             o_DEBUG = debug,
 
             i_ddr3_clk_i           = ClockSignal("sys"),
-            o_ddr3_address_o       = avalon.address,
-            o_ddr3_byteenable_o    = avalon.byteenable,
-            o_ddr3_read_o          = avalon_read,
-            i_ddr3_readdata_i      = avalon.readdata,
-            o_ddr3_burstcount_o    = avalon.burstcount,
-            o_ddr3_write_o         = avalon_write,
-            o_ddr3_writedata_o     = avalon.writedata,
-            i_ddr3_waitrequest_i   = Mux(start_delay.done, avalon.waitrequest, 1),
-            i_ddr3_readdatavalid_i = Mux(start_delay.done, avalon.readdatavalid, 0),
+            o_ddr3_address_o       = scaler_ram.address,
+            o_ddr3_byteenable_o    = scaler_ram.byteenable,
+            o_ddr3_read_o          = scaler_avalon_read,
+            i_ddr3_readdata_i      = scaler_ram.readdata,
+            o_ddr3_burstcount_o    = scaler_ram.burstcount,
+            o_ddr3_write_o         = scaler_avalon_write,
+            o_ddr3_writedata_o     = scaler_ram.writedata,
+            i_ddr3_waitrequest_i   = Mux(start_delay.done, scaler_ram.waitrequest, 1),
+            i_ddr3_readdatavalid_i = Mux(start_delay.done, scaler_ram.readdatavalid, 0),
+
+            o_ram_address_o       = emu_ram.address,
+            o_ram_byteenable_o    = emu_ram.byteenable,
+            o_ram_read_o          = emu_avalon_read,
+            i_ram_readdata_i      = emu_ram.readdata,
+            o_ram_burstcount_o    = emu_ram.burstcount,
+            o_ram_write_o         = emu_avalon_write,
+            o_ram_writedata_o     = emu_ram.writedata,
+            i_ram_waitrequest_i   = Mux(start_delay.done, emu_ram.waitrequest, 1),
+            i_ram_readdatavalid_i = Mux(start_delay.done, emu_ram.readdatavalid, 0),
         )
 
         self.specials += sys_top
@@ -322,10 +354,10 @@ def main(core):
 
     platform.add_extension([
         ("audio", 0,
-            Subsignal("spdif",      Pins("J1:5")),
-            Subsignal("sbcd_spdif", Pins("J1:7")),
-            Subsignal("l",          Pins("J1:6")),
-            Subsignal("r",          Pins("J1:8")),
+            Subsignal("spdif",      Pins("J1:6")),
+            Subsignal("sbcd_spdif", Pins("J1:8")),
+            Subsignal("l",          Pins("J1:5")),
+            Subsignal("r",          Pins("J1:7")),
             IOStandard("LVCMOS33")
         ),
 
@@ -370,6 +402,7 @@ def main(core):
     build_dir = get_build_dir(core)
 
     soc = BaseSoC(platform)
+
     builder = Builder(soc,
         build_backend="litex",
         gateware_dir=build_dir,
@@ -377,7 +410,9 @@ def main(core):
         compile_gateware=True,
         compile_software=True,
         csr_csv="csr.csv",
-        bios_console="lite")
+        #bios_console="lite"
+    )
+
     builder.build(build_name = get_build_name(core))
 
 if __name__ == "__main__":
