@@ -17,13 +17,16 @@ from litex.build.generic_platform import *
 from litex_boards.platforms import terasic_deca
 from litex.gen import LiteXModule
 
+from litex.soc.integration.soc_core import SoCCore
+from litex.soc.integration.builder import Builder
 from litex.soc.cores.clock import Max10PLL
+from litex.soc.cores.spi.spi_bone import SPIBone
 
 from util import *
 
 # Build --------------------------------------------------------------------------------------------
 
-class Top(LiteXModule):
+class Top(SoCCore):
     def __init__(self, platform) -> None:
         sdram       = platform.request("sdram")
         ddram       = platform.request("ddram")
@@ -43,6 +46,22 @@ class Top(LiteXModule):
 
         AW = 26
         DW = 64
+        self.debug = False
+
+        self.cd_sys    = ClockDomain()
+        self.cd_avalon = ClockDomain()
+        sys_clk_freq   = 150e6
+
+        # SoCCore ----------------------------------------------------------------------------------
+        kwargs = {}
+        kwargs["uart_name"]            = "stub"
+        kwargs["cpu_type"]             = "None"
+        kwargs["l2_size"]              = 0
+        kwargs["bus_data_width"]       = 32
+        kwargs["bus_address_width"]    = 32
+        kwargs['integrated_rom_size']  = 0x0
+        kwargs['integrated_sram_size'] = 0x0
+        SoCCore.__init__(self, platform, sys_clk_freq, ident = f"LiteX SoC on MiSTeX / Terasic DECA cape", **kwargs)
 
         avalon_clock         = Signal()
         avalon_address       = Signal(AW)
@@ -60,19 +79,6 @@ class Top(LiteXModule):
         afi_half_clk = Signal()
         afi_reset_export_n = Signal()
         afi_reset_n = Signal()
-
-        if False:
-            i2c_repeater = Instance("i2crepeater",
-                 i_reset             = ResetSignal(),
-                 i_system_clk        = crg.cd_sys.clk,
-                 i_master_scl        = hps_i2c.scl,
-                 io_master_sda       = hps_i2c.sda,
-                 o_slave_scl         = hdmi_i2c.scl,
-                 io_slave_sda        = hdmi_i2c.sda,
-            )
-            self.specials += i2c_repeater
-        else:
-            pass
 
         ddr3 = Instance("ddr3",
             i_pll_ref_clk         = clk50,
@@ -123,12 +129,15 @@ class Top(LiteXModule):
         self.comb += [
             avalon_burstbegin.eq(avalon_write & avalon_read),
             avalon_waitrequest.eq(~avalon_ready),
+            ClockSignal("avalon").eq(avalon_clock),
+            ClockSignal().eq(ClockSignal("avalon"))
         ]
 
         sys_top = Instance("sys_top",
             p_DW            = DW,
             p_AW            = AW,
             i_CLK_50        = clk50,
+            # o_CLK_VIDEO     = ClockSignal(),
 
             # HDMI I2C
             o_HDMI_I2C_SCL  = hdmi_i2c.scl,
@@ -203,6 +212,32 @@ class Top(LiteXModule):
         )
         self.specials += sys_top
 
+        if self.debug:
+            # SPIBone ----------------------------------------------------------------------------------
+            self.submodules.spibone = spibone = SPIBone(platform.request("spibone"))
+            self.add_wb_master(spibone.bus)
+
+            from litescope import LiteScopeAnalyzer
+            analyzer_signals = [
+                # DBus (could also just added as self.cpu.dbus)
+                avalon_clock,
+                avalon_address,
+                avalon_waitrequest,
+                avalon_read,
+                #avalon_readdata,
+                avalon_readdatavalid,
+                avalon_write,
+                #avalon_writedata,
+                avalon_burstcount,
+                avalon_byteenable,
+            ]
+            self.analyzer = LiteScopeAnalyzer(analyzer_signals,
+                depth        = 4096,
+                samplerate   = 150e6,
+                clock_domain = "sys",
+                csr_csv      = "analyzer.csv")
+
+
 def main(core):
     coredir = join("cores", core)
 
@@ -216,7 +251,35 @@ def main(core):
     add_mainfile(platform, coredir, mistex_yaml)
 
     platform.add_platform_command(f"set_global_assignment -name QIP_FILE {os.getcwd()}/rtl/deca-ddr3/ddr3.qip")
-    platform.add_platform_command("set_global_assignment -name AUTO_RAM_TO_LCELL_CONVERSION ON")
+    platform.add_platform_command("set_global_assignment -name TIMEQUEST_MULTICORNER_ANALYSIS OFF")
+    platform.add_platform_command("set_global_assignment -name OPTIMIZE_POWER_DURING_FITTING OFF")
+    platform.add_platform_command("set_global_assignment -name FINAL_PLACEMENT_OPTIMIZATION ALWAYS")
+    platform.add_platform_command("set_global_assignment -name FITTER_EFFORT \"STANDARD FIT\"")
+    platform.add_platform_command("set_global_assignment -name OPTIMIZATION_MODE \"HIGH PERFORMANCE EFFORT\"")
+    platform.add_platform_command("set_global_assignment -name ALLOW_POWER_UP_DONT_CARE ON")
+    platform.add_platform_command("set_global_assignment -name QII_AUTO_PACKED_REGISTERS \"SPARSE AUTO\"")
+    platform.add_platform_command("set_global_assignment -name ROUTER_LCELL_INSERTION_AND_LOGIC_DUPLICATION ON")
+    platform.add_platform_command("set_global_assignment -name PHYSICAL_SYNTHESIS_COMBO_LOGIC ON")
+    platform.add_platform_command("set_global_assignment -name PHYSICAL_SYNTHESIS_EFFORT EXTRA")
+    platform.add_platform_command("set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_DUPLICATION ON")
+    platform.add_platform_command("set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_RETIMING ON")
+    platform.add_platform_command("set_global_assignment -name OPTIMIZATION_TECHNIQUE SPEED")
+    platform.add_platform_command("set_global_assignment -name MUX_RESTRUCTURE ON")
+    platform.add_platform_command("set_global_assignment -name REMOVE_REDUNDANT_LOGIC_CELLS ON")
+    platform.add_platform_command("set_global_assignment -name AUTO_DELAY_CHAINS_FOR_HIGH_FANOUT_INPUT_PINS ON")
+    platform.add_platform_command("set_global_assignment -name PHYSICAL_SYNTHESIS_COMBO_LOGIC_FOR_AREA ON")
+    platform.add_platform_command("set_global_assignment -name ADV_NETLIST_OPT_SYNTH_WYSIWYG_REMAP ON")
+    platform.add_platform_command("set_global_assignment -name SYNTH_GATED_CLOCK_CONVERSION ON")
+    platform.add_platform_command("set_global_assignment -name PRE_MAPPING_RESYNTHESIS ON")
+    platform.add_platform_command("set_global_assignment -name ROUTER_CLOCKING_TOPOLOGY_ANALYSIS ON")
+    platform.add_platform_command("set_global_assignment -name ECO_OPTIMIZE_TIMING ON")
+    platform.add_platform_command("set_global_assignment -name PERIPHERY_TO_CORE_PLACEMENT_AND_ROUTING_OPTIMIZATION ON")
+    platform.add_platform_command("set_global_assignment -name PHYSICAL_SYNTHESIS_ASYNCHRONOUS_SIGNAL_PIPELINING ON")
+    platform.add_platform_command("set_global_assignment -name ALM_REGISTER_PACKING_EFFORT LOW")
+    platform.add_platform_command("set_global_assignment -name OPTIMIZE_POWER_DURING_SYNTHESIS OFF")
+    platform.add_platform_command("set_global_assignment -name ROUTER_REGISTER_DUPLICATION ON")
+    platform.add_platform_command("set_global_assignment -name FITTER_AGGRESSIVE_ROUTABILITY_OPTIMIZATION ALWAYS")
+    platform.add_platform_command("set_global_assignment -name SEED 1")
 
     defines = mistex_yaml.get('defines', {})
     defines.update({
@@ -274,13 +337,28 @@ def main(core):
             #Subsignal("dm", Pins("N/C")),
             IOStandard("3.3-V LVTTL")
         ),
+        ("spibone", 0,
+            Subsignal("clk",  Pins("P8:13")),
+            Subsignal("mosi", Pins("P8:31")),
+            Subsignal("miso", Pins("P8:43")),
+            Subsignal("cs_n", Pins("P9:41")),
+            IOStandard("3.3-V LVCMOS")),
     ])
 
     build_dir  = get_build_dir(core)
     build_name = get_build_name(core)
-    platform.build(Top(platform),
-        build_dir  = build_dir,
-        build_name = build_name)
+
+    builder = Builder(Top(platform),
+        build_backend="litex",
+        gateware_dir=build_dir,
+        software_dir=os.path.join(build_dir, 'software'),
+        compile_gateware=True,
+        compile_software=True,
+        csr_csv="csr.csv",
+        #bios_console="lite"
+    )
+
+    builder.build(build_name = get_build_name(core))
 
     os.system(f"quartus_cpf -c -q 24.0MHz -g 3.3 -n p {build_dir}/{build_name}.sof {build_dir}/{build_name}.svf")
 
