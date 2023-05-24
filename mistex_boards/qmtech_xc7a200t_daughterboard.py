@@ -205,7 +205,7 @@ class Gamecore(Module):
         sys_top = Instance("sys_top",
             p_DW = avalon_data_width,
             p_AW = avalon_address_width,
-            p_ASCAL_RAMBASE = 0x500000,
+            p_ASCAL_RAMBASE = 0x2000000,
 
             i_CLK_50        = ClockSignal("retro"),
             i_CLK_100       = ClockSignal("sys"),
