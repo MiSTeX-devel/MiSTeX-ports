@@ -82,7 +82,7 @@ class _CRG(LiteXModule):
 # LiteX SoC to initialize DDR3 ------------------------------------------------------------------------------------------
 
 class BaseSoC(SoCCore):
-    def __init__(self, platform, toolchain="vivado", kgates=200, sys_clk_freq=100e6,  **kwargs):
+    def __init__(self, platform, toolchain="vivado", kgates=200, sys_clk_freq=125e6,  **kwargs):
         self.debug = True
 
         # CRG --------------------------------------------------------------------------------------
