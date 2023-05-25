@@ -297,7 +297,7 @@ def main(core):
     defines = [
         ('XILINX', 1),
         ('LARGE_FPGA', 1),
-        # ('MISTEX_HDMI', 1),
+        ('MISTEX_HDMI', 1),
 
         # ('DEBUG_HPS_OP', 1),
 
