@@ -42,6 +42,7 @@ class _CRG(LiteXModule):
         self.cd_sys4x_dqs = ClockDomain()
         self.cd_idelay    = ClockDomain()
         self.cd_retro     = ClockDomain()
+        self.cd_retro2x   = ClockDomain()
         self.cd_video     = ClockDomain()
         self.cd_emu_ddram = ClockDomain()
 
@@ -60,7 +61,9 @@ class _CRG(LiteXModule):
         pll.create_clkout (self.cd_sys4x_dqs, 4*sys_clk_freq, phase=90)
         pll.create_clkout (self.cd_idelay,    200e6)
         pll.create_clkout (self.cd_retro,     50e6)
+        pll.create_clkout (self.cd_retro2x,   100e6)
         platform.add_false_path_constraints(self.cd_sys.clk, pll.clkin) # Ignore sys_clk to pll.clkin path created by SoC's rst.
+        platform.add_false_path_constraints(self.cd_retro2x.clk, pll.clkin) # Ignore sys_clk to pll.clkin path created by SoC's rst.
 
         self.idelayctrl = S7IDELAYCTRL(self.cd_idelay)
 
@@ -187,7 +190,7 @@ class Gamecore(Module):
             p_ASCAL_RAMBASE = 0x2000000,
 
             i_CLK_50        = ClockSignal("retro"),
-            i_CLK_100       = ClockSignal("sys"),
+            i_CLK_100       = ClockSignal("retro2x"),
             o_CLK_VIDEO     = ClockSignal("video"),
             o_CLK_EMU_DDRAM = ClockSignal("emu_ddram"),
 
