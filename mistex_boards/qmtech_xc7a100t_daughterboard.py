@@ -307,6 +307,9 @@ def main(core):
         # do not enable DEBUG_NOHDMI in release!
         # ('MISTER_DEBUG_NOHDMI', 1),
 
+        # prevent the OSD header from covering the menu
+        ('OSD_HEADER', 1),
+
         # disable bilinear filtering when downscaling
         ('MISTER_DOWNSCALE_NN', 1),
 

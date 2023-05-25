@@ -284,6 +284,8 @@ def main(core):
     defines = mistex_yaml.get('defines', {})
     defines.update({
         "ALTERA": 1,
+        # prevent the OSD header from covering the menu
+        "OSD_HEADER": 1,
         "CRG_AUDIO_CLK": 1,
         "HARDWARE_HDMI_INIT": 1,
         "NO_SCANDOUBLER": 1,
