@@ -85,7 +85,7 @@ class BaseSoC(SoCCore):
         kwargs["bus_address_width"]    = 32
         kwargs['integrated_rom_size']  = 0x8000
         kwargs['integrated_sram_size'] = 0x1000
-        SoCCore.__init__(self, platform, sys_clk_freq, ident = f"LiteX SoC on MiSTeX QMTech XC7A100T", **kwargs)
+        SoCCore.__init__(self, platform, sys_clk_freq, ident = f"{core_name} LiteX SoC on MiSTeX QMTech XC7A100T", **kwargs)
 
         # DDR3 SDRAM -------------------------------------------------------------------------------
         self.ddrphy = s7ddrphy.A7DDRPHY(platform.request("ddram"),
@@ -307,9 +307,6 @@ def main(core):
         # do not enable DEBUG_NOHDMI in release!
         # ('MISTER_DEBUG_NOHDMI', 1),
 
-        # prevent the OSD header from covering the menu
-        ('OSD_HEADER', 1),
-
         # disable bilinear filtering when downscaling
         ('MISTER_DOWNSCALE_NN', 1),
 
@@ -389,7 +386,7 @@ def main(core):
 
     build_dir = get_build_dir(core)
 
-    soc = BaseSoC(platform)
+    soc = BaseSoC(platform, core_name=core)
     builder = Builder(soc,
         build_backend="litex",
         gateware_dir=build_dir,
