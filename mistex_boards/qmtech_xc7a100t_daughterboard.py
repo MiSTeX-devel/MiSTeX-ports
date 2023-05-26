@@ -46,6 +46,7 @@ class _CRG(LiteXModule):
         self.cd_retro2x   = ClockDomain()
         self.cd_video     = ClockDomain()
         self.cd_emu_ddram = ClockDomain()
+        self.cd_hdmi      = ClockDomain()
 
         clk_in            = platform.request("clk50")
 
@@ -63,16 +64,25 @@ class _CRG(LiteXModule):
         pll.create_clkout (self.cd_idelay,    200e6)
         pll.create_clkout (self.cd_retro,     50e6)
         pll.create_clkout (self.cd_retro2x,   100e6)
+
+        self.hdmipll = hdmipll = S7PLL(speedgrade=-1)
+        hdmipll.register_clkin(clk_in,          50e6)
+        hdmipll.create_clkout(self.cd_hdmi,     74.25e6)
+        #hdmipll.create_clkout(self.cd_hdmi5x, 5*74.25e6)
+
         platform.add_false_path_constraints(self.cd_sys.clk, pll.clkin) # Ignore sys_clk to pll.clkin path created by SoC's rst.
         platform.add_false_path_constraints(self.cd_retro2x.clk, pll.clkin) # Ignore sys_clk to pll.clkin path created by SoC's rst.
+        platform.add_false_path_constraints(self.cd_sys.clk, hdmipll.clkin)
 
         self.idelayctrl = S7IDELAYCTRL(self.cd_idelay)
 
 # LiteX SoC to initialize DDR3 ------------------------------------------------------------------------------------------
 
 class BaseSoC(SoCCore):
-    def __init__(self, platform, toolchain="vivado", kgates=100, sys_clk_freq=125e6,  **kwargs):
-        self.debug = False
+    def __init__(self, platform, core_name, toolchain="vivado", **kwargs):
+        sys_clk_freq=125e6
+        self.debug = True
+
         # CRG --------------------------------------------------------------------------------------
         self.crg = _CRG(platform, sys_clk_freq)
         self.platform = platform
@@ -210,7 +220,7 @@ class Gamecore(Module):
             # o_HDMI_TX_D   = Cat(video.b, video.g, video.r),
             # o_HDMI_TX_HS  = video.hsync,
             # o_HDMI_TX_VS  = video.vsync,
-            # i_HDMI_CLK_IN = ClockSignal("hdmi"),
+            i_HDMI_CLK_IN = ClockSignal("hdmi"),
             # i_HDMI_TX_INT
 
             #o_SDRAM_A = sdram.a,
