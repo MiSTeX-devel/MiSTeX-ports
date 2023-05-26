@@ -27,6 +27,7 @@ from litex.soc.interconnect.avalon import AvalonMMInterface
 
 from litedram.modules import MT41J128M16
 from litedram.phy import s7ddrphy
+from litedram.core.controller import ControllerSettings
 from litedram.frontend.avalon import LiteDRAMAvalonMM2Native
 
 
@@ -112,7 +113,8 @@ class BaseSoC(SoCCore):
         self.add_sdram("sdram",
             phy           = self.ddrphy,
             module        = MT41J128M16(sys_clk_freq, "1:4"),
-            l2_cache_size = 0)
+            l2_cache_size = 0,
+            controller_settings=ControllerSettings(with_auto_precharge=False))
         #self.add_constant("SDRAM_TEST_DISABLE")
 
         self.gamecore = Gamecore(platform, self, sys_clk_freq)
