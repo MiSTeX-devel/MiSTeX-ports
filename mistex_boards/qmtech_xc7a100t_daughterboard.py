@@ -27,9 +27,9 @@ from litex.soc.interconnect.avalon import AvalonMMInterface
 
 from litedram.modules import MT41J128M16
 from litedram.phy import s7ddrphy
+from litedram.common import PHYPadsReducer
 from litedram.core.controller import ControllerSettings
 from litedram.frontend.avalon import LiteDRAMAvalonMM2Native
-
 
 from util import *
 
@@ -99,7 +99,10 @@ class BaseSoC(SoCCore):
         SoCCore.__init__(self, platform, sys_clk_freq, ident = f"{core_name} LiteX SoC on MiSTeX QMTech XC7A100T", **kwargs)
 
         # DDR3 SDRAM -------------------------------------------------------------------------------
-        self.ddrphy = s7ddrphy.A7DDRPHY(platform.request("ddram"),
+        self.ddrphy = s7ddrphy.A7DDRPHY(
+            # Two chips do not work at 125MHz
+            # But 125MB is still plenty for us
+            PHYPadsReducer(platform.request("ddram"), [0]),
             memtype        = "DDR3",
             nphases        = 4,
             sys_clk_freq   = sys_clk_freq)
