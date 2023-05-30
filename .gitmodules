@@ -28,3 +28,6 @@
 [submodule "cores/NES"]
 	path = cores/NES
 	url = https://github.com/MiSTeX-devel/NES_MiSTeX.git
+[submodule "cores/FlappyBird"]
+	path = cores/FlappyBird
+	url = https://github.com/MiSTeX-devel/FlappyBird_MiSTeX
