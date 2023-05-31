@@ -67,9 +67,9 @@ class _CRG(LiteXModule):
         pll.create_clkout (self.cd_retro2x,   100e6)
 
         self.hdmipll = hdmipll = S7PLL(speedgrade=-1)
-        hdmipll.register_clkin(clk_in,            50e6)
-        hdmipll.create_clkout(self.cd_hdmi,       74.25e6)
-        hdmipll.create_clkout(self.cd_hdmi5x,     5*74.25e6)
+        hdmipll.register_clkin(clk_in,          50e6)
+        hdmipll.create_clkout(self.cd_hdmi,     74.25e6)
+        hdmipll.create_clkout(self.cd_hdmi5x, 5*74.25e6)
 
         if with_ethernet:
             self.cd_eth = ClockDomain()
@@ -132,14 +132,14 @@ class BaseSoC(SoCCore):
             from litescope import LiteScopeAnalyzer
             analyzer_signals = [
                 # DBus (could also just added as self.cpu.dbus)
-                #self.gamecore.scaler_ddram.address,
-                #self.gamecore.scaler_ddram.waitrequest,
-                #self.gamecore.scaler_ddram.read,
-                ##self.gamecore.scaler_ddram.readdata,
-                #self.gamecore.scaler_ddram.readdatavalid,
-                #self.gamecore.scaler_ddram.write,
-                ##self.gamecore.scaler_ddram.writedata,
-                #self.gamecore.scaler_ddram.burstcount,
+                self.gamecore.scaler_ddram.address,
+                self.gamecore.scaler_ddram.waitrequest,
+                self.gamecore.scaler_ddram.read,
+                #self.gamecore.scaler_ddram.readdata,
+                self.gamecore.scaler_ddram.readdatavalid,
+                self.gamecore.scaler_ddram.write,
+                #self.gamecore.scaler_ddram.writedata,
+                self.gamecore.scaler_ddram.burstcount,
 
                 the_emu_ddram_clk,
                 self.gamecore.emu_ddram.address,
