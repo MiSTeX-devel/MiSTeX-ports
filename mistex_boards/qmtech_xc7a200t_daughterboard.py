@@ -86,7 +86,7 @@ class _CRG(LiteXModule):
 # LiteX SoC to initialize DDR3 ------------------------------------------------------------------------------------------
 
 class BaseSoC(SoCCore):
-    def __init__(self, platform, core_name, toolchain="vivado", **kwargs):
+    def __init__(self, platform, core_name, toolchain="vivado", delay_hps_miso=0, **kwargs):
         sys_clk_freq=125e6
         self.debug = True
 
@@ -117,7 +117,7 @@ class BaseSoC(SoCCore):
             controller_settings=ControllerSettings(with_auto_precharge=False))
         #self.add_constant("SDRAM_TEST_DISABLE")
 
-        self.gamecore = Gamecore(platform, self, sys_clk_freq)
+        self.gamecore = Gamecore(platform, self, sys_clk_freq, delay_hps_miso)
 
         # need this to put it into analyzer
         the_emu_ddram_clk = Signal()
@@ -167,7 +167,7 @@ class BaseSoC(SoCCore):
 # MiSTeX core --------------------------------------------------------------------------------------------
 
 class Gamecore(Module):
-    def __init__(self, platform, soc, sys_clk_freq) -> None:
+    def __init__(self, platform, soc, sys_clk_freq, delay_hps_miso) -> None:
         vga         = platform.request("vga")
         sdcard      = platform.request("sdcard")
         seven_seg   = platform.request("seven_seg")
@@ -207,6 +207,15 @@ class Gamecore(Module):
             emu_ddram .read .eq(Mux(start_delay.done, emu_avalon_read,  0)),
             emu_ddram .write.eq(Mux(start_delay.done, emu_avalon_write, 0)),
         ]
+
+        # on most cores the MISO signal is pretty much 1 bit too slow,
+        # which we compensate for on the HPS by shifting the received SPI word
+        # but not for the menu core, for some reason (TODO: find out why)
+        hps_miso = Signal()
+        if 0 < delay_hps_miso:
+            self.specials += MultiReg(i=hps_miso, o=hps_spi.miso, odomain="retro", n=delay_hps_miso)
+        else:
+            self.comb += hps_spi.miso.eq(hps_miso)
 
         sys_top = Instance("sys_top",
             p_DW = avalon_data_width,
@@ -274,7 +283,7 @@ class Gamecore(Module):
             o_LED = seven_seg,
 
             i_HPS_SPI_MOSI = hps_spi.mosi,
-            o_HPS_SPI_MISO = hps_spi.miso,
+            o_HPS_SPI_MISO = hps_miso,
             i_HPS_SPI_CLK  = hps_spi.clk,
             i_HPS_SPI_CS   = hps_spi.cs_n,
 
@@ -410,7 +419,8 @@ def main(core):
 
     build_dir = get_build_dir(core)
 
-    soc = BaseSoC(platform, core_name=core)
+    delay_hps_miso = mistex_yaml.get('delay-hps-miso', 0)
+    soc = BaseSoC(platform, core_name=core, delay_hps_miso=delay_hps_miso)
     builder = Builder(soc,
         build_backend="litex",
         gateware_dir=build_dir,
