@@ -72,13 +72,14 @@ def add_mainfile(platform, coredir, mistex_yaml):
 
 def handle_main(main):
     if len(sys.argv) != 2:
-        print(f"Usage: {sys.argv[0]} <core-name>")
-        print("Available cores:")
-        for core in os.listdir("cores"):
-            print(f"   * {core}")
+        print(f"Usage: {sys.argv[0]} <core-dir>")
         sys.exit(1)
 
-    main(core=sys.argv[1])
+    coredir=sys.argv[1]
+    if coredir.endswith('/'):
+        coredir = coredir[0:-1]
+    core = coredir.split('/')[-1]
+    main(coredir, core)
 
 def get_build_dir(core):
     return os.path.join("build", sys.argv[0].split('.')[0].split('/')[1], core)

@@ -218,9 +218,7 @@ class Top(LiteXModule):
         )
         self.specials += sys_top
 
-def main(core):
-    coredir = join("cores", core)
-
+def main(coredir, core):
     mistex_yaml = yaml.load(open(join(coredir, "MiSTeX.yaml"), 'r'), Loader=yaml.FullLoader)
 
     platform = terasic_deca.Platform()

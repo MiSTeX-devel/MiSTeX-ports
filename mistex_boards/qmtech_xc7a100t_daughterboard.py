@@ -75,6 +75,8 @@ class _CRG(LiteXModule):
         platform.add_false_path_constraints(self.cd_sys.clk, pll.clkin) # Ignore sys_clk to pll.clkin path created by SoC's rst.
         platform.add_false_path_constraints(self.cd_retro2x.clk, pll.clkin) # Ignore sys_clk to pll.clkin path created by SoC's rst.
         platform.add_false_path_constraints(self.cd_sys.clk, hdmipll.clkin)
+        platform.add_false_path_constraints(self.cd_sys.clk, self.cd_hdmi.clk)
+        platform.add_false_path_constraints(self.cd_sys.clk, self.cd_retro.clk)
 
         self.idelayctrl = S7IDELAYCTRL(self.cd_idelay)
 
@@ -311,9 +313,7 @@ class Gamecore(Module):
 
         self.specials += sys_top
 
-def main(core):
-    coredir = join("cores", core)
-
+def main(coredir, core):
     mistex_yaml = yaml.load(open(join(coredir, "MiSTeX.yaml"), 'r'), Loader=yaml.FullLoader)
 
     platform = qmtech_artix7_fgg676.Platform(with_daughterboard=True)
