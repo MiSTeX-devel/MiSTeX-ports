@@ -83,7 +83,7 @@ class _CRG(LiteXModule):
 # LiteX SoC to initialize DDR3 ------------------------------------------------------------------------------------------
 
 class BaseSoC(SoCCore):
-    def __init__(self, platform, core_name, toolchain="vivado", delay_hps_miso=0, **kwargs):
+    def __init__(self, platform, core_name, toolchain, delay_hps_miso=0, **kwargs):
         sys_clk_freq=125e6
         self.debug = True
 
@@ -316,7 +316,10 @@ class Gamecore(Module):
 def main(coredir, core):
     mistex_yaml = yaml.load(open(join(coredir, "MiSTeX.yaml"), 'r'), Loader=yaml.FullLoader)
 
-    platform = qmtech_artix7_fgg676.Platform(with_daughterboard=True)
+    toolchain = os.environ.get('MISTEX_TOOLCHAIN')
+    if toolchain is None:
+        toolchain = "vivado"
+    platform = qmtech_artix7_fgg676.Platform(with_daughterboard=True, toolchain=toolchain)
 
     add_designfiles(platform, coredir, mistex_yaml, 'vivado')
 
@@ -356,10 +359,11 @@ def main(coredir, core):
         defines.append((key, value))
 
     build_id_path = generate_build_id(platform, coredir, defines)
-    platform.toolchain.pre_synthesis_commands += [
-        f'set_property is_global_include true [get_files "../../../{build_id_path}"]',
-        'set_property default_lib work [current_project]'
-    ]
+    if toolchain == "vivado":
+        platform.toolchain.pre_synthesis_commands += [
+            f'set_property is_global_include true [get_files "../../../{build_id_path}"]',
+            'set_property default_lib work [current_project]'
+        ]
 
     add_mainfile(platform, coredir, mistex_yaml)
 
@@ -413,7 +417,7 @@ def main(coredir, core):
     build_dir = get_build_dir(core)
 
     delay_hps_miso = mistex_yaml.get('delay-hps-miso', 0)
-    soc = BaseSoC(platform, core_name=core, delay_hps_miso=delay_hps_miso)
+    soc = BaseSoC(platform, core_name=core, delay_hps_miso=delay_hps_miso, toolchain=toolchain)
     builder = Builder(soc,
         build_backend="litex",
         gateware_dir=build_dir,
