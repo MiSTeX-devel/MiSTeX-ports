@@ -22,9 +22,6 @@
 [submodule "cores/NES"]
 	path = cores/NES
 	url = https://github.com/MiSTeX-devel/NES_MiSTeX.git
-[submodule "cores/FlappyBird"]
-	path = cores/FlappyBird
-	url = https://github.com/MiSTeX-devel/FlappyBird_MiSTeX
 [submodule "cores/Arcade-DigDug/upstream"]
 	path = cores/Arcade-DigDug/upstream
 	url = https://github.com/MiSTer-devel/Arcade-DigDug_MiSTer.git
@@ -37,3 +34,6 @@
 [submodule "cores/Arcade-BombJack/upstream"]
 	path = cores/Arcade-BombJack/upstream
 	url = https://github.com/MiSTer-devel/Arcade-BombJack_MiSTer.git
+[submodule "cores/FlappyBird/upstream"]
+	path = cores/FlappyBird/upstream
+	url = https://github.com/MiSTer-devel/FlappyBird_MiSTer
