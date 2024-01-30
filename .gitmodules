@@ -34,3 +34,6 @@
 [submodule "cores/Arcade-QBert/upstream"]
 	path = cores/Arcade-QBert/upstream
 	url = https://github.com/MiSTer-devel/Arcade-QBert_MiSTer.git
+[submodule "cores/Arcade-BombJack/upstream"]
+	path = cores/Arcade-BombJack/upstream
+	url = https://github.com/MiSTer-devel/Arcade-BombJack_MiSTer.git

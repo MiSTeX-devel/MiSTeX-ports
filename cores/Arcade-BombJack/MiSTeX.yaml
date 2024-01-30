@@ -1,0 +1,59 @@
+mainfile: Arcade-BombJack.sv
+use-template-sys: True
+
+defines:
+  MISTER_FB: 1
+
+sourcedirs:
+  - sys
+  - upstream/rtl
+  - upstream/rtl/bombjack
+
+sourcefiles:
+  - upstream/rtl/ym2149/YM2149_linmix.vhd
+  - upstream/rtl/T80/
+  - upstream/rtl/T80/T80.vhd
+  - upstream/rtl/T80/T80_Pack.vhd
+  - upstream/rtl/T80/T80_MCode.vhd
+  - upstream/rtl/T80/T80sed.vhd
+  - upstream/rtl/T80/T80_ALU.vhd
+  - upstream/rtl/T80/T80_Reg.vhd
+
+quartus:
+  sourcefiles:
+    # sys
+    - sys/sys_top.sdc
+    - sys_sdcard.v
+    - sys/altera_pll_reconfig_top.v
+    - sys/altera_pll_reconfig_core.v
+    - sys/pll_cfg.v
+    - sys/pll_audio_0002.v
+    - sys/pll_hdmi_0002.v
+    - sys/pll_hdmi_adj.vhd
+    - sys/hdmi_config.sv
+    # rtl
+    - upstream/rtl/dpram.vhd
+    - upstream/rtl/memory/ram_1e.vhd
+    - upstream/rtl/memory/ram_1h.vhd
+    - upstream/rtl/memory/ram_3ef.vhd
+    - upstream/rtl/memory/ram_3k.vhd
+    - upstream/rtl/memory/ram4x.vhd
+    - upstream/rtl/memory/ram_6lm.vhd
+    - upstream/rtl/memory/ram_6ab.vhd
+    - upstream/rtl/memory/ram_6c.vhd
+    - rtl/pll/pll_0002.v
+
+vivado:
+  sourcefiles:
+    - sys/pll_audio_0002-xilinx7.v
+    - sys/pll_hdmi_0002-xilinx7.v
+    - rtl/pll_0002-xilinx7.v
+    - rtl/dpram.v
+    - rtl/memory/ram_1e.v
+    - rtl/memory/ram_1h.v
+    - rtl/memory/ram_3ef.v
+    - rtl/memory/ram_3k.v
+    - rtl/memory/ram4x.v
+    - rtl/memory/ram_6lm.v
+    - rtl/memory/ram_6ab.v
+    - rtl/memory/ram_6c.v
