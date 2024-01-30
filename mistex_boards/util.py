@@ -3,6 +3,7 @@ import sys
 from os.path import join
 from datetime import date
 from colorama import Fore, Style
+from icecream import ic
 
 def add_designfiles(platform, coredir, mistex_yaml, boardspecific):
     use_template_sys = mistex_yaml.get('use-template-sys', False)
