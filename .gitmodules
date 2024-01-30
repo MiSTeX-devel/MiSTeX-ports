@@ -34,3 +34,6 @@
 [submodule "cores/Menu/upstream"]
 	path = cores/Menu/upstream
 	url = https://github.com/MiSTer-devel/Menu_MiSTer
+[submodule "cores/MemTest/upstream"]
+	path = cores/MemTest/upstream
+	url = https://github.com/MiSTer-devel/MemTest_MiSTer

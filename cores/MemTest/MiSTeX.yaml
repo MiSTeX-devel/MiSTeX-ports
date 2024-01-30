@@ -1,0 +1,27 @@
+mainfile: memtest.sv
+
+use-template-sys: True
+
+defines:
+  USE_SDRAM: 1
+  CRG_AUDIO_CLK: 1
+  MISTER_DISABLE_ALSA: 1
+
+sourcedirs:
+  - sys
+  - upstream/rtl
+
+quartus:
+  sourcefiles:
+    - rtl/pll_0002.v
+    - upstream/rtl/vpll/vpll_0002.v
+    - sys/sys_top.sdc
+    - sys/pll_hdmi_0002.v
+    - sys/hdmi_config.sv
+
+vivado:
+  sourcefiles:
+    # TODO: port to vivado, implement dynamic reconfig PLL
+    # - rtl/pll_0002-xilinx7.v
+    - sys/pll_hdmi_0002-xilinx7.v
+    - sys/pll_audio_0002-xilinx7.v
