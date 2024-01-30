@@ -1,0 +1,30 @@
+mainfile: Arcade-QBert.sv
+use-template-sys: True
+
+defines:
+  MISTER_FB: 1
+
+sourcedirs:
+  - sys
+  - upstream/rtl
+  - upstream/rtl/8088
+  - upstream/rtl/7400
+  - upstream/rtl/6502
+
+quartus:
+  sourcefiles:
+    - rtl/pll_0002.v
+    - upstream/Arcade-QBert.sdc
+    - sys/sys_top.sdc
+    - sys/pll_hdmi_adj.vhd
+    - sys/altera_pll_reconfig_top.v
+    - sys/altera_pll_reconfig_core.v
+    - sys/pll_cfg.v
+    - sys/pll_audio_0002.v
+    - sys/pll_hdmi_0002.v
+    - sys/hdmi_config.sv
+
+vivado:
+  sourcefiles:
+    - rtl/pll_0002-xilinx7.v
+    - sys/pll_audio_0002-xilinx7.v

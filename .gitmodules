@@ -7,9 +7,6 @@
 [submodule "cores/Arcade-BombJack"]
 	path = cores/Arcade-BombJack
 	url = https://github.com/MiSTeX-devel/Arcade-BombJack_MiSTeX
-[submodule "cores/Arcade-QBert"]
-	path = cores/Arcade-QBert
-	url = https://github.com/MiSTeX-devel/Arcade-QBert_MiSTeX
 [submodule "cores/SMS"]
 	path = cores/SMS
 	url = https://github.com/MiSTeX-devel/SMS_MiSTeX
@@ -37,3 +34,6 @@
 [submodule "cores/Arcade-Galaga/upstream"]
 	path = cores/Arcade-Galaga/upstream
 	url = https://github.com/MiSTer-devel/Arcade-Galaga_MiSTer.git
+[submodule "cores/Arcade-QBert/upstream"]
+	path = cores/Arcade-QBert/upstream
+	url = https://github.com/MiSTer-devel/Arcade-QBert_MiSTer.git
