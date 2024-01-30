@@ -1,9 +1,6 @@
 [submodule "cores/Template"]
 	path = cores/Template
 	url = https://github.com/MiSTeX-devel/Template_MiSTeX
-[submodule "cores/Menu"]
-	path = cores/Menu
-	url = https://github.com/MiSTeX-devel/Menu_MiSTeX
 [submodule "cores/SMS"]
 	path = cores/SMS
 	url = https://github.com/MiSTeX-devel/SMS_MiSTeX
@@ -37,3 +34,6 @@
 [submodule "cores/FlappyBird/upstream"]
 	path = cores/FlappyBird/upstream
 	url = https://github.com/MiSTer-devel/FlappyBird_MiSTer
+[submodule "cores/Menu/upstream"]
+	path = cores/Menu/upstream
+	url = https://github.com/MiSTer-devel/Menu_MiSTer

@@ -1,0 +1,31 @@
+mainfile: menu.sv
+use-template-sys: True
+
+defines:
+  OSD_HEADER: 1
+
+sourcedirs:
+  - sys
+
+sourcefiles:
+  - upstream/rtl/cos.sv
+  - upstream/rtl/pll.v
+  - upstream/rtl/ddram.sv
+  - rtl/lfsr.v
+
+quartus:
+  sourcefiles:
+    - upstream/sys/sys_top.sdc
+    - upstream/rtl/pll/pll_0002.v
+    - upstream/rtl/sdram.sv
+    - sys/pll_hdmi_adj.vhd
+    - sys/pll_audio_0002.v
+    - sys/pll_hdmi_0002.v
+    - sys/hdmi_config.sv
+
+vivado:
+  sourcefiles:
+    - rtl/pll_0002-xilinx7.v
+    - rtl/sdram.sv
+    - sys/pll_audio_0002-xilinx7.v
+    - sys/pll_hdmi_0002-xilinx7.v
