@@ -7,9 +7,6 @@
 [submodule "cores/InputTest"]
 	path = cores/InputTest
 	url = https://github.com/MiSTeX-devel/InputTest_MiSTeX
-[submodule "cores/MemTest"]
-	path = cores/MemTest
-	url = https://github.com/MiSTeX-devel/MemTest_MiSTeX
 [submodule "cores/Arcade-Pacman"]
 	path = cores/Arcade-Pacman
 	url = https://github.com/MiSTeX-devel/Arcade-Pacman_MiSTeX.git
