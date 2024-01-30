@@ -34,3 +34,6 @@
 [submodule "cores/Arcade-DigDug/upstream"]
 	path = cores/Arcade-DigDug/upstream
 	url = https://github.com/MiSTer-devel/Arcade-DigDug_MiSTer.git
+[submodule "cores/Arcade-Galaga/upstream"]
+	path = cores/Arcade-Galaga/upstream
+	url = https://github.com/MiSTer-devel/Arcade-Galaga_MiSTer.git
