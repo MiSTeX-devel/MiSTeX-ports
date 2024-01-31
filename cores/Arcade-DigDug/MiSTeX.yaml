@@ -27,6 +27,7 @@ quartus:
 vivado:
   sourcefiles:
     - rtl/pll_0002-xilinx7.v
+    - sys/pll_hdmi_0002-xilinx7.v
     - sys/pll_audio_0002-xilinx7.v
     - rtl/dprams.v
     - rtl/pause.v
