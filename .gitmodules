@@ -34,3 +34,6 @@
 [submodule "cores/Arcade-Popeye/upstream"]
 	path = cores/Arcade-Popeye/upstream
 	url = https://github.com/MiSTer-devel/Arcade-Popeye_MiSTer.git
+[submodule "cores/Arcade-SEGASYS1/upstream"]
+	path = cores/Arcade-SEGASYS1/upstream
+	url = https://github.com/MiSTer-devel/Arcade-SEGASYS1_MiSTer.git
