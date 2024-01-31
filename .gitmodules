@@ -1,9 +1,6 @@
 [submodule "cores/Template"]
 	path = cores/Template
 	url = https://github.com/MiSTeX-devel/Template_MiSTeX
-[submodule "cores/SMS"]
-	path = cores/SMS
-	url = https://github.com/MiSTeX-devel/SMS_MiSTeX
 [submodule "cores/InputTest"]
 	path = cores/InputTest
 	url = https://github.com/MiSTeX-devel/InputTest_MiSTeX
@@ -13,9 +10,6 @@
 [submodule "cores/Arcade-Pong"]
 	path = cores/Arcade-Pong
 	url = https://github.com/MiSTeX-devel/Arcade-Pong_MiSTeX.git
-[submodule "cores/NES"]
-	path = cores/NES
-	url = https://github.com/MiSTeX-devel/NES_MiSTeX.git
 [submodule "cores/Arcade-DigDug/upstream"]
 	path = cores/Arcade-DigDug/upstream
 	url = https://github.com/MiSTer-devel/Arcade-DigDug_MiSTer.git
