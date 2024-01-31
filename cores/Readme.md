@@ -5,6 +5,7 @@
 |Arcade-BombJack | works    | builds |
 |Arcade-DigDug   | builds   | works |
 |Arcade-Galaga   | builds   | builds |
+|Arcade-Popeye   | works(?) | works |
 |Arcade-QBert    | works    | works |
 |FlappyBird      | works    | works |
 |InputTest       | works    | - |

@@ -31,3 +31,6 @@
 [submodule "cores/InputTest/upstream"]
 	path = cores/InputTest/upstream
 	url = https://github.com/MiSTer-devel/InputTest_MiSTer.git
+[submodule "cores/Arcade-Popeye/upstream"]
+	path = cores/Arcade-Popeye/upstream
+	url = https://github.com/MiSTer-devel/Arcade-Popeye_MiSTer.git
