@@ -5,7 +5,10 @@
 |Arcade-BombJack | works    | compiles |
 |Arcade-DigDug   | compiles | works |
 |Arcade-Galaga   | ?        | compiles |
-|Arcade-DigDug   | works    | works |
+|Arcade-QBert    | works    | works |
 |FlappyBird      | works    | works |
 |InputTest       | works    | - |
 |MemTest         | works    | - |
+|Menu            | works    | works |
+|Template        | works    | works |
+
