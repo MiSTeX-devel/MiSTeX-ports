@@ -28,3 +28,6 @@
 [submodule "cores/MemTest/upstream"]
 	path = cores/MemTest/upstream
 	url = https://github.com/MiSTer-devel/MemTest_MiSTer
+[submodule "cores/InputTest/upstream"]
+	path = cores/InputTest/upstream
+	url = https://github.com/MiSTer-devel/InputTest_MiSTer.git

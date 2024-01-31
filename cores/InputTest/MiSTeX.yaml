@@ -1,0 +1,28 @@
+mainfile: InputTest.sv
+
+use-template-sys: False
+
+defines:
+  MISTER_FB: 1
+
+sourcedirs:
+  - sys
+  - upstream/rtl
+  - upstream/rtl/jt5205
+  - upstream/rtl/JTFRAME
+  - upstream/rtl/tv80
+  - upstream/rtl/jt49
+  - upstream/rtl/jt49/filter
+
+quartus:
+  sourcefiles:
+    - upstream/rtl/pll/pll_0002.v
+    - upstream/sys/sys_top.sdc
+    - upstream/sys/pll_audio_0002.v
+    - upstream/sys/pll_hdmi_0002.v
+    - upstream/sys/hdmi_config.sv
+
+vivado:
+  sourcefiles:
+    - rtl/pll_0002-xilinx7.v
+    - sys/pll_audio_0002-xilinx7.v
