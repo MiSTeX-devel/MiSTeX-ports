@@ -32,4 +32,5 @@ vivado:
     - rtl/dpram.v
     - rtl/pause.v
     - rtl/galaga.vhd
+    - sys/pll_hdmi_0002-xilinx7.v
     - sys/pll_audio_0002-xilinx7.v

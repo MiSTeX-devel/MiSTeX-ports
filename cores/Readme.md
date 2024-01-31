@@ -2,9 +2,9 @@
 
 | **Core** | **Cyclone V** | **Xilinx7** |
 --|--|--
-|Arcade-BombJack | works    | compiles |
-|Arcade-DigDug   | compiles | works |
-|Arcade-Galaga   | ?        | compiles |
+|Arcade-BombJack | works    | builds |
+|Arcade-DigDug   | builds   | works |
+|Arcade-Galaga   | builds   | builds |
 |Arcade-QBert    | works    | works |
 |FlappyBird      | works    | works |
 |InputTest       | works    | - |
