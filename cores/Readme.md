@@ -6,7 +6,7 @@
 |Arcade-DigDug   | works(?) | works |
 |Arcade-Galaga   | works(?) | builds |
 |Arcade-Popeye   | works(?) | works |
-|Arcade-SEGASYS1 | works(?) | works |
+|Arcade-SEGASYS1 | -        | works |
 |Arcade-QBert    | works    | works |
 |FlappyBird      | works    | works |
 |InputTest       | works    | - |
