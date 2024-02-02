@@ -36,16 +36,20 @@ begin
 			if enable_a = '1' then
 				if wren_a = '1' then
 					ram(to_integer(unsigned(address_a))) <= data_a;
+					q_a <= data_a;
+				else
+					q_a <= ram(to_integer(unsigned(address_a)));
 				end if;
-				q_a <= ram(to_integer(unsigned(address_a)));
 			end if;
 		end if;
 		if rising_edge(clock_b) then
 			if enable_b = '1' then
 				if wren_b = '1' then
 					ram(to_integer(unsigned(address_b))) <= data_b;
+					q_b <= data_b;
+				else
+					q_b <= ram(to_integer(unsigned(address_b)));
 				end if;
-				q_b <= ram(to_integer(unsigned(address_b)));
 			end if;
 		end if;
 	end process;
