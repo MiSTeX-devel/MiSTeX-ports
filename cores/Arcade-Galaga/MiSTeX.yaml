@@ -29,7 +29,7 @@ quartus:
 vivado:
   sourcefiles:
     - rtl/pll_0002-xilinx7.v
-    - rtl/dpram.v
+    - rtl/dpram.vhd
     - rtl/pause.v
     - rtl/galaga.vhd
     - sys/pll_hdmi_0002-xilinx7.v

@@ -159,6 +159,27 @@ port(
 end galaga;
 
 architecture struct of galaga is
+COMPONENT dpram is
+	generic (
+			addr_width_g : integer := 8;
+			data_width_g : integer := 8
+	); 
+	PORT
+	(
+		address_a	: IN STD_LOGIC_VECTOR (addr_width_g-1 DOWNTO 0);
+		address_b	: IN STD_LOGIC_VECTOR (addr_width_g-1 DOWNTO 0);
+		clock_a		: IN STD_LOGIC  := '1';
+		clock_b		: IN STD_LOGIC ;
+		data_a		: IN STD_LOGIC_VECTOR (data_width_g-1 DOWNTO 0);
+		data_b		: IN STD_LOGIC_VECTOR (data_width_g-1 DOWNTO 0) := (others => '0');
+		enable_a		: IN STD_LOGIC  := '1';
+		enable_b		: IN STD_LOGIC  := '1';
+		wren_a		: IN STD_LOGIC  := '0';
+		wren_b		: IN STD_LOGIC  := '0';
+		q_a			: OUT STD_LOGIC_VECTOR (data_width_g-1 DOWNTO 0);
+		q_b			: OUT STD_LOGIC_VECTOR (data_width_g-1 DOWNTO 0)
+	);
+END COMPONENT dpram;
 
  signal reset_n: std_logic;
  signal clock_18n : std_logic;
@@ -1090,7 +1111,7 @@ port map(
 );
 
 -- cs51xx program ROM
-cs51xx_prog : work.dpram generic map (10,8)
+cs51xx_prog : component dpram generic map (10,8)
 port map
 (
 	clock_a   => clock_18,
@@ -1139,7 +1160,7 @@ port map(
 );
 
 -- cs54xx program ROM
-cs54xx_prog : work.dpram generic map (10,8)
+cs54xx_prog : component dpram generic map (10,8)
 port map
 (
 	clock_a   => clock_18,
@@ -1211,7 +1232,7 @@ rom51_cs <= '1' when dn_addr(15 downto 10) = "101000" else '0';
 rom54_cs <= '1' when dn_addr(15 downto 10) = "101001" else '0';
 
 -- cpu1 program ROM
-rom_cpu1 : work.dpram generic map (14,8)
+rom_cpu1 : component dpram generic map (14,8)
 port map
 (
 	clock_a   => clock_18,
@@ -1225,7 +1246,7 @@ port map
 );
 
 -- cpu2 program ROM
-rom_cpu2 : work.dpram generic map (12,8)
+rom_cpu2 : component dpram generic map (12,8)
 port map
 (
 	clock_a   => clock_18,
@@ -1239,7 +1260,7 @@ port map
 );
 
 -- cpu3 program ROM
-rom_cpu3 : work.dpram generic map (12,8)
+rom_cpu3 : component dpram generic map (12,8)
 port map
 (
 	clock_a   => clock_18,
@@ -1253,7 +1274,7 @@ port map
 );
 
 -- background graphics ROM
-bg_graphics : work.dpram generic map (13,8)
+bg_graphics : component dpram generic map (13,8)
 port map
 (
 	clock_a   => clock_18,
@@ -1280,7 +1301,7 @@ hs_cs_spram <= '1' when hs_address(15 downto 11) = "10001" else '0';
 hs_data_out <= hs_data_out_bgram when hs_cs_bgram = '1' else hs_data_out_spram;
 
 -- background char RAM   0x8000-0x87FF
-bgram : entity work.dpram
+bgram : component dpram
 generic map(11,8)
 port map(
  clock_a   => clock_18n,
@@ -1296,7 +1317,7 @@ port map(
  q_b       => hs_data_out_bgram
 );
 -- working/sprite register RAM1   0x8800-0x8BFF / 0x8C00-0x8FFF
-wram1 : entity work.dpram
+wram1 : component dpram
 generic map(10,8)
 port map(
  clock_a   => clock_18n,
@@ -1355,7 +1376,7 @@ port map(
 );
 
 -- sprite graphics ROM
-sp_graphics : work.dpram generic map (13,8)
+sp_graphics : component dpram generic map (13,8)
 port map
 (
 	clock_a   => clock_18,
