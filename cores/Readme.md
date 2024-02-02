@@ -7,8 +7,8 @@
 |Arcade-Galaga   | works(?) | works |
 |Arcade-Pacman   | works(?) | works |
 |Arcade-Popeye   | works(?) | works |
-|Arcade-SEGASYS1 | -        | works |
 |Arcade-QBert    | works    | works |
+|Arcade-SEGASYS1 | -        | works |
 |FlappyBird      | works    | works |
 |InputTest       | works    | - |
 |MemTest         | works    | - |
