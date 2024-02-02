@@ -72,6 +72,27 @@ port 	(
 end bombjack_top;
 
 architecture RTL of bombjack_top is
+	component dpram is
+		generic (
+			 addr_width_g : integer := 8;
+			 data_width_g : integer := 8
+		); 
+		PORT
+		(
+			address_a	: IN STD_LOGIC_VECTOR (addr_width_g-1 DOWNTO 0);
+			address_b	: IN STD_LOGIC_VECTOR (addr_width_g-1 DOWNTO 0);
+			clock_a		: IN STD_LOGIC  := '1';
+			clock_b		: IN STD_LOGIC ;
+			data_a		: IN STD_LOGIC_VECTOR (data_width_g-1 DOWNTO 0);
+			data_b		: IN STD_LOGIC_VECTOR (data_width_g-1 DOWNTO 0) := (others => '0');
+			enable_a    : IN STD_LOGIC  := '1';
+			enable_b    : IN STD_LOGIC  := '1';
+			wren_a		: IN STD_LOGIC  := '0';
+			wren_b		: IN STD_LOGIC  := '0';
+			q_a			: OUT STD_LOGIC_VECTOR (data_width_g-1 DOWNTO 0);
+			q_b			: OUT STD_LOGIC_VECTOR (data_width_g-1 DOWNTO 0)
+		);
+	END component;
 
 	signal clk_4M_en		: std_logic := '0';
 	signal clk_6M_en		: std_logic := '0';
@@ -259,7 +280,7 @@ begin
 	-- page 4 schematic - sprite ROMS
 	---------------------------------
 	
-	ROM_7J : work.dpram generic map (13,8)
+	ROM_7J : component dpram generic map (13,8)
 	port map
 	(
 		clock_a   => clk_48M,
@@ -273,7 +294,7 @@ begin
 		q_b       => i_rom_7JLM_data(23 downto 16)
 	);
 
-	ROM_7L : work.dpram generic map (13,8)
+	ROM_7L : component dpram generic map (13,8)
 	port map
 	(
 		clock_a   => clk_48M,
@@ -287,7 +308,7 @@ begin
 		q_b       => i_rom_7JLM_data(15 downto 8)
 	);
 
-	ROM_7M : work.dpram generic map (13,8)
+	ROM_7M : component dpram generic map (13,8)
 	port map
 	(
 		clock_a   => clk_48M,
@@ -305,7 +326,7 @@ begin
 	-- page 6 schematic - character generator ROMs
 	----------------------------------------------
 
-	ROM_8K : work.dpram generic map (13,8)
+	ROM_8K : component dpram generic map (13,8)
 	port map
 	(
 		clock_a   => clk_48M,
@@ -319,7 +340,7 @@ begin
 		q_b       => i_rom_8KHE_data(23 downto 16)
 	);
 	
-	ROM_8H : work.dpram generic map (13,8)
+	ROM_8H : component dpram generic map (13,8)
 	port map
 	(
 		clock_a   => clk_48M,
@@ -333,7 +354,7 @@ begin
 		q_b       => i_rom_8KHE_data(15 downto 8)
 	);
 
-	ROM_8E : work.dpram generic map (13,8)
+	ROM_8E : component dpram generic map (13,8)
 	port map
 	(
 		clock_a   => clk_48M,
@@ -351,7 +372,7 @@ begin
 	-- page 7 schematic - background tiles ROMs
 	-------------------------------------------
 
-	ROM_4P : work.dpram generic map (13,8)
+	ROM_4P : component dpram generic map (13,8)
 	port map
 	(
 		clock_a   => clk_48M,
@@ -365,7 +386,7 @@ begin
 		q_b       => i_rom_4P_data
 	);
 
-	ROM_8R : work.dpram generic map (13,8)
+	ROM_8R : component dpram generic map (13,8)
 	port map
 	(
 		clock_a   => clk_48M,
@@ -379,7 +400,7 @@ begin
 		q_b       => i_rom_8RNL_data(23 downto 16)
 	);
 
-	ROM_8N : work.dpram generic map (13,8)
+	ROM_8N : component dpram generic map (13,8)
 	port map
 	(
 		clock_a   => clk_48M,
@@ -393,7 +414,7 @@ begin
 		q_b       => i_rom_8RNL_data(15 downto 8)
 	);
 
-	ROM_8L : work.dpram generic map (13,8)
+	ROM_8L : component dpram generic map (13,8)
 	port map
 	(
 		clock_a   => clk_48M,

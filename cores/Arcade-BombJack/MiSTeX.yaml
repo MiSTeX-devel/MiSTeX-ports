@@ -11,7 +11,6 @@ sourcedirs:
 
 sourcefiles:
   - upstream/rtl/ym2149/YM2149_linmix.vhd
-  - upstream/rtl/T80/
   - upstream/rtl/T80/T80.vhd
   - upstream/rtl/T80/T80_Pack.vhd
   - upstream/rtl/T80/T80_MCode.vhd
@@ -42,18 +41,25 @@ quartus:
     - upstream/rtl/memory/ram_6ab.vhd
     - upstream/rtl/memory/ram_6c.vhd
     - rtl/pll/pll_0002.v
+    - upstream/rtl/bombjack_top.vhd
+    - upstream/rtl/bombjack/prog_roms_ramb.vhd
+    - upstream/rtl/bombjack/p9_audio_cpu.vhd
 
 vivado:
   sourcefiles:
     - sys/pll_audio_0002-xilinx7.v
     - sys/pll_hdmi_0002-xilinx7.v
+    - rtl/pause.v
     - rtl/pll_0002-xilinx7.v
-    - rtl/dpram.v
-    - rtl/memory/ram_1e.v
-    - rtl/memory/ram_1h.v
-    - rtl/memory/ram_3ef.v
-    - rtl/memory/ram_3k.v
-    - rtl/memory/ram4x.v
-    - rtl/memory/ram_6lm.v
-    - rtl/memory/ram_6ab.v
-    - rtl/memory/ram_6c.v
+    - rtl/dpram.vhd
+    - rtl/memory/ram_1e.vhd
+    - rtl/memory/ram_1h.vhd
+    - rtl/memory/ram_3ef.vhd
+    - rtl/memory/ram_3k.vhd
+    - rtl/memory/ram4x.vhd
+    - rtl/memory/ram_6lm.vhd
+    - rtl/memory/ram_6ab.vhd
+    - rtl/memory/ram_6c.vhd
+    - rtl/bombjack_top.vhd
+    - rtl/bombjack/prog_roms_ramb.vhd
+    - rtl/bombjack/p9_audio_cpu.vhd

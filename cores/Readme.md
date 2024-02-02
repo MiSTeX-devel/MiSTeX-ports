@@ -2,7 +2,7 @@
 
 | **Core** | **Cyclone V** | **Xilinx7** |
 --|--|--
-|Arcade-BombJack | works    | builds |
+|Arcade-BombJack | works    | works |
 |Arcade-DigDug   | works(?) | works |
 |Arcade-Galaga   | works(?) | works |
 |Arcade-Pacman   | works(?) | works |
