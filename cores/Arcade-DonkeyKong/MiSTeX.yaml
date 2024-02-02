@@ -1,0 +1,49 @@
+mainfile: Arcade-DonkeyKong.sv
+
+use-template-sys: True
+
+defines:
+  MISTER_FB: 1
+
+sourcedirs:
+  - sys
+  - upstream/rtl
+  - upstream/rtl/mister-discrete
+  - upstream/rtl/T80
+  - upstream/rtl/t48
+
+quartus:
+  sourcefiles:
+    - sys/sys_top.sdc
+    - sys/pll_hdmi_adj.vhd
+    - sys/altera_pll_reconfig_top.v
+    - sys/altera_pll_reconfig_core.v
+    - sys/pll_cfg.v
+    - sys/pll_audio_0002.v
+    - sys/pll_hdmi_0002.v
+    - sys/hdmi_config.sv
+    - upstream/rtl/pause.v
+    - upstream/rtl/pll_0002.v
+    - upstream/rtl/dpram.vhd
+    - upstream/rtl/dkong_soundboard.sv
+    - upstream/rtl/dkong_dma.v
+    - upstream/rtl/dkong_adec.v
+    - upstream/rtl/T80/T80.vhd
+    - upstream/rtl/dkong_top.v
+    - upstream/rtl/i8035ip.v
+    - upstream/rtl/mister-discrete/resistive_two_way_mixer.sv
+
+vivado:
+  sourcefiles:
+    - sys/pll_hdmi_0002-xilinx7.v
+    - sys/pll_audio_0002-xilinx7.v
+    - rtl/pause.v
+    - rtl/pll_0002-xilinx7.v
+    - rtl/dpram.vhd
+    - rtl/dkong_soundboard.sv
+    - rtl/dkong_dma.v
+    - rtl/dkong_adec.v
+    - rtl/T80/T80.vhd
+    - rtl/dkong_top.v
+    - rtl/i8035ip.v
+    - rtl/mister-discrete/resistive_two_way_mixer.sv
