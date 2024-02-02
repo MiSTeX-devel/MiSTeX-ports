@@ -1,0 +1,43 @@
+mainfile: Arcade-Pacman.sv
+
+use-template-sys: True
+
+defines:
+  MISTER_FB: 1
+
+sourcedirs:
+  - sys
+  - upstream/rtl
+  - upstream/rtl/cpu
+  - upstream/rtl/sn76489
+
+quartus:
+  sourcefiles:
+    - sys/sys_top.sdc
+    - sys/pll_hdmi_adj.vhd
+    - sys/altera_pll_reconfig_top.v
+    - sys/altera_pll_reconfig_core.v
+    - sys/pll_cfg.v
+    - sys/pll_audio_0002.v
+    - sys/pll_hdmi_0002.v
+    - sys/hdmi_config.sv
+    - upstream/rtl/pause.v
+    - upstream/rtl/pll_0002.v
+    - upstream/rtl/dpram.vhd
+    - upstream/rtl/pacman.vhd
+    - upstream/rtl/pacman_video.vhd
+    - upstream/rtl/pacman_rom_descrambler.vhd
+    - upstream/rtl/pacman_audio.vhd
+
+vivado:
+  sourcefiles:
+    - sys/pll_hdmi_0002-xilinx7.v
+    - sys/pll_audio_0002-xilinx7.v
+    - rtl/pause.v
+    - rtl/pll_0002-xilinx7.v
+    - rtl/dpram.vhd
+    - rtl/pacman.vhd
+    - rtl/pacman_video.vhd
+    - rtl/pacman_rom_descrambler.vhd
+    - rtl/pacman_audio.vhd
+

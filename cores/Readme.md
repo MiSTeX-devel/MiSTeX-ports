@@ -5,6 +5,7 @@
 |Arcade-BombJack | works    | builds |
 |Arcade-DigDug   | works(?) | works |
 |Arcade-Galaga   | works(?) | works |
+|Arcade-Pacman   | works(?) | works |
 |Arcade-Popeye   | works(?) | works |
 |Arcade-SEGASYS1 | -        | works |
 |Arcade-QBert    | works    | works |
