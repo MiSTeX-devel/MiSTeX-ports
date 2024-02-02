@@ -37,3 +37,6 @@
 [submodule "cores/Arcade-Pacman/upstream"]
 	path = cores/Arcade-Pacman/upstream
 	url = https://github.com/MiSTer-devel/Arcade-Pacman_MiSTer.git
+[submodule "cores/Arcade-BurgerTime/upstream"]
+	path = cores/Arcade-BurgerTime/upstream
+	url = https://github.com/MiSTer-devel/Arcade-BurgerTime_MiSTer.git
