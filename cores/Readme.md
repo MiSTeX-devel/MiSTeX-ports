@@ -15,4 +15,5 @@
 |InputTest         | works    | - |
 |MemTest           | works    | - |
 |Menu              | works    | works |
+|SMS               | ?        | builds |
 |Template          | works    | works |

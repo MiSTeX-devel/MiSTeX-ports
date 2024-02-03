@@ -1,0 +1,7 @@
+#!/bin/bash
+#
+wla-z80 -o smsboot.o smsboot.asm
+wlalink -v -d -s smsboot.link smsboot.rom
+split -b 16384 smsboot.rom rom_part_
+srec_cat rom_part_aa -binary -o mboot.mif -Memory_Initialization_File
+srec_cat rom_part_aa -binary -o ../rtl/mboot.vhd -VHdl

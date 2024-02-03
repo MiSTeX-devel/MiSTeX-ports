@@ -1,0 +1,90 @@
+mainfile: SMS.sv
+use-template-sys: True
+
+defines:
+  MISTER_FB: 1
+
+sourcedirs:
+  - sys
+  - upstream/rtl
+  - upstream/rtl/T80
+
+sourcefiles:
+  - upstream/rtl/VM2413/phasegenerator.vhd
+  - upstream/rtl/VM2413/attacktable.vhd
+  - upstream/rtl/VM2413/lineartable.vhd
+  - upstream/rtl/VM2413/opll.vhd
+  - upstream/rtl/VM2413/sinetable.vhd
+  - upstream/rtl/VM2413/outputgenerator.vhd
+  - upstream/rtl/VM2413/operator.vhd
+  - upstream/rtl/VM2413/temporalmixer.vhd
+  - upstream/rtl/VM2413/envelopememory.vhd
+  - upstream/rtl/VM2413/slotcounter.vhd
+  - upstream/rtl/VM2413/outputmemory.vhd
+  - upstream/rtl/VM2413/phasememory.vhd
+  - upstream/rtl/VM2413/registermemory.vhd
+  - upstream/rtl/VM2413/feedbackmemory.vhd
+  - upstream/rtl/jt89/jt89.v
+  - upstream/rtl/jt89/jt89_vol.v
+  - upstream/rtl/jt89/jt89_mixer.v
+  - upstream/rtl/jt89/jt89_tone.v
+  - upstream/rtl/jt89/jt89_noise.v
+
+quartus:
+  sourcefiles:
+    - rtl/mboot.mif
+    - sys/sys_top.sdc
+    - sys/pll_hdmi_adj.vhd
+    - sys/altera_pll_reconfig_top.v
+    - sys/altera_pll_reconfig_core.v
+    - sys/pll_cfg.v
+    - sys/pll_audio_0002.v
+    - sys/pll_hdmi_0002.v
+    - sys/hdmi_config.sv
+    - upstream/rtl/pll.v
+    - upstream/rtl/spram.vhd
+    - upstream/rtl/dpram.vhd
+    - upstream/rtl/sdram.sv
+    - upstream/rtl/compressor.sv
+    - upstream/rtl/cheatcodes.sv
+    - upstream/rtl/lightgun.sv
+    - upstream/rtl/MC8123.v
+    - upstream/rtl/parts.v
+    - upstream/rtl/system.vhd
+    - upstream/rtl/T80/T80.vhd
+    - upstream/rtl/T80/T80pa.vhd
+    - upstream/rtl/T80/T80s.vhd
+    - upstream/rtl/VM2413/controller.vhd
+    - upstream/rtl/VM2413/envelopegenerator.vhd
+    - upstream/rtl/VM2413/vm2413.vhd
+    - upstream/rtl/VM2413/voicememory.vhd
+    - upstream/rtl/VM2413/voicerom.vhd
+    - rtl/pll_0002.v
+
+vivado:
+  sourcefiles:
+    - rtl/pll.v
+    - rtl/pll_0002-xilinx7.v
+    - sys/pll_audio_0002-xilinx7.v
+    - sys/sys_dpram.vhd
+    - rtl/spram.vhd
+    - rtl/dpram.vhd
+    - rtl/T80/T80.vhd
+    - rtl/T80/T80pa.vhd
+    - rtl/T80/T80s.vhd
+    - rtl/VM2413/controller.vhd
+    - rtl/VM2413/envelopegenerator.vhd
+    - rtl/VM2413/vm2413.vhd
+    - rtl/VM2413/voicememory.vhd
+    - rtl/VM2413/voicerom.vhd
+    - rtl/eprom_defs_pack.vhd
+    - rtl/mboot.vhd
+    - rtl/sprom.vhd
+    - rtl/system.vhd
+    - rtl/sdram.sv
+    - rtl/compressor.sv
+    - rtl/cheatcodes.sv
+    - rtl/lightgun.sv
+    - rtl/MC8123.v
+    - rtl/parts.v
+    
