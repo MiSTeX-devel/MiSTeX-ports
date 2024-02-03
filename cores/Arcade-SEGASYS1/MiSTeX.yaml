@@ -22,6 +22,7 @@ quartus:
     - sys/pll_hdmi_0002.v
     - sys/hdmi_config.sv
     - upstream/rtl/pll/pll_0002.v
+    - upstream/rtl/parts.v
 
 vivado:
   sourcefiles:
@@ -29,3 +30,4 @@ vivado:
     - sys/pll_hdmi_0002-xilinx7.v
     - sys/pll_audio_0002-xilinx7.v
     - rtl/T80/T80.vhd
+    - rtl/parts.v
