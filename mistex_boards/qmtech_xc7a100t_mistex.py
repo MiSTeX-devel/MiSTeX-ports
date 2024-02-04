@@ -358,8 +358,6 @@ def main(coredir, core):
         ]
 
     add_mainfile(platform, coredir, mistex_yaml)
-    # This platform does not have a dedicated clock pin for the SPI clock
-    platform.add_platform_command("set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets {{hps_spi_clk_IBUF}}]")
 
     platform.add_extension([
         ("serial", 0,
