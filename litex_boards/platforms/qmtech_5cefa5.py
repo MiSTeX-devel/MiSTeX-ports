@@ -126,10 +126,6 @@ class Platform(AlteraPlatform):
     core_resources = [
         ("user_led", 0, Pins("V19"), IOStandard("3.3-V LVCMOS")),
         ("user_led", 1, Pins("T20"), IOStandard("3.3-V LVCMOS")),
-        ("serial", 0,
-            Subsignal("tx", Pins("J3:7"), IOStandard("3.3-V LVCMOS")),
-            Subsignal("rx", Pins("J3:8"), IOStandard("3.3-V LVCMOS"))
-        ),
  ]
 
     def __init__(self, toolchain="quartus", with_daughterboard=False):
