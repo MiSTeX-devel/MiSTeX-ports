@@ -68,12 +68,12 @@ class BaseSoC(SoCCore):
         # SoCCore ----------------------------------------------------------------------------------
         kwargs["uart_name"]            = "serial"
         kwargs["uart_baudrate"]        = 115200
-        kwargs["cpu_type"]             = "None" # "femtorv"
+        kwargs["cpu_type"]             = "femtorv"
         kwargs["l2_size"]              = 0
         kwargs["bus_data_width"]       = 32
         kwargs["bus_address_width"]    = 32
-        # kwargs['integrated_rom_size']  = 0x8000
-        # kwargs['integrated_sram_size'] = 0x1000
+        kwargs['integrated_rom_size']  = 0x8000
+        kwargs['integrated_sram_size'] = 0x1000
         SoCCore.__init__(self, platform, sys_clk_freq, ident = f"{core_name} LiteX SoC on MiSTeX QMTech 5CEFA5", **kwargs)
 
         # SDRAM for scaler -------------------------------------------------------------------------
@@ -348,7 +348,7 @@ def main(coredir, core):
         compile_gateware=True,
         compile_software=True,
         # csr_csv="csr.csv",
-        # bios_console="lite"
+        bios_console="lite"
     )
 
     builder.build(build_name = get_build_name(core))
