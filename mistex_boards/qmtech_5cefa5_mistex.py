@@ -102,7 +102,7 @@ class Gamecore(Module):
 
         # ascal can't take more than 28 bits of address width
         avalon_data_width = 64
-        avalon_address_width = 28
+        avalon_address_width = 26
 
         scaler_ddram_port  = soc.sdram.crossbar.get_port(data_width=avalon_data_width)
         self.scaler_ddram = scaler_ddram   = AvalonMMInterface(data_width=avalon_data_width, adr_width=avalon_address_width)
@@ -130,7 +130,7 @@ class Gamecore(Module):
         sys_top = Instance("sys_top",
             p_DW = avalon_data_width,
             p_AW = avalon_address_width,
-            p_ASCAL_RAMBASE = Constant(0x2000000, 32),
+            p_ASCAL_RAMBASE = Constant(0x0, 32),
 
             i_CLK_50  = ClockSignal("retro"),
             i_CLK_100 = ClockSignal("retro2x"),
@@ -232,8 +232,9 @@ def main(coredir, core):
         "ALTERA": 1,
         "CYCLONEV": 1,
         "CLK_100_EXT": 1,
-        #"MISTER_DEBUG_NOHDMI": 1,
-        "MISTER_DOWNSCALE_NN": 1,
+        "DISABLE_VGA": 1,
+        # "SKIP_SHADOWMASK": 1,
+        # "NO_SCANDOUBLER": 1,
         # "MISTER_DISABLE_ADAPTIVE": 1,
         # "MISTER_SMALL_VBUF": 1,
         "MISTER_DISABLE_YC": 1,
@@ -243,77 +244,109 @@ def main(coredir, core):
     for key, value in defines.items():
         platform.add_platform_command(f'set_global_assignment -name VERILOG_MACRO "{key}={value}"')
 
+    platform.add_platform_command("set_global_assignment -name TIMEQUEST_MULTICORNER_ANALYSIS OFF")
+    platform.add_platform_command("set_global_assignment -name OPTIMIZE_POWER_DURING_FITTING OFF")
+    platform.add_platform_command("set_global_assignment -name FINAL_PLACEMENT_OPTIMIZATION ALWAYS")
+    platform.add_platform_command("set_global_assignment -name FITTER_EFFORT \"STANDARD FIT\"")
+    platform.add_platform_command("set_global_assignment -name OPTIMIZATION_MODE \"HIGH PERFORMANCE EFFORT\"")
+    platform.add_platform_command("set_global_assignment -name ALLOW_POWER_UP_DONT_CARE ON")
+    platform.add_platform_command("set_global_assignment -name QII_AUTO_PACKED_REGISTERS \"SPARSE AUTO\"")
+    platform.add_platform_command("set_global_assignment -name ROUTER_LCELL_INSERTION_AND_LOGIC_DUPLICATION ON")
+    platform.add_platform_command("set_global_assignment -name PHYSICAL_SYNTHESIS_COMBO_LOGIC ON")
+    platform.add_platform_command("set_global_assignment -name PHYSICAL_SYNTHESIS_EFFORT EXTRA")
+    platform.add_platform_command("set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_DUPLICATION ON")
+    platform.add_platform_command("set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_RETIMING ON")
+    platform.add_platform_command("set_global_assignment -name OPTIMIZATION_TECHNIQUE SPEED")
+    platform.add_platform_command("set_global_assignment -name MUX_RESTRUCTURE ON")
+    platform.add_platform_command("set_global_assignment -name REMOVE_REDUNDANT_LOGIC_CELLS ON")
+    platform.add_platform_command("set_global_assignment -name AUTO_DELAY_CHAINS_FOR_HIGH_FANOUT_INPUT_PINS ON")
+    platform.add_platform_command("set_global_assignment -name PHYSICAL_SYNTHESIS_COMBO_LOGIC_FOR_AREA ON")
+    platform.add_platform_command("set_global_assignment -name ADV_NETLIST_OPT_SYNTH_WYSIWYG_REMAP ON")
+    platform.add_platform_command("set_global_assignment -name SYNTH_GATED_CLOCK_CONVERSION ON")
+    platform.add_platform_command("set_global_assignment -name PRE_MAPPING_RESYNTHESIS ON")
+    platform.add_platform_command("set_global_assignment -name ROUTER_CLOCKING_TOPOLOGY_ANALYSIS ON")
+    platform.add_platform_command("set_global_assignment -name ECO_OPTIMIZE_TIMING ON")
+    platform.add_platform_command("set_global_assignment -name PERIPHERY_TO_CORE_PLACEMENT_AND_ROUTING_OPTIMIZATION ON")
+    platform.add_platform_command("set_global_assignment -name PHYSICAL_SYNTHESIS_ASYNCHRONOUS_SIGNAL_PIPELINING ON")
+    platform.add_platform_command("set_global_assignment -name ALM_REGISTER_PACKING_EFFORT LOW")
+    platform.add_platform_command("set_global_assignment -name OPTIMIZE_POWER_DURING_SYNTHESIS OFF")
+    platform.add_platform_command("set_global_assignment -name ROUTER_REGISTER_DUPLICATION ON")
+    platform.add_platform_command("set_global_assignment -name FITTER_AGGRESSIVE_ROUTABILITY_OPTIMIZATION ALWAYS")
+    platform.add_platform_command("set_global_assignment -name SEED 1")
+
     platform.add_extension([
         ("serial", 0,
             Subsignal("rx",   Pins("J3:14")),
             Subsignal("tx",   Pins("J3:12")),
-            IOStandard("3.3-V LVCMOS")
+            IOStandard("3.3-V LVTTL")
         ),
         ("led", 0,
             Subsignal("hdd",   Pins("J2:51")),
             Subsignal("user",  Pins("J2:54")),
             Subsignal("power", Pins("J2:53")),
-            IOStandard("3.3-V LVCMOS")
+            IOStandard("3.3-V LVTTL")
         ),
         ("button", 0,
             Subsignal("reset", Pins("J2:49")),
             Subsignal("osd",   Pins("J2:50")),
             Subsignal("user",  Pins("J2:52")),
-            IOStandard("3.3-V LVCMOS")
+            IOStandard("3.3-V LVTTL")
         ),
         ("audio", 0,
             Subsignal("spdif",      Pins("J2:35")),
             Subsignal("l",          Pins("J2:42")),
             Subsignal("r",          Pins("J2:41")),
-            IOStandard("3.3-V LVCMOS")
+            IOStandard("3.3-V LVTTL"),
+            Misc("CURRENT_STRENGTH_NEW 8MA")
         ),
         ("hps_spi", 0,
             Subsignal("cs_n", Pins("J3:16")),
             Subsignal("mosi", Pins("J3:11")),
             Subsignal("miso", Pins("J3:13")),
             Subsignal("clk",  Pins("J3:17")), # This is a clock pin on the Artix 100T
-            IOStandard("3.3-V LVCMOS"),
+            IOStandard("3.3-V LVTTL"),
         ),
         ("hps_control", 0,
             Subsignal("core_reset",  Pins("J3:8")),
             Subsignal("fpga_enable", Pins("J3:7")),
             Subsignal("osd_enable",  Pins("J3:9")),
             Subsignal("io_enable",   Pins("J3:10")),
-            IOStandard("3.3-V LVCMOS"),
+            IOStandard("3.3-V LVTTL"),
         ),
         ("rgb", 0,
             Subsignal("d",      Pins(
                 "J2:33 J2:34 J2:31 J2:32 J2:29 J2:30 J2:27 J2:28", 
                 "J2:25 J2:26 J2:23 J2:24 J2:17 J2:18 J2:15 J2:16", 
-                "J2:13 J2:14 J2:11 J2:12 J2:9  J2:10 J2:7  J2:8")),
-            Subsignal("de",     Pins("J2:21")),
-            Subsignal("clk",    Pins("J2:22")),
-            Subsignal("hsync",  Pins("J2:19")),
-            Subsignal("vsync",  Pins("J2:20")),
+                "J2:13 J2:14 J2:11 J2:12 J2:9  J2:10 J2:7  J2:8"),
+                Misc("CURRENT_STRENGTH_NEW 8MA"), Misc("FAST_OUTPUT_REGISTER ON")),
+            Subsignal("de",     Pins("J2:21"), Misc("FAST_OUTPUT_REGISTER ON")),
+            Subsignal("clk",    Pins("J2:22"), Misc("FAST_OUTPUT_REGISTER ON")),
+            Subsignal("hsync",  Pins("J2:19"), Misc("FAST_OUTPUT_REGISTER ON")),
+            Subsignal("vsync",  Pins("J2:20"), Misc("FAST_OUTPUT_REGISTER ON")),
             Subsignal("int",    Pins("J2:36")),
-            IOStandard("3.3-V LVCMOS")
+            IOStandard("3.3-V LVTTL"),
         ),
         ("i2s", 0,
             Subsignal("dat",    Pins("J2:37")),
             Subsignal("mclk",   Pins("J2:38")),
             Subsignal("lrclk",  Pins("J2:39")),
             Subsignal("sclk",   Pins("J2:40")),
-            IOStandard("3.3-V LVCMOS"),
+            IOStandard("3.3-V LVTTL"),
         ),
         # ("spibone", 0, 
         #     Subsignal("clk",  Pins("")),
         #     Subsignal("mosi", Pins("")),
         #     Subsignal("miso", Pins("")),
         #     Subsignal("cs_n", Pins("")),
-        #     IOStandard("3.3-V LVCMOS")),
+        #     IOStandard("3.3-V LVTTL")),
         ("i2c", 0,
             Subsignal("sda",   Pins("J2:43")),
             Subsignal("scl",   Pins("J2:44")),
-            IOStandard("3.3-V LVCMOS"),
+            IOStandard("3.3-V LVTTL"),
         ),
         ("snac", 0,
             Subsignal("user",   Pins("J3:22 J3:20 J3:18 J3:19 J3:21 J3:23 J3:24")),
-            IOStandard("3.3-V LVCMOS"),
+            IOStandard("3.3-V LVTTL"),
         ),
         ("sdram", 1,
             Subsignal("a",     Pins(
@@ -327,14 +360,20 @@ def main(coredir, core):
             Subsignal("we_n",  Pins("J3:49")),
             Subsignal("dq", Pins(
                 "J3:25 J3:26 J3:27 J3:28 J3:29 J3:30 J3:31 J3:32",
-                "J3:40 J3:39 J3:38 J3:37 J3:36 J3:35 J3:34 J3:33")),
-            IOStandard("3.3-V LVCMOS")
+                "J3:40 J3:39 J3:38 J3:37 J3:36 J3:35 J3:34 J3:33"),
+                Misc("FAST_OUTPUT_ENABLE_REGISTER ON"),
+                Misc("FAST_INPUT_REGISTER ON")),
+            IOStandard("3.3-V LVTTL"),
+            Misc("CURRENT_STRENGTH_NEW \"MAXIMUM CURRENT\""),
+            Misc("FAST_OUTPUT_REGISTER ON"),
+            Misc("ALLOW_SYNCH_CTRL_USAGE OFF"),
         ),
         ("sdcard", 0,
             Subsignal("clk",  Pins("J2:58")),
             Subsignal("cmd",  Pins("J2:57")),
             Subsignal("data", Pins("J2:60 J2:59 J2:55 J2:56")),
-            IOStandard("3.3-V LVCMOS")
+            IOStandard("3.3-V LVTTL"),
+            Misc("CURRENT_STRENGTH_NEW \"MAXIMUM CURRENT\""),
         ),
     ])
 
