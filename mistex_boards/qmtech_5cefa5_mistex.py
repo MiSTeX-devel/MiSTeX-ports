@@ -360,7 +360,7 @@ def main(coredir, core):
             Subsignal("we_n",  Pins("J3:49")),
             Subsignal("dq", Pins(
                 "J3:25 J3:26 J3:27 J3:28 J3:29 J3:30 J3:31 J3:32",
-                "J3:40 J3:39 J3:38 J3:37 J3:36 J3:35 J3:34 J3:33"),
+                "J3:40 J3:39 J3:38 J3:37 J3:36 J3:35 J3:33 J3:34"),
                 Misc("FAST_OUTPUT_ENABLE_REGISTER ON"),
                 Misc("FAST_INPUT_REGISTER ON")),
             IOStandard("3.3-V LVTTL"),
