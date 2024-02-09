@@ -434,7 +434,7 @@ def main(coredir, core):
         ("sdram", 0,
             Subsignal("a",     Pins(
                 "J3:57 J3:58 J3:59 J3:60 J3:50 J3:47 J3:48 J3:45",
-                "J3:46 J3:43 J3:44 J3:41")),
+                "J3:46 J3:43 J3:56 J3:44 J3:41")),
             Subsignal("ba",    Pins("J3:54 J3:55")),
             Subsignal("cs_n",  Pins("J3:53")),
             Subsignal("clk",   Pins("J3:42")),
