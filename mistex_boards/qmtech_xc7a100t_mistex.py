@@ -67,10 +67,9 @@ class _CRG(LiteXModule):
         pll.create_clkout (self.cd_retro,     50e6)
         pll.create_clkout (self.cd_retro2x,   100e6)
 
-        self.hdmipll = hdmipll = S7PLL(speedgrade=-1)
+        self.hdmipll = hdmipll = S7MMCM(speedgrade=-1)
         hdmipll.register_clkin(clk_in,          50e6)
         hdmipll.create_clkout(self.cd_hdmi,     74.25e6)
-        #hdmipll.create_clkout(self.cd_hdmi5x, 5*74.25e6)
 
         platform.add_false_path_constraints(self.cd_sys.clk, pll.clkin) # Ignore sys_clk to pll.clkin path created by SoC's rst.
         platform.add_false_path_constraints(self.cd_retro2x.clk, pll.clkin) # Ignore sys_clk to pll.clkin path created by SoC's rst.
@@ -216,9 +215,9 @@ class Gamecore(Module):
             o_CLK_VIDEO     = ClockSignal("video"),
             o_CLK_EMU_DDRAM = ClockSignal("emu_ddram"),
 
-            # Let do the HPS do I2C
-            # o_HDMI_I2C_SCL,
-            # io_HDMI_I2C_SDA,
+            # Let the HPS do the I2C
+            # o_HDMI_I2C_SCL  = i2c.scl,
+            # io_HDMI_I2C_SDA = i2c.sda,
 
             # I2S
             o_HDMI_MCLK   = i2s.mclk,
