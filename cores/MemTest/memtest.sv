@@ -126,7 +126,6 @@ module emu
 	output  [7:0] DDRAM_BE,
 	output        DDRAM_WE,
 
-`ifdef USE_SDRAM
 	//SDRAM interface with lower latency
 	output        SDRAM_CLK,
 	output        SDRAM_CKE,
@@ -139,7 +138,6 @@ module emu
 	output        SDRAM_nCAS,
 	output        SDRAM_nRAS,
 	output        SDRAM_nWE,
-`endif
 
 `ifdef DUAL_SDRAM
 	//Secondary SDRAM
@@ -220,19 +218,19 @@ hps_io #(.CONF_STR(CONF_STR)) hps_io
 	.HPS_BUS(HPS_BUS),
 
 	.status(status),
-	.status_menumask({status[5]}),
 	.buttons(buttons),
 	.sdram_sz(sdram_sz),
 
 	.joystick_0(joystick_0),
 	.ps2_key(ps2_key),
+	.ps2_kbd_led_use(0),
+	.ps2_kbd_led_status(0),
 	.DEBUG(DEBUG)
 );
 
 
 ///////////////////////////////////////////////////////////////////
 wire clk_ram, locked;
-wire videoclk;
 
 pll pll
 (
@@ -240,10 +238,6 @@ pll pll
 	.refclk(CLK_50M),
 	.rst(pll_reset | RESET),
 	.outclk_0(clk_ram)
-`ifndef CYCLONEV
-	,
-	.outclk_1(videoclk)
-`endif
 );
 
 wire        mgmt_waitrequest;
