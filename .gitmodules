@@ -43,3 +43,6 @@
 [submodule "cores/Arcade-DonkeyKong/upstream"]
 	path = cores/Arcade-DonkeyKong/upstream
 	url = https://github.com/MiSTer-devel/Arcade-DonkeyKong_MiSTer.git
+[submodule "cores/Arcade-Tecmo/upstream"]
+	path = cores/Arcade-Tecmo/upstream
+	url = https://github.com/MiSTer-devel/Arcade-Tecmo_MiSTer.git
