@@ -23,8 +23,10 @@ END sprom;
 
 ARCHITECTURE SYN OF sprom IS
 BEGIN
-	process (address)
+	process (clock)
 	begin 
-		q <= eprom_rom(conv_integer(address));
+		if rising_edge(clock) then
+			q <= eprom_rom(conv_integer(address));
+		end if;
 	end process;
 END SYN;

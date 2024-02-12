@@ -11,14 +11,14 @@ entity dpram is
 	(
 		address_a	: IN STD_LOGIC_VECTOR (widthad_a-1 DOWNTO 0);
 		address_b	: IN STD_LOGIC_VECTOR (widthad_a-1 DOWNTO 0);
-		clock_a		: IN STD_LOGIC  := '1';
+		clock_a		: IN STD_LOGIC ;
 		clock_b		: IN STD_LOGIC ;
 		data_a		: IN STD_LOGIC_VECTOR (width_a-1 DOWNTO 0);
 		data_b		: IN STD_LOGIC_VECTOR (width_a-1 DOWNTO 0) := (others => '0');
 		enable_a    : IN STD_LOGIC  := '1';
 		enable_b    : IN STD_LOGIC  := '1';
-		wren_a		: IN STD_LOGIC  := '0';
-		wren_b		: IN STD_LOGIC  := '0';
+		wren_a		: IN STD_LOGIC  := '1';
+		wren_b		: IN STD_LOGIC  := '1';
 		q_a			: OUT STD_LOGIC_VECTOR (width_a-1 DOWNTO 0);
 		q_b			: OUT STD_LOGIC_VECTOR (width_a-1 DOWNTO 0)
 	);

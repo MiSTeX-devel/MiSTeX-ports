@@ -4,16 +4,15 @@ use		IEEE.numeric_std.all;
 
 entity spram is
 	generic (
-		 widthad_a : integer := 8;
+		 widthad_a : integer := 14;
 		 width_a   : integer := 8
 	); 
 	PORT
 	(
-		address	: IN STD_LOGIC_VECTOR (widthad_a-1 DOWNTO 0);
-		clock		: IN STD_LOGIC  := '1';
+		address	    : IN STD_LOGIC_VECTOR (widthad_a-1 DOWNTO 0);
+		clock		: IN STD_LOGIC;
 		data		: IN STD_LOGIC_VECTOR (width_a-1 DOWNTO 0);
-		enable    : IN STD_LOGIC  := '1';
-		wren		: IN STD_LOGIC  := '0';
+		wren		: IN STD_LOGIC;
 		q			: OUT STD_LOGIC_VECTOR (width_a-1 DOWNTO 0)
 	);
 END spram;
@@ -27,13 +26,11 @@ begin
 	process (clock)
 	begin
 		if rising_edge(clock) then
-			if enable = '1' then
-				if wren = '1' then
-					ram(to_integer(unsigned(address))) <= data;
-					q <= data;
-				else
-					q <= ram(to_integer(unsigned(address)));
-				end if;
+			if wren = '1' then
+				ram(to_integer(unsigned(address))) <= data;
+				q <= data;
+			else
+				q <= ram(to_integer(unsigned(address)));
 			end if;
 		end if;
 	end process;

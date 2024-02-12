@@ -178,11 +178,11 @@ always @(posedge clk) begin
 		                          default: SDRAM_A <= 13'b0000000000000;
 	endcase
 
-	if(q == STATE_START) SDRAM_BA <= (mode == MODE_NORMAL) ? bank : 2'b00;
+	if(q == STATE_START) SDRAM_BA                 <= (mode == MODE_NORMAL) ? bank : 2'b00;
 	if(q == STATE_READY && ~wr && ram_req) sd_dat <= SDRAM_DQ;
 end
 
-assign SDRAM_DQ = STATE_CONT ? {data,data} : 16'hZZZZ;
+assign SDRAM_DQ = (q == STATE_CONT) ? {data, data} : 16'hZZZZ;
 
 
 endmodule
