@@ -1,0 +1,64 @@
+mainfile: neogeo.sv
+
+use-template-sys: True
+
+sourcedirs:
+  - sys
+  - upstream/rtl
+  - upstream/rtl/video
+  - upstream/rtl/cells
+  - upstream/rtl/io
+  - upstream/rtl/cd
+  - upstream/rtl/mem
+  - upstream/rtl/cpu
+  - upstream/rtl/cpu/FX68K
+  - upstream/rtl/cpu/T80
+  - upstream/rtl/jt49/hdl
+  - upstream/rtl/jt49/hdl/filter
+  - upstream/rtl/jt12/hdl
+  - upstream/rtl/jt12/hdl/dac
+  - upstream/rtl/jt12/hdl/mixer
+  - upstream/rtl/jt12/hdl/deprecated
+  - upstream/rtl/jt12/hdl/adpcm
+  - upstream/rtl/jt12/hdl/alt
+
+quartus:
+  sourcefiles:
+    - sys/sys_top.sdc
+    - sys/pll_hdmi_adj.vhd
+    - sys/altera_pll_reconfig_top.v
+    - sys/altera_pll_reconfig_core.v
+    - sys/pll_cfg.v
+    - sys/pll_audio_0002.v
+    - sys/pll_hdmi_0002.v
+    - sys/hdmi_config.sv
+    - upstream/rtl/pll/pll_0002.v
+    - upstream/rtl/mem/sdram.sv
+    - upstream/rtl/mem/dpram.v
+
+vivado:
+  sourcefiles:
+    - sys/pll_hdmi_0002-xilinx7.v
+    - sys/pll_audio_0002-xilinx7.v
+    - rtl/pll_0002-xilinx7.v
+    - rtl/video/irq.v
+    - rtl/video/neo_b1.v
+    - rtl/video/videosync.v
+    - rtl/video/lspc2_a2.v
+    - rtl/video/lspc_regs.v
+    - rtl/video/neo_cmc.v
+    - rtl/video/autoanim.v
+    - rtl/io/watchdog.v
+    - rtl/io/neo_d0.v
+    - rtl/io/c1_regs.v
+    - rtl/mem/dpram.v
+    - rtl/mem/sdram.sv
+    - rtl/mem/sdram_mux.sv
+    - rtl/mem/cpram.vhd
+    - rtl/mem/ddram.sv
+    - rtl/cpu/cpu_z80.v
+    - rtl/cd/lc8951.v
+    - rtl/cd/cdda.v
+    - rtl/cd/hps_ext.v
+    - rtl/cd/cd.sv
+    - rtl/cd/drive.v

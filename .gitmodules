@@ -46,3 +46,6 @@
 [submodule "cores/Arcade-Tecmo/upstream"]
 	path = cores/Arcade-Tecmo/upstream
 	url = https://github.com/MiSTer-devel/Arcade-Tecmo_MiSTer.git
+[submodule "cores/NeoGeo/upstream"]
+	path = cores/NeoGeo/upstream
+	url = https://github.com/MiSTer-devel/NeoGeo_MiSTer
