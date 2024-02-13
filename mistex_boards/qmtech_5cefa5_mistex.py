@@ -170,9 +170,9 @@ class Gamecore(Module):
             o_LED_USER  = led.user,
             o_LED_HDD   = led.hdd,
             o_LED_POWER = led.power,
-            i_BTN_USER  = button.user,
-            i_BTN_OSD   = button.osd,
-            i_BTN_RESET = button.reset,
+            # i_BTN_USER  # connected to HPS
+            # i_BTN_OSD   # connected to HPS
+            # i_BTN_RESET # connected to HPS
 
             o_SD_SPI_CS   = sdcard.data[3],
             i_SD_SPI_MISO = sdcard.data[0],

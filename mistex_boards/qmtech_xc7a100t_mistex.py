@@ -122,47 +122,6 @@ class BaseSoC(SoCCore):
         the_emu_ddram_clk = Signal()
         self.comb += the_emu_ddram_clk.eq(ClockSignal("emu_ddram"))
 
-        if self.debug:
-            # SPIBone ----------------------------------------------------------------------------------
-            self.submodules.spibone = spibone = SPIBone(platform.request("spibone"))
-            self.add_wb_master(spibone.bus)
-            #self.add_uartbone(name="serial", clk_freq=sys_clk_freq, baudrate=115200) #baudrate=500000)
-
-            from litescope import LiteScopeAnalyzer
-            analyzer_signals = [
-                # DBus (could also just added as self.cpu.dbus)
-                self.gamecore.scaler_ddram.address,
-                self.gamecore.scaler_ddram.waitrequest,
-                self.gamecore.scaler_ddram.read,
-                #self.gamecore.scaler_ddram.readdata,
-                self.gamecore.scaler_ddram.readdatavalid,
-                self.gamecore.scaler_ddram.write,
-                #self.gamecore.scaler_ddram.writedata,
-                self.gamecore.scaler_ddram.burstcount,
-
-                the_emu_ddram_clk,
-                self.gamecore.emu_ddram.address,
-                self.gamecore.emu_ddram.waitrequest,
-                self.gamecore.emu_ddram.read,
-                #self.gamecore.emu_ddram.readdata,
-                self.gamecore.emu_ddram.readdatavalid,
-                self.gamecore.emu_ddram.write,
-                #self.gamecore.emu_ddram.writedata,
-                self.gamecore.emu_ddram.burstcount,
-
-                #self.gamecore.videophy.sink.valid,
-                #self.gamecore.videophy.sink.ready,
-                #self.gamecore.videophy.sink.de,
-                #self.gamecore.videophy.sink.hsync,
-                #self.gamecore.videophy.sink.vsync,
-            ]
-            self.analyzer = LiteScopeAnalyzer(analyzer_signals,
-                depth        = 2048,
-                samplerate   = sys_clk_freq,
-                clock_domain = "sys",
-                csr_csv      = "analyzer.csv")
-
-
 # MiSTeX core --------------------------------------------------------------------------------------------
 
 class Gamecore(Module):
@@ -177,6 +136,20 @@ class Gamecore(Module):
         audio       = platform.request("audio")
         hps_spi     = platform.request("hps_spi")
         hps_control = platform.request("hps_control")
+
+        if soc.debug:
+            # SPIBone ----------------------------------------------------------------------------------
+            self.submodules.spibone = spibone = SPIBone(platform.request("spibone"))
+            self.add_wb_master(spibone.bus)
+
+            from litescope import LiteScopeAnalyzer
+            analyzer_signals = [
+            ]
+            self.analyzer = LiteScopeAnalyzer(analyzer_signals,
+                depth        = 2048,
+                samplerate   = sys_clk_freq,
+                clock_domain = "sys",
+                csr_csv      = "analyzer.csv")
 
         # ascal can't take more than 28 bits of address width
         avalon_data_width = 64
@@ -220,10 +193,11 @@ class Gamecore(Module):
             # io_HDMI_I2C_SDA = i2c.sda,
 
             # I2S
-            o_HDMI_MCLK   = i2s.mclk,
-            o_HDMI_SCLK   = i2s.sclk,
-            o_HDMI_LRCLK  = i2s.lrclk,
-            o_HDMI_I2S    = i2s.dat,
+            o_HDMI_MCLK   = i2s.mclk  if not soc.debug else None,
+            o_HDMI_SCLK   = i2s.sclk  if not soc.debug else None,
+            o_HDMI_LRCLK  = i2s.lrclk if not soc.debug else None,
+            o_HDMI_I2S    = i2s.dat   if not soc.debug else None,
+
             #
             o_HDMI_TX_CLK = rgb.clk,
             o_HDMI_TX_DE  = rgb.de,
@@ -255,9 +229,9 @@ class Gamecore(Module):
             o_LED_USER  = led.user,
             o_LED_HDD   = led.hdd,
             o_LED_POWER = led.power,
-            i_BTN_USER  = button.user,
-            i_BTN_OSD   = button.osd,
-            i_BTN_RESET = button.reset,
+            # i_BTN_USER  # connected to HPS
+            # i_BTN_OSD   # connected to HPS
+            # i_BTN_RESET # connected to HPS
 
             o_SD_SPI_CS   = sdcard.data[3],
             i_SD_SPI_MISO = sdcard.data[0],
@@ -324,11 +298,8 @@ def main(coredir, core):
         # On Xilinx we need this to get a proper clock tree
         ('CLK_100_EXT', 1),
 
-        # do not enable DEBUG_NOHDMI in release!
-        # ('MISTER_DEBUG_NOHDMI', 1),
-
         # disable bilinear filtering when downscaling
-        ('MISTER_DOWNSCALE_NN', 1),
+        # ('MISTER_DOWNSCALE_NN', 1),
 
         # disable adaptive scanline filtering
         #('MISTER_DISABLE_ADAPTIVE', 1),
@@ -415,12 +386,12 @@ def main(coredir, core):
             Subsignal("sclk",   Pins("J2:40")),
             IOStandard("LVCMOS33"),
         ),
-        # ("spibone", 0, 
-        #     Subsignal("clk",  Pins("")),
-        #     Subsignal("mosi", Pins("")),
-        #     Subsignal("miso", Pins("")),
-        #     Subsignal("cs_n", Pins("")),
-        #     IOStandard("LVCMOS33")),
+        ("spibone", 0, 
+            Subsignal("clk",  Pins("J2:37")),
+            Subsignal("mosi", Pins("J2:38")),
+            Subsignal("miso", Pins("J2:39")),
+            Subsignal("cs_n", Pins("J2:40")),
+            IOStandard("LVCMOS33")),
         ("i2c", 0,
             Subsignal("sda",   Pins("J2:43")),
             Subsignal("scl",   Pins("J2:44")),
@@ -442,7 +413,7 @@ def main(coredir, core):
             Subsignal("we_n",  Pins("J3:49")),
             Subsignal("dq", Pins(
                 "J3:25 J3:26 J3:27 J3:28 J3:29 J3:30 J3:31 J3:32",
-                "J3:40 J3:39 J3:38 J3:37 J3:36 J3:35 J3:33 J3:34"),
+                "J3:40 J3:39 J3:38 J3:37 J3:36 J3:35 J3:33 J3:34")),
             IOStandard("LVCMOS33")
         ),
         ("sdcard", 0,
