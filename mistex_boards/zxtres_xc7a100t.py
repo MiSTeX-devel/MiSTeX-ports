@@ -17,7 +17,7 @@ from migen.genlib.misc import WaitTimer
 from migen.genlib.cdc import MultiReg
 from litex.gen.fhdl.module import LiteXModule
 from litex.build.generic_platform import *
-from litex_boards.platforms import zxtres_artix7_fgg484
+from platforms import zxtres_artix7_fgg484
 
 from litex.soc.cores.spi.spi_bone import SPIBone
 from litex.soc.cores.clock import S7PLL, S7IDELAYCTRL, S7MMCM

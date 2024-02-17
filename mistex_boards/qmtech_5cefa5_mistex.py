@@ -17,7 +17,7 @@ from migen.genlib.misc import WaitTimer
 from litex.gen.fhdl.module import LiteXModule
 from litex.build.generic_platform import *
 from litex.build.io import DDROutput
-from litex_boards.platforms import qmtech_5cefa5
+from platforms import qmtech_5cefa5
 
 from litex.soc.integration.soc_core import SoCCore
 from litex.soc.integration.builder import *
