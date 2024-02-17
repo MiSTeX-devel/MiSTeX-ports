@@ -49,3 +49,6 @@
 [submodule "cores/NeoGeo/upstream"]
 	path = cores/NeoGeo/upstream
 	url = https://github.com/MiSTer-devel/NeoGeo_MiSTer
+[submodule "cores/SMS/upstream"]
+	path = cores/SMS/upstream
+	url = https://github.com/MiSTer-devel/SMS_MiSTer.git
