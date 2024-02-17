@@ -11,7 +11,7 @@
 |Arcade-Popeye     | untested | works |
 |Arcade-QBert      | works    | works |
 |Arcade-SEGASYS1   | untested | works |
-|Arcade-Tecmo      | builds   | - |
+|Arcade-Tecmo      | builds   | builds|
 |FlappyBird        | works    | works |
 |InputTest         | works    | - |
 |MemTest           | works    | - |

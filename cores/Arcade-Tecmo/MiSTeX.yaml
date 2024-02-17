@@ -37,4 +37,17 @@ vivado:
   sourcefiles:
     - sys/pll_hdmi_0002-xilinx7.v
     - sys/pll_audio_0002-xilinx7.v
-
+    - rtl/pll_0002-xilinx7.v
+    - lib/fixed_pkg/fixed_float_types_c.vhd
+    - lib/fixed_pkg/fixed_pkg_c.vhd
+    - lib/opl2/opl2.v
+    - lib/opl2/timer.v
+    - lib/t80/T80.vhd
+    - rtl/gpu/sprite_layer.vhd
+    - rtl/gpu/video_gen.vhd
+    - rtl/mem/dual_port_ram.vhd
+    - rtl/mem/single_port_ram.vhd
+    - rtl/mem/true_dual_port_ram.vhd
+    - rtl/pll_0002-xilinx7.v
+    - rtl/snd/mixer.vhd
+    - rtl/tecmo.vhd
