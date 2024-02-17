@@ -29,6 +29,7 @@ begin
 		if rising_edge(clock) then
 			if wren = '1' then
 				ram(to_integer(unsigned(address))) <= data;
+				q <= data;
 			end if;
 			q <= ram(to_integer(unsigned(address)));
 		end if;
