@@ -3,7 +3,6 @@ module  pll_0002(
 	input  wire refclk,
 	input  wire rst,
 	output wire outclk_0,
-	output wire outclk_1,
 	output wire locked,
 	input  wire [63:0] reconfig_to_pll,
 	output wire [63:0] reconfig_from_pll
@@ -197,7 +196,7 @@ ALTPLL #(
 	.INCLK(refclk),
 	.PFDENA(1'd1),
 	.PLLENA(1'd1),
-	.CLK({outclk_1, outclk_0}),
+	.CLK(outclk_0),
 	.LOCKED(locked)
 );
 `endif

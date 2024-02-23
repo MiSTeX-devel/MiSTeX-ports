@@ -15,13 +15,19 @@ quartus:
   sourcefiles:
     - rtl/pll_0002.v
     - upstream/rtl/vpll/vpll_0002.v
-    - sys/sys_top.sdc
-    - sys/pll_hdmi_0002.v
-    - sys/hdmi_config.sv
+    - upstream/rtl/sdram.v
+    - upstream/rtl/tester.v
+    - upstream/sys/sys_top.sdc
+    - upstream/sys/pll_hdmi_0002.v
+    - upstream/sys/hdmi_config.sv
 
 vivado:
   sourcefiles:
-    # TODO: port to vivado, implement dynamic reconfig PLL
-    # - rtl/pll_0002-xilinx7.v
+    - rtl/pll_0002-xilinx7.v
+    - rtl/vpll_0002-xilinx7.v
+    - rtl/sdram.v
+    - rtl/tester.v
+    - sys/xilinx7_mmcm_reconfig.v
+    - sys/xilinx_pll_reconfig_top.v
     - sys/pll_hdmi_0002-xilinx7.v
     - sys/pll_audio_0002-xilinx7.v
