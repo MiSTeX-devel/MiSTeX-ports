@@ -25,10 +25,8 @@ quartus:
     - sys_sdcard.v
     - sys/altera_pll_reconfig_top.v
     - sys/altera_pll_reconfig_core.v
-    - sys/pll_cfg.v
     - sys/pll_audio_0002.v
     - sys/pll_hdmi_0002.v
-    - sys/pll_hdmi_adj.vhd
     - sys/hdmi_config.sv
     # rtl
     - upstream/rtl/dpram.vhd
@@ -47,8 +45,11 @@ quartus:
 
 vivado:
   sourcefiles:
-    - sys/pll_audio_0002-xilinx7.v
+    - rtl/pll_0002-xilinx7.v
+    - sys/xilinx7_mmcm_reconfig.v
+    - sys/xilinx_pll_reconfig_top.v
     - sys/pll_hdmi_0002-xilinx7.v
+    - sys/pll_audio_0002-xilinx7.v
     - rtl/pause.v
     - rtl/pll_0002-xilinx7.v
     - rtl/dpram.vhd
