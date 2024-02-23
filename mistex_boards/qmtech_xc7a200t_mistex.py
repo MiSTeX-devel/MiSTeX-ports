@@ -372,11 +372,11 @@ def main(coredir, core):
             Subsignal("d",      Pins(
                 "J2:33 J2:34 J2:31 J2:32 J2:29 J2:30 J2:27 J2:28", 
                 "J2:25 J2:26 J2:23 J2:24 J2:17 J2:18 J2:15 J2:16", 
-                "J2:13 J2:14 J2:11 J2:12 J2:9  J2:10 J2:7  J2:8")),
-            Subsignal("de",     Pins("J2:21")),
-            Subsignal("clk",    Pins("J2:22")),
-            Subsignal("hsync",  Pins("J2:19")),
-            Subsignal("vsync",  Pins("J2:20")),
+                "J2:13 J2:14 J2:11 J2:12 J2:9  J2:10 J2:7  J2:8"), Misc("IOB TRUE"), Misc("SLEW SLOW"), Misc("DRIVE 4")),
+            Subsignal("de",     Pins("J2:21"), Misc("IOB TRUE"), Misc("SLEW SLOW"), Misc("DRIVE 4")),
+            Subsignal("clk",    Pins("J2:22"), Misc("IOB TRUE"), Misc("SLEW SLOW"), Misc("DRIVE 4")),
+            Subsignal("hsync",  Pins("J2:19"), Misc("IOB TRUE"), Misc("SLEW SLOW"), Misc("DRIVE 4")),
+            Subsignal("vsync",  Pins("J2:20"), Misc("IOB TRUE"), Misc("SLEW SLOW"), Misc("DRIVE 4")),
             Subsignal("int",    Pins("J2:36")),
             IOStandard("LVCMOS33")
         ),
