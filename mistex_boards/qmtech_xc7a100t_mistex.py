@@ -293,8 +293,6 @@ def main(coredir, core):
     defines = [
         ('XILINX', 1),
         ('LARGE_FPGA', 1),
-        ('MISTEX_HDMI', 1),
-
         # ('DEBUG_HPS_OP', 1),
 
         # On Xilinx we need this to get a proper clock tree
