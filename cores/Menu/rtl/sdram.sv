@@ -97,7 +97,7 @@ reg        oe;
 reg [15:0] dq;
 reg [15:0] data;
 
-assign SDRAM_DQ = oe ? dq : 16'hz;
+assign SDRAM_DQ = oe ? dq : 16'bZ;
 
 typedef enum
 {
@@ -256,7 +256,8 @@ always @(posedge clk) begin
 		STATE_WRITE: begin
 			state     <= STATE_IDLE_5;
 			command   <= CMD_WRITE;
-			{dq, oe}  <= {new_wtbt ? new_data : {new_data[7:0], new_data[7:0]}, 1'b1};
+			dq        <= new_wtbt ? new_data : {new_data[7:0], new_data[7:0]};
+			oe        <= 1'b1;
 			ready     <= 1;
 		end
 	endcase
