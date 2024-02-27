@@ -133,6 +133,7 @@ class Gamecore(Module):
         sdcard      = platform.request("sdcard")
         sdram       = platform.request("sdram")
         audio       = platform.request("audio")
+        snac        = platform.request("snac")
         hps_spi     = platform.request("hps_spi")
         hps_control = platform.request("hps_control")
 
@@ -240,6 +241,8 @@ class Gamecore(Module):
             # io_SDCD_SPDIF # NC
 
             # o_LED # NC
+
+            io_USER_IO = snac.user,
 
             i_HPS_SPI_MOSI = hps_spi.mosi,
             o_HPS_SPI_MISO = hps_spi.miso,
