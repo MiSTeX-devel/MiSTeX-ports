@@ -30,6 +30,8 @@ quartus:
     - sys/pll_audio_0002.v
     - sys/pll_hdmi_0002.v
     - sys/hdmi_config.sv
+    - upstream/rtl/mem/sdram2.sdc
+    - upstream/rtl/cpu/FX68K/fx68k.sdc
     - upstream/rtl/pll/pll_0002.v
     - upstream/rtl/mem/sdram.sv
     - upstream/rtl/mem/dpram.v
@@ -52,7 +54,8 @@ vivado:
     - rtl/io/watchdog.v
     - rtl/io/neo_d0.v
     - rtl/io/c1_regs.v
-    - rtl/mem/dpram.v
+    - rtl/mem/dpram.vhd
+    - rtl/mem/spram.v
     - rtl/mem/sdram.sv
     - rtl/mem/sdram_mux.sv
     - rtl/mem/cpram.vhd
