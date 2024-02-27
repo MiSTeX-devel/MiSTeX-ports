@@ -4,3 +4,8 @@ build
 .svlangserver
 deca.sh
 __pycache__
+venv
+demo
+femtorv32_quark.v
+analyzer.csv
+csr.csv
