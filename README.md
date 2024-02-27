@@ -7,7 +7,7 @@ $ pip install -r requirements.txt
 ```
 
 # How to build a core
-Make sure that the required ventor toolchain is in your PATH.
+Make sure that the required vendor toolchain is in your PATH.
 That would be a recent Vivado, if you intend to build for Xilinx targets,
 or Quartus, if you want to build for Altera targets.
 Usage example for the Menu core:
