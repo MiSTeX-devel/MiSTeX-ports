@@ -44,8 +44,10 @@ def copy_mif_file(build_dir, fname, fpath, coredir, toolchain):
     if toolchain == 'vivado':
         with open(fpath, 'r') as f:
             lines = [l.split(" ")[-1].replace(";", "") for l in f.readlines() if ':' in l and not l.startswith("--")]
-            with open(os.path.join(mif_dest_dir, fname), 'w') as df:
+            destpath = os.path.join(mif_dest_dir, fname)
+            with open(destpath, 'w') as df:
                 df.writelines(lines)
+            copy(destpath, destpath.replace(".mif", ".mem"))
     else:
         copy(fpath, mif_dest_dir)
 
