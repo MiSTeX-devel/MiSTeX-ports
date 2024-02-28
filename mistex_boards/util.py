@@ -37,21 +37,25 @@ def add_source(platform, fpath, coredir, use_template_sys):
     else:
         platform.add_source(fpath)
 
+def copy_mif_file(build_dir, fname, fpath, coredir, toolchain):
+    mif_dir = os.path.dirname(fpath).replace(coredir, "").replace("/upstream/", "")
+    mif_dest_dir = os.path.join(build_dir, mif_dir)
+    os.makedirs(mif_dest_dir, exist_ok=True)
+    if toolchain == 'vivado':
+        with open(fpath, 'r') as f:
+            lines = [l.split(" ")[-1].replace(";", "") for l in f.readlines() if ':' in l]
+            with open(os.path.join(mif_dest_dir, fname), 'w') as df:
+                df.writelines(lines)
+    else:
+        copy(fpath, mif_dest_dir)
+
 def add_sources(toolchain, platform, coredir, build_dir, subdir, excludes, use_template_sys):
     sourcedir=join(coredir, subdir)
     for fname in os.listdir(sourcedir):
         fpath = join(sourcedir, fname)
         if build_dir != None and fname.endswith(".mif"):
-            mif_dir = os.path.dirname(fpath).replace(coredir, "").replace("/upstream/", "")
-            mif_dest_dir = os.path.join(build_dir, mif_dir)
-            os.makedirs(mif_dest_dir, exist_ok=True)
-            if toolchain == 'vivado':
-                with open(fpath, 'r') as f:
-                    lines = [l.split(" ")[-1].replace(";", "") for l in f.readlines() if ':' in l]
-                    with open(os.path.join(mif_dest_dir, fname), 'w') as df:
-                        df.writelines(lines)
-            else:
-                copy(fpath, mif_dest_dir)
+            copy_mif_file(build_dir, fname, fpath, coredir, toolchain)
+
         excluded = any([fpath.endswith(e) for e in excludes])
         if not (fname.endswith(".sv") or
                 fname.endswith(".v") or
