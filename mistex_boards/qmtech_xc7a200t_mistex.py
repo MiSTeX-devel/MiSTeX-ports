@@ -290,8 +290,10 @@ def main(coredir, core):
         toolchain = "vivado"
     platform = qmtech_artix7_fbg484.Platform(with_daughterboard=False, toolchain=toolchain)
     platform.add_platform_command("set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets {{hps_spi_clk_IBUF}}]")
+    platform.add_platform_command("create_clock -name spi_clk -period 33.33 [get_ports {{hps_spi_clk}}]")
 
-    add_designfiles(platform, coredir, mistex_yaml, 'vivado')
+    build_dir = get_build_dir(core)
+    add_designfiles(platform, coredir, mistex_yaml, 'vivado', build_dir=build_dir)
 
     defines = [
         ('XILINX', 1),
@@ -335,8 +337,6 @@ def main(coredir, core):
     add_mainfile(platform, coredir, mistex_yaml)
 
     platform.add_extension(extension)
-
-    build_dir = get_build_dir(core)
 
     soc = BaseSoC(platform, core_name=core, toolchain=toolchain)
     builder = Builder(soc,

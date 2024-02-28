@@ -4,17 +4,18 @@ from os.path import join
 from datetime import date
 from colorama import Fore, Style
 from icecream import ic
+from shutil import copy
 
-def add_designfiles(platform, coredir, mistex_yaml, boardspecific):
+def add_designfiles(platform, coredir, mistex_yaml, toolchain, build_dir=None):
     use_template_sys = mistex_yaml.get('use-template-sys', False)
 
-    boardspecific_sources = mistex_yaml[boardspecific]['sourcefiles']
+    toolchain_specific_sources = mistex_yaml[toolchain]['sourcefiles']
     excludes = mistex_yaml['quartus']['sourcefiles'] + mistex_yaml['vivado']['sourcefiles']
 
     for sourcedir in mistex_yaml['sourcedirs']:
         print(f"\n{Style.DIM}******** source directory {sourcedir} ********{Style.RESET_ALL}")
         the_coredir = "cores/Template" if use_template_sys and sourcedir == "sys" else coredir
-        add_sources(platform, the_coredir, sourcedir, excludes, use_template_sys)
+        add_sources(toolchain, platform, the_coredir, build_dir, sourcedir, excludes, use_template_sys)
 
     print(f"\n{Style.DIM}******** source files ********{Style.RESET_ALL}")
     for source in mistex_yaml.get('sourcefiles', []):
@@ -22,7 +23,7 @@ def add_designfiles(platform, coredir, mistex_yaml, boardspecific):
         add_source(platform, sourcepath, coredir, use_template_sys)
 
     print(f"\n{Style.DIM}******** board specific sources ********{Style.RESET_ALL}")
-    for source in boardspecific_sources:
+    for source in toolchain_specific_sources:
         sourcepath = join(coredir, source)
         add_source(platform, sourcepath, coredir, use_template_sys)
 
@@ -36,10 +37,21 @@ def add_source(platform, fpath, coredir, use_template_sys):
     else:
         platform.add_source(fpath)
 
-def add_sources(platform, coredir, subdir, excludes, use_template_sys):
+def add_sources(toolchain, platform, coredir, build_dir, subdir, excludes, use_template_sys):
     sourcedir=join(coredir, subdir)
     for fname in os.listdir(sourcedir):
         fpath = join(sourcedir, fname)
+        if build_dir != None and fname.endswith(".mif"):
+            mif_dir = os.path.dirname(fpath).replace(coredir, "").replace("/upstream/", "")
+            mif_dest_dir = os.path.join(build_dir, mif_dir)
+            os.makedirs(mif_dest_dir, exist_ok=True)
+            if toolchain == 'vivado':
+                with open(fpath, 'r') as f:
+                    lines = [l.split(" ")[-1].replace(";", "") for l in f.readlines() if ':' in l]
+                    with open(os.path.join(mif_dest_dir, fname), 'w') as df:
+                        df.writelines(lines)
+            else:
+                copy(fpath, mif_dest_dir)
         excluded = any([fpath.endswith(e) for e in excludes])
         if not (fname.endswith(".sv") or
                 fname.endswith(".v") or
