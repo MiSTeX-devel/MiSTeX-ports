@@ -34,7 +34,7 @@ from litedram.core.controller import ControllerSettings
 from litedram.frontend.avalon import LiteDRAMAvalonMM2Native
 
 from util import *
-from mistex_boards.qmtex_mistex import extension
+from mistex_boards.qmtech_mistex import extension
 
 # CRG ----------------------------------------------------------------------------------------------
 
