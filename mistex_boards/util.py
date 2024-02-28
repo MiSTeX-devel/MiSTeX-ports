@@ -43,7 +43,7 @@ def copy_mif_file(build_dir, fname, fpath, coredir, toolchain):
     os.makedirs(mif_dest_dir, exist_ok=True)
     if toolchain == 'vivado':
         with open(fpath, 'r') as f:
-            lines = [l.split(" ")[-1].replace(";", "") for l in f.readlines() if ':' in l]
+            lines = [l.split(" ")[-1].replace(";", "") for l in f.readlines() if ':' in l and not l.startswith("--")]
             with open(os.path.join(mif_dest_dir, fname), 'w') as df:
                 df.writelines(lines)
     else:
