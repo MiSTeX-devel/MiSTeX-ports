@@ -18,6 +18,7 @@ quartus:
     - upstream/sys/sys_top.sdc
     - upstream/rtl/pll/pll_0002.v
     - upstream/rtl/sdram.sv
+    - sys/sys_top.sdc
     - sys/pll_audio_0002.v
     - sys/pll_hdmi_0002.v
     - sys/hdmi_config.sv
