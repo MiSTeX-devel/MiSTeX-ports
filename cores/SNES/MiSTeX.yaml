@@ -1,0 +1,67 @@
+mainfile: SNES.sv
+
+use-template-sys: True
+
+sourcedirs:
+  - sys
+  - upstream/rtl
+  - upstream/rtl/65C816
+  - upstream/rtl/chip
+  - upstream/rtl/chip/CX4
+  - upstream/rtl/chip/MSU1
+  - upstream/rtl/chip/BSX
+  - upstream/rtl/chip/SA1
+  - upstream/rtl/chip/DSP
+  - upstream/rtl/chip/SPC7110
+  - upstream/rtl/chip/SDD1
+  - upstream/rtl/chip/GSU
+  - upstream/rtl/SPC700
+  - upstream/rtl/65C816
+
+quartus:
+  sourcefiles:
+    - sys/sys_top.sdc
+    - sys/altera_pll_reconfig_top.v
+    - sys/altera_pll_reconfig_core.v
+    - sys/pll_audio_0002.v
+    - sys/pll_hdmi_0002.v
+    - sys/hdmi_config.sv
+    - upstream/rtl/pll/pll_0002.v
+    - upstream/rtl/bram.vhd
+    - upstream/rtl/chip/MSU1/msu_fifo.v
+
+vivado:
+  sourcefiles:
+    - rtl/pll_0002-xilinx7.v
+    - sys/xilinx7_mmcm_reconfig.v
+    - sys/xilinx_pll_reconfig_top.v
+    - sys/pll_hdmi_0002-xilinx7.v
+    - sys/pll_audio_0002-xilinx7.v
+    - rtl/sdram.sv
+    - rtl/spram.vhd
+    - rtl/spram_sz.vhd
+    - rtl/dpram.vhd
+    - rtl/dpram_dif.vhd
+    - rtl/dpram_difclk.vhd
+    - rtl/msu_fifo.v
+    - rtl/spram.vhd
+    - rtl/dpram_dif.vhd
+    - rtl/pll_0002-xilinx7.v
+    - rtl/sdram.sv
+    - rtl/spram_sz.vhd
+    - rtl/msu_fifo.v
+    - rtl/chip/CX4/CX4Map.vhd
+    - rtl/chip/CX4/cx4cache.vhd
+    - rtl/chip/CX4/CX4.vhd
+    - rtl/chip/MSU1/msu_fifo.v
+    - rtl/chip/MSU1/msu_audio.v
+    - rtl/chip/MSU1/MSU.sv
+    - rtl/chip/BSX/BSX_BS.vhd
+    - rtl/chip/DSP/DSPn.vhd
+    - rtl/chip/SPC7110/SPC7110_DEC.vhd
+    - rtl/chip/GSU/GSU.vhd
+    - rtl/dpram.vhd
+    - rtl/cheatcodes.sv
+    - rtl/lightgun.sv
+    - rtl/dpram_difclk.vhd
+    - rtl/hps_ext.v
