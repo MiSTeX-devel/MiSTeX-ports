@@ -1,0 +1,39 @@
+mainfile: Arcade-Arkanoid.sv
+
+use-template-sys: True
+
+defines:
+  MISTER_FB: 1
+  DISABLE_VGA: 1
+
+sourcedirs:
+  - sys
+  - upstream/rtl
+  - upstream/rtl/cpu/T80
+  - upstream/rtl/ram_rom
+  - upstream/rtl/custom
+  - upstream/rtl/sound/
+  - upstream/rtl/sound/YM2149
+  - upstream/rtl/sound/filter
+
+quartus:
+  sourcefiles:
+    - sys/sys_top.sdc
+    - sys/altera_pll_reconfig_top.v
+    - sys/altera_pll_reconfig_core.v
+    - sys/pll_audio_0002.v
+    - sys/pll_hdmi_0002.v
+    - upstream/rtl/pll/pll_0002.v
+    - upstream/rtl/pause.v
+    - upstream/rtl/ram_rom/dpram_dc.vhd
+
+vivado:
+  sourcefiles:
+    - rtl/pll_0002-xilinx7.v
+    - sys/xilinx7_mmcm_reconfig.v
+    - sys/xilinx_pll_reconfig_top.v
+    - sys/pll_hdmi_0002-xilinx7.v
+    - sys/pll_audio_0002-xilinx7.v
+    - rtl/pll_0002-xilinx7.v
+    - rtl/pause.v
+    - rtl/ram_rom/dpram_dc.vhd
