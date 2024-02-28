@@ -1,0 +1,59 @@
+mainfile: NES.sv
+
+use-template-sys: True
+
+#defines:
+
+sourcedirs:
+  - sys
+  - upstream/rtl
+  - upstream/rtl/t65
+  - upstream/rtl/mappers
+  - upstream/rtl/SOUND
+  - upstream/rtl/SOUND/OPLL
+  - upstream/rtl/SOUND/OPLL/VM2413
+
+quartus:
+  sourcefiles:
+    - sys/sys_top.sdc
+    - sys/altera_pll_reconfig_top.v
+    - sys/altera_pll_reconfig_core.v
+    - sys/pll_audio_0002.v
+    - sys/pll_hdmi_0002.v
+    - upstream/rtl/pll/pll_0002.v
+    - upstream/rtl/dpram.vhd
+
+vivado:
+  pre-synthesis-commands:
+    - 'set_property is_global_include true [get_files "../../../cores/NES/upstream/rtl/regs_savestates.sv"]'
+
+  sourcefiles:
+    - sys/pll_hdmi_0002-xilinx7.v
+    - sys/pll_audio_0002-xilinx7.v
+    - rtl/pll_0002-xilinx7.v
+    - rtl/dpram.vhd 
+    - rtl/sdram.sv 
+    - rtl/spram.vhd
+    - rtl/spram_sz.vhd
+    - rtl/EEPROM_24C0x.sv
+    - rtl/SOUND/OPLL/VM2413/controller.vhd
+    - rtl/SOUND/OPLL/VM2413/envelopegenerator.vhd
+    - rtl/SOUND/OPLL/VM2413/vm2413.vhd
+    - rtl/SOUND/OPLL/VM2413/voicememory.vhd
+    - rtl/SOUND/OPLL/VM2413/voicerom.vhd
+    - rtl/cart.sv
+    - rtl/cheatcodes.sv
+    - rtl/mappers/generic.sv
+    - rtl/mappers/FDS.sv
+    - rtl/mappers/JYCompany.sv
+    - rtl/mappers/MMC5.sv
+    - rtl/mappers/MMC1.sv
+    - rtl/mappers/MMC2.sv
+    - rtl/mappers/MMC3.sv
+    - rtl/mappers/Namco.sv
+    - rtl/mappers/Sachen.sv
+    - rtl/mappers/Sunsoft.sv
+    - rtl/mappers/VRC.sv
+    - rtl/mappers/misc.sv
+    - rtl/ppu.sv
+    - rtl/apu.sv
