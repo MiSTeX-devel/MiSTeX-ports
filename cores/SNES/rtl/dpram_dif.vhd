@@ -95,7 +95,7 @@ begin
         WRITE_DATA_WIDTH_B => data_width_b,    -- DECIMAL
         WRITE_MODE_A => "write_first",         -- String
         WRITE_MODE_B => "write_first",         -- String
-        WRITE_PROTECT => 1                     -- DECIMAL
+        WRITE_PROTECT => 0                     -- DECIMAL
     )
     port map (
         -- dbiterra => dbiterra,             -- 1-bit output: Status signal to indicate double bit error occurrence
