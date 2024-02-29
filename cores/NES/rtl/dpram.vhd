@@ -28,11 +28,9 @@ entity dpram is
 END dpram;
 
 architecture syn of dpram is
-    constant DEPTH        :  positive := 2**widthad_a;
-	subtype  word_t	      is std_logic_vector(width_a - 1 downto 0);
-	type	 ram_t		  is array(0 to DEPTH - 1) of word_t;
-	constant enable_a     : std_logic := '1';
-	constant enable_b     : std_logic := '1';
+    constant DEPTH               :  positive := 2**widthad_a;
+	subtype  word_t	               is std_logic_vector(width_a - 1 downto 0);
+	type	 ram_t		           is array(0 to DEPTH - 1) of word_t;
 
 	function InitRamFromFile (ramfilename : in string) return ram_t is
 		file ramfile	     : text is in ramfilename;
@@ -58,28 +56,26 @@ architecture syn of dpram is
 	end;
 
     shared variable  ram : ram_t := init_from_file_or_zeroes(init_file);
+	attribute ram_style          : string;
+	attribute ram_style of ram   : variable is "block";
 
 begin
 	process (clock_a, clock_b)
 	begin
 		if rising_edge(clock_a) then
-			if enable_a = '1' then
-				if wren_a = '1' then
-					ram(to_integer(unsigned(address_a))) := data_a;
-					q_a <= data_a;
-				else
-					q_a <= ram(to_integer(unsigned(address_a)));
-				end if;
+			if wren_a = '1' then
+				ram(to_integer(unsigned(address_a))) := data_a;
+				q_a <= data_a;
+			else
+				q_a <= ram(to_integer(unsigned(address_a)));
 			end if;
 		end if;
 		if rising_edge(clock_b) then
-			if enable_b = '1' then
-				if wren_b = '1' then
-					ram(to_integer(unsigned(address_b))) := data_b;
-					q_b <= data_b;
-				else
-					q_b <= ram(to_integer(unsigned(address_b)));
-				end if;
+			if wren_b = '1' then
+				ram(to_integer(unsigned(address_b))) := data_b;
+				q_b <= data_b;
+			else
+				q_b <= ram(to_integer(unsigned(address_b)));
 			end if;
 		end if;
 	end process;

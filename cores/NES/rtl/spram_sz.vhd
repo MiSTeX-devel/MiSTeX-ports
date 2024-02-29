@@ -58,6 +58,8 @@ architecture syn_sz of spram_sz is
 	end;
 
     shared variable  ram : ram_t := init_from_file_or_zeroes(mem_init_file);
+	attribute ram_style          : string;
+	attribute ram_style of ram   : variable is "block";
 
 begin
 	q <= q0 when cs = '1' else (others => '1');
@@ -68,9 +70,9 @@ begin
 		if rising_edge(clock) then
 			if write_enable = '1' then
 				ram(to_integer(unsigned(address))) := data;
-				q <= data;
+				q0 <= data;
 			else
-				q <= ram(to_integer(unsigned(address)));
+				q0 <= ram(to_integer(unsigned(address)));
 			end if;
 		end if;
 	end process;
