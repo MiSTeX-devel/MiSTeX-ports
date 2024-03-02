@@ -51,10 +51,15 @@ def copy_mif_file(build_dir, fname, fpath, coredir, toolchain):
     os.makedirs(mif_dest_dir, exist_ok=True)
     if toolchain == 'vivado':
         with open(fpath, 'r') as f:
-            lines = [l.split(" ")[-1].replace(";", "") for l in f.readlines() if ':' in l and not l.startswith("--")]
+            lines = [l for l in f.readlines() if ':' in l and not l.startswith("--")]
+            outlines = []
+            for line in lines:
+                lineparts = line.split(" ")[1:]
+                outlines += [lp.replace(";", "").replace('\n', '') for lp in lineparts]
+
             destpath = os.path.join(mif_dest_dir, fname)
             with open(destpath, 'w') as df:
-                df.writelines(lines)
+                df.writelines(outlines)
             copy(destpath, destpath.replace(".mif", ".mem"))
     else:
         copy(fpath, mif_dest_dir)
