@@ -1,0 +1,70 @@
+mainfile: MegaDrive.sv
+use-template-sys: True
+
+defines:
+  M68K_CHEAT: 1
+  Z80_CHEAT: 1
+  EXT_CLOCKS: 1
+
+sourcedirs:
+  - sys
+  - upstream/rtl
+  - upstream/rtl/nuked-md
+  - upstream/rtl/SVP
+
+sourcefiles:
+  - upstream/rtl/VM2413/phasegenerator.vhd
+  - upstream/rtl/VM2413/attacktable.vhd
+  - upstream/rtl/VM2413/lineartable.vhd
+  - upstream/rtl/VM2413/opll.vhd
+  - upstream/rtl/VM2413/sinetable.vhd
+  - upstream/rtl/VM2413/outputgenerator.vhd
+  - upstream/rtl/VM2413/operator.vhd
+  - upstream/rtl/VM2413/temporalmixer.vhd
+  - upstream/rtl/VM2413/envelopememory.vhd
+  - upstream/rtl/VM2413/slotcounter.vhd
+  - upstream/rtl/VM2413/outputmemory.vhd
+  - upstream/rtl/VM2413/phasememory.vhd
+  - upstream/rtl/VM2413/registermemory.vhd
+  - upstream/rtl/VM2413/feedbackmemory.vhd
+
+quartus:
+  sourcefiles:
+    - sys/sys_top.sdc
+    - sys/altera_pll_reconfig_top.v
+    - sys/altera_pll_reconfig_core.v
+    - sys/pll_audio_0002.v
+    - sys/pll_hdmi_0002.v
+    - rtl/pll/pll_0002.v
+    - rtl/bram.vhd
+    - upstream/rtl/VM2413/controller.vhd
+    - upstream/rtl/VM2413/envelopegenerator.vhd
+    - upstream/rtl/VM2413/vm2413.vhd
+    - upstream/rtl/VM2413/voicememory.vhd
+    - upstream/rtl/VM2413/voicerom.vhd
+    - upstream/rtl/SVP/mlab.vhd
+
+vivado:
+  sourcefiles:
+    - rtl/pll_0002-xilinx7.v
+    - sys/xilinx7_mmcm_reconfig.v
+    - sys/xilinx_pll_reconfig_top.v
+    - sys/pll_hdmi_0002-xilinx7.v
+    - sys/pll_audio_0002-xilinx7.v
+    - sys/sys_dpram.vhd
+    - rtl/spram.vhd
+    - rtl/spram_sz.vhd
+    - rtl/dpram.vhd
+    - rtl/dpram_dif.vhd
+    - rtl/dpram_difclk.vhd
+    - rtl/VM2413/controller.vhd
+    - rtl/VM2413/envelopegenerator.vhd
+    - rtl/VM2413/vm2413.vhd
+    - rtl/VM2413/voicememory.vhd
+    - rtl/VM2413/voicerom.vhd
+    - rtl/sdram.sv    
+    - rtl/cartridge.sv
+    - rtl/cheatcodes.sv
+    - rtl/lightgun.sv
+    - rtl/pad_io.sv
+    - rtl/SVP/mlab.vhd
