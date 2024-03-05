@@ -80,3 +80,23 @@ The different elements have the following function:
   `use-template-sys: False`. In that case that would also mean that all the MiSTeX changes
   to the Template sys would have to be merged manually into the core 'sys/' by using a diff tool,
   for example.
+- `defines`: Every entry in that dictionary creates a verilog define in `build_id.vh` with the given value
+  This is mainly used to switch features on or off in the FPGA part of MiSTer (`sys/`)
+- `sourcedirs`: This is a list of dictionaries, whose contents will automatically included in the project sources.
+  This does not include subdirectories, so those have to be added explicitly.
+  The files in the directory will be marked for addition to projects of all toolchains, unless
+  they are used in one of the toolchain-specific `sourcefiles`` sections.
+- `sourcefiles`: like `sourcedirs`, but when you want to add only certain files to the project.
+  The files in this list will be marked for addition to projects of all toolchains, unless
+  they are used in one of the toolchain-specific `sourcefiles`` sections.
+- `quartus` source files specific to the quartus toolchain. These files will be excluded from the
+   use in other toolchains
+- `vivado` source files specifig to the vivado toolchain. These files will be excluded from the use in other toolchains
+
+It still needs to be mentioned that `sourcefiles` can be used both globally, where it means
+the addition of files to all toolchains, except when those files are mentioned in one 
+of the toolchain-specific `sourcefiles` sections.
+
+Beacuse the original MiSTer core files are in `upstream` it is very clear, which parts of the core
+are used in an unmodified manner.
+
