@@ -45,17 +45,73 @@ def add_source(platform, fpath, coredir, use_template_sys):
     else:
         platform.add_source(fpath)
 
-def copy_mif_file(build_dir, fname, fpath, coredir, toolchain):
+def convert_mif_file(build_dir, fname, fpath, coredir, toolchain):
     mif_dir = os.path.dirname(fpath).replace(coredir, "").replace("/upstream/", "")
     mif_dest_dir = os.path.join(build_dir, mif_dir)
     os.makedirs(mif_dest_dir, exist_ok=True)
     if toolchain == 'vivado':
         with open(fpath, 'r') as f:
-            lines = [l for l in f.readlines() if ':' in l and not l.startswith("--")]
+            lines = [l for l in f.readlines() if not l.startswith("--")]
             outlines = []
+            is_first_entry = False
+            is_content = False
+            radix = 16
+            hexwidth = 2
+            this_address = 0
+            last_address = 0
+            depth = 0
             for line in lines:
-                lineparts = line.split(" ")[1:]
-                outlines += [lp.replace(";", "").replace('\n', '') for lp in lineparts]
+                if line.startswith("DATA_RADIX"):
+                    data_radix = line.split("=")[-1].replace(';', '').strip()
+                    assert data_radix == "HEX" or data_radix == "BIN"
+                    if data_radix == "BIN":
+                        radix = 2
+
+                if line.startswith("CONTENT BEGIN"):
+                    is_first_entry = True
+                    is_content = True
+                    continue
+
+                if line.startswith("END"):
+                    continue
+
+                if line.startswith("WIDTH"):
+                    width = int(line.split("=")[-1].replace(';', '').strip())
+                    assert width % 4 == 0
+                    hexwidth = width // 4
+                    continue
+
+                if line.startswith("DEPTH"):
+                    depth = int(line.split("=")[-1].replace(';', '').strip())
+                    continue
+
+                if not is_content:
+                    continue
+
+                # handle content
+                lineparts = [lp.replace(";", "").replace('\n', '').strip() for lp in line.split(" ") if lp.strip() != '' and lp.strip() != ':' ]
+                address = lineparts[0]
+
+                fmt = f"{{:0{hexwidth}X}}"
+                if address.startswith("["):
+                    start_addr, end_addr = address[1:-1].split("..")
+                    start_addr = int(start_addr, 16)
+                    end_addr = int(end_addr, 16)
+                    n_of_data = end_addr - start_addr + 1
+                    assert (start_addr == last_address + 1) or is_first_entry
+                    data = fmt.format(int(lineparts[1], radix))
+                    for i in range(n_of_data):
+                        outlines.append(data + '\n')
+                    last_address = end_addr
+                else:
+                    this_address = int(address, 16)
+                    for p in lineparts[1:]:
+                        data = fmt.format(int(p, radix))
+                        outlines.append(data + '\n')
+
+                last_address = this_address
+
+            assert len(outlines) == depth
 
             destpath = os.path.join(mif_dest_dir, fname)
             with open(destpath, 'w') as df:
@@ -69,7 +125,7 @@ def add_sources(toolchain, platform, coredir, build_dir, subdir, excludes, use_t
     for fname in os.listdir(sourcedir):
         fpath = join(sourcedir, fname)
         if build_dir != None and fname.endswith(".mif"):
-            copy_mif_file(build_dir, fname, fpath, coredir, toolchain)
+            convert_mif_file(build_dir, fname, fpath, coredir, toolchain)
 
         excluded = any([fpath.endswith(e) for e in excludes])
         if not (fname.endswith(".sv") or
