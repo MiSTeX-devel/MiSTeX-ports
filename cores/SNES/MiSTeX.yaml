@@ -43,7 +43,6 @@ vivado:
     - rtl/dpram.vhd
     - rtl/dpram_dif.vhd
     - rtl/dpram_difclk.vhd
-    - rtl/msu_fifo.v
     - rtl/spram.vhd
     - rtl/dpram_dif.vhd
     - rtl/pll_0002-xilinx7.v
@@ -53,7 +52,6 @@ vivado:
     - rtl/chip/CX4/CX4Map.vhd
     - rtl/chip/CX4/cx4cache.vhd
     - rtl/chip/CX4/CX4.vhd
-    - rtl/chip/MSU1/msu_fifo.v
     - rtl/chip/MSU1/msu_audio.v
     - rtl/chip/MSU1/MSU.sv
     - rtl/chip/BSX/BSX_BS.vhd
