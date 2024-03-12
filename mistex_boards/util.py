@@ -85,7 +85,7 @@ def convert_mif_file(build_dir, fname, fpath, coredir, toolchain):
                     depth = int(line.split("=")[-1].replace(';', '').strip())
                     continue
 
-                if not is_content:
+                if not is_content or line.strip() == '':
                     continue
 
                 # handle content
