@@ -18,4 +18,5 @@
 |Menu              | works    | works |
 |NeoGeo            | untested | builds|
 |SMS               | untested | works |
+|SNES              | untested | builds|
 |Template          | works    | works |

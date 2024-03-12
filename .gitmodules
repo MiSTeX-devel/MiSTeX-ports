@@ -52,3 +52,6 @@
 [submodule "cores/SMS/upstream"]
 	path = cores/SMS/upstream
 	url = https://github.com/MiSTer-devel/SMS_MiSTer.git
+[submodule "cores/cores/SNES/upstream"]
+	path = cores/cores/SNES/upstream
+	url = https://github.com/MiSTer-devel/SNES_MiSTer.git
