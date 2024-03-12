@@ -2,7 +2,7 @@
 git+https://github.com/m-labs/migen@ccaee68e14d3636e1d8fb2e0864dd89b1b1f7384
 litex
 # litex_boards
-git+https://github.com/hansfbaier/litex-boards.git@qmteck-k325-fix
+git+https://github.com/litex-hub/litex-boards.git
 # We need the fix in this branch for the avalon frontent, until it is merged upstream
 git+https://github.com/hansfbaier/litedram.git@downconvert-cleanup
 icecream
