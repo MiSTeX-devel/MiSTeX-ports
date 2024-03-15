@@ -26,6 +26,7 @@ quartus:
 
 vivado:
   sourcefiles:
+    - sys/sys_top.xdc
     - rtl/pll_0002-xilinx7.v
     - rtl/dpram.vhd
     - rtl/pause.v

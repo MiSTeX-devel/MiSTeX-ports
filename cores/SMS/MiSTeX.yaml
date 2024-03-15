@@ -61,6 +61,7 @@ quartus:
 
 vivado:
   sourcefiles:
+    - sys/sys_top.xdc
     - rtl/pll.v
     - rtl/pll_0002-xilinx7.v
     - sys/xilinx7_mmcm_reconfig.v

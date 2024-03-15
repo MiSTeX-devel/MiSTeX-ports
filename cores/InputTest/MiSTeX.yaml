@@ -24,5 +24,6 @@ quartus:
 
 vivado:
   sourcefiles:
+    - sys/sys_top.xdc
     - rtl/pll_0002-xilinx7.v
     - sys/pll_audio_0002-xilinx7.v

@@ -35,6 +35,7 @@ quartus:
 
 vivado:
   sourcefiles:
+    - sys/sys_top.xdc
     - sys/pll_hdmi_0002-xilinx7.v
     - sys/pll_audio_0002-xilinx7.v
     - rtl/pause.v
