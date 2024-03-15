@@ -90,7 +90,7 @@ def convert_mif_file(build_dir, fname, fpath, coredir, toolchain):
 
                 # handle content
                 lineparts = [lp.replace(";", "").replace('\n', '').strip() for lp in line.split(" ") if lp.strip() != '' and lp.strip() != ':' ]
-                address = lineparts[0]
+                address = lineparts[0].replace(":", "")
 
                 fmt = f"{{:0{hexwidth}X}}"
                 if address.startswith("["):
