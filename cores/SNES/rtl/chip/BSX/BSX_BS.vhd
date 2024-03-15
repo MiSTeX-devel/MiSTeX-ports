@@ -102,7 +102,7 @@ begin
 	
 	STREAM1_DATA_ADDR <= std_logic_vector(STREAM1.OFFS);
 	STREAM2_DATA_ADDR <= std_logic_vector(STREAM2.OFFS);
-	CH_DATA : entity work.dpram generic map(10, 8, "rtl/chip/BSX/bsx121-124.mem")
+	CH_DATA : entity work.dpram generic map(10, 8, "/MiSTeX/ports/build/qmtech_xc7a200t_mistex/SNES/rtl/chip/BSX/bsx121-124.mem")
 	port map(
 		clock			=> CLK,
 		address_a	=> STREAM1_DATA_ADDR,
