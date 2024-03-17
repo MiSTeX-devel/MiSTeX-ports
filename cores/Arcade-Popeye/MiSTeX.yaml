@@ -18,7 +18,7 @@ quartus:
     - sys/pll_audio_0002.v
     - sys/pll_hdmi_0002.v
     - sys/hdmi_config.sv
-    - upstream/rtl/pll/pll_0002.v
+    - rtl/pll_0002.v
     - upstream/rtl/T80/T80.vhd
     - upstream/rtl/T80/T80pa.vhd
     - upstream/rtl/T80/T80s.vhd
