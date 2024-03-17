@@ -25,7 +25,7 @@ quartus:
     - sys/pll_audio_0002.v
     - sys/pll_hdmi_0002.v
     - sys/hdmi_config.sv
-    - upstream/rtl/pll/pll_0002.v
+    - rtl/pll_0002.v
     - upstream/rtl/mem/single_port_rom.vhd
     - upstream/rtl/mem/true_dual_port_ram.vhd
     - upstream/rtl/mem/dual_port_ram.vhd
