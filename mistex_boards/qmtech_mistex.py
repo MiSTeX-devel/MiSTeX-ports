@@ -59,7 +59,7 @@ class _CRG(LiteXModule):
 
 class BaseSoC(SoCCore):
     def __init__(self, platform, core_name, fpga_name, toolchain, **kwargs):
-        sys_clk_freq=125e6
+        sys_clk_freq=100e6
         self.debug = False
 
         # CRG --------------------------------------------------------------------------------------
