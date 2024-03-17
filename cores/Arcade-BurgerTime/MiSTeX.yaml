@@ -19,7 +19,7 @@ quartus:
     - sys/pll_hdmi_0002.v
     - sys/hdmi_config.sv
     - upstream/rtl/pause.v
-    - upstream/rtl/pll_0002.v
+    - rtl/pll_0002.v
     - upstream/rtl/dpram.vhd
     - upstream/rtl/burger_time_sound.vhd
     - upstream/rtl/burger_time.vhd
