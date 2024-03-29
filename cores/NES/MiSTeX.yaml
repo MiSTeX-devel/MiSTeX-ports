@@ -28,6 +28,7 @@ vivado:
     - 'set_property is_global_include true [get_files "../../../cores/NES/upstream/rtl/regs_savestates.sv"]'
 
   sourcefiles:
+    - sys/sys_top.xdc
     - sys/pll_hdmi_0002-xilinx7.v
     - sys/pll_audio_0002-xilinx7.v
     - rtl/pll_0002-xilinx7.v
