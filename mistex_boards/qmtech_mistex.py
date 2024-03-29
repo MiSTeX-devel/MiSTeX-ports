@@ -79,11 +79,8 @@ class BaseSoC(SoCCore):
 
         # DDR3 SDRAM -------------------------------------------------------------------------------
         self.ddrphy = s7ddrphy.A7DDRPHY(
-            # if both bytes are enabled, the resulting bitstreams trigger
-            # an obscure but in openFPGALoader, where loading the bitstream fails
-            # (no FPGA_DONE). But also only on some systems, like the Orange Pi
-            PHYPadsReducer(platform.request("ddram"), [0]),
-            #platform.request("ddram"),
+            # Only one module seems to work here, but 128MB is still plenty
+            platform.request("ddram"),
             memtype        = "DDR3",
             nphases        = 4,
             sys_clk_freq   = sys_clk_freq)
