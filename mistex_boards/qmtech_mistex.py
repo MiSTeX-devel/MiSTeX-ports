@@ -112,6 +112,7 @@ class Gamecore(Module):
         snac        = platform.request("snac")
         hps_spi     = platform.request("hps_spi")
         hps_control = platform.request("hps_control")
+        pmod        = platform.request("pmod")
 
         if soc.debug:
             # SPIBone ----------------------------------------------------------------------------------
@@ -229,7 +230,7 @@ class Gamecore(Module):
             i_HPS_IO_ENABLE   = hps_control.io_enable,
             i_HPS_CORE_RESET  = hps_control.core_reset,
 
-            #o_DEBUG = debug,
+            o_DEBUG = Cat(pmod.pin1, pmod.pin2, pmod.pin3, pmod.pin4),
 
             i_ddr3_clk_i           = ClockSignal("sys"),
             o_ddr3_address_o       = scaler_ddram.address,
@@ -317,7 +318,8 @@ extension = [
             Subsignal("mosi", Pins("J2:37")),
             Subsignal("miso", Pins("J2:38")),
             Subsignal("cs_n", Pins("J2:40")),
-            IOStandard("LVCMOS33")),
+            IOStandard("LVCMOS33")
+        ),
         ("pmod", 0,
             Subsignal("pin1",  Pins("J2:42")),
             Subsignal("pin2",  Pins("J2:41")),
@@ -327,8 +329,8 @@ extension = [
             Subsignal("pin8",  Pins("J2:38")),
             Subsignal("pin9",  Pins("J2:37")),
             Subsignal("pin10", Pins("J2:39")),
-            IOStandard("LVCMOS33")),
-        )
+            IOStandard("LVCMOS33")
+        ),
         ("i2c", 0,
             Subsignal("sda",   Pins("J2:43")),
             Subsignal("scl",   Pins("J2:44")),
@@ -389,4 +391,7 @@ defines = [
 
     # Speed up compilation, disable audio filter
     ('SKIP_IIR_FILTER', 1),
+
+    # Debug
+    ('EMU_DEBUG', 1),
 ]

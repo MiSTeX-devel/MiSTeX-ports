@@ -156,6 +156,10 @@ module emu
 	output reg [6:0] USER_OUT,
 
 	input         OSD_STATUS
+	`ifdef EMU_DEBUG
+	,
+	output  [3:0] DEBUG
+	`endif
 );
 
 assign ADC_BUS  = 'Z;
@@ -466,6 +470,13 @@ pll pll
 	.reconfig_from_pll(reconfig_from_pll),
 	.locked(clock_locked)
 );
+
+`ifdef EMU_DEBUG
+	assign DEBUG[0] = clk85;
+	assign DEBUG[1] = CLK_VIDEO;
+	assign DEBUG[2] = clk;
+	assign DEBUG[3] = clock_locked;
+`endif
 
 wire [63:0] reconfig_to_pll;
 wire [63:0] reconfig_from_pll;
