@@ -79,7 +79,6 @@ class BaseSoC(SoCCore):
 
         # DDR3 SDRAM -------------------------------------------------------------------------------
         self.ddrphy = s7ddrphy.A7DDRPHY(
-            # Only one module seems to work here, but 128MB is still plenty
             platform.request("ddram"),
             memtype        = "DDR3",
             nphases        = 4,
