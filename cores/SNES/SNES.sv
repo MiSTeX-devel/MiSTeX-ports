@@ -237,6 +237,7 @@ reg         cfg_write;
 reg   [5:0] cfg_address;
 reg  [31:0] cfg_data;
 
+`ifdef ALTERA
 pll_cfg pll_cfg
 (
 	.mgmt_clk(CLK_50M),
@@ -282,6 +283,7 @@ always @(posedge CLK_50M) begin
 		endcase
 	end
 end
+`endif // ALTERA
 
 wire reset = RESET | buttons[1] | status[0] | cart_download | spc_download | bk_loading | clearing_ram | msu_data_download;
 
