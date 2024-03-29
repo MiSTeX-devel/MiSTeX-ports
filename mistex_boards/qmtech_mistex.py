@@ -112,7 +112,6 @@ class Gamecore(Module):
         snac        = platform.request("snac")
         hps_spi     = platform.request("hps_spi")
         hps_control = platform.request("hps_control")
-        pmod        = platform.request("pmod")
 
         if soc.debug:
             # SPIBone ----------------------------------------------------------------------------------
@@ -230,7 +229,7 @@ class Gamecore(Module):
             i_HPS_IO_ENABLE   = hps_control.io_enable,
             i_HPS_CORE_RESET  = hps_control.core_reset,
 
-            o_DEBUG = Cat(pmod.pin1, pmod.pin2, pmod.pin3, pmod.pin4),
+            # o_DEBUG = Cat(i2s.mclk, i2s.sclk, i2s.dat, i2s.lrclk),
 
             i_ddr3_clk_i           = ClockSignal("sys"),
             o_ddr3_address_o       = scaler_ddram.address,
