@@ -12,7 +12,7 @@ from litex.soc.integration.builder import *
 from litex.soc.interconnect.avalon import AvalonMMInterface
 from litex.build.generic_platform import *
 
-from litedram.modules import MT41J128M16
+from litedram.modules import MT41K128M16
 from litedram.phy import s7ddrphy
 from litedram.common import PHYPadsReducer
 from litedram.core.controller import ControllerSettings
@@ -80,13 +80,13 @@ class BaseSoC(SoCCore):
         # DDR3 SDRAM -------------------------------------------------------------------------------
         self.ddrphy = s7ddrphy.A7DDRPHY(
             # Only one module seems to work here, but 128MB is still plenty
-            PHYPadsReducer(platform.request("ddram"), [0]),
+            platform.request("ddram"),
             memtype        = "DDR3",
             nphases        = 4,
             sys_clk_freq   = sys_clk_freq)
         self.add_sdram("sdram",
             phy           = self.ddrphy,
-            module        = MT41J128M16(sys_clk_freq, "1:4"),
+            module        = MT41K128M16(sys_clk_freq, "1:4"),
             l2_cache_size = 0,
             controller_settings=ControllerSettings(with_auto_precharge=False))
         #self.add_constant("SDRAM_TEST_DISABLE")
