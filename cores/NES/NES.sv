@@ -485,6 +485,7 @@ reg         cfg_write;
 reg   [5:0] cfg_address;
 reg  [31:0] cfg_data;
 
+`ifdef ALTERA
 pll_cfg pll_cfg
 (
 	.mgmt_clk(CLK_50M),
@@ -530,6 +531,7 @@ always @(posedge CLK_50M) begin : cfg_block
 		endcase
 	end
 end
+`endif // ALTERA
 
 
 // reset after download
@@ -1316,6 +1318,10 @@ eReg_SavestateV #(SSREG_INDEX_EXT, SSREG_DEFAULT_EXT) iREG_SAVESTATE_Ext (clk, S
 assign SS_Ext_BACK[15: 0] = sdram_ss_out;
 assign SS_Ext_BACK[63:16] = 48'b0; // free to be used
 
+/*
+// communicating with the HPS over DDR3 memory does not work in MiSTeX
+// TODO: send over SPI
+
 assign DDRAM_CLK = clk;
 ddram ddram
 (
@@ -1329,6 +1335,7 @@ ddram ddram
 	.ch1_be(ss_be),
 	.ch1_ready(ss_ack)
 );
+*/
 
 // saving with keyboard/OSD/gamepad
 wire [1:0] ss_slot;
