@@ -16,7 +16,7 @@ sourcefiles:
 quartus:
   sourcefiles:
     - upstream/sys/sys_top.sdc
-    - upstream/rtl/pll/pll_0002.v
+    - rtl/pll_0002.v
     - upstream/rtl/sdram.sv
     - sys/sys_top.sdc
     - sys/pll_audio_0002.v
