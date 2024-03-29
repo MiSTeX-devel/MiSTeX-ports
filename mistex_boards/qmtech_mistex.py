@@ -392,5 +392,5 @@ defines = [
     ('SKIP_IIR_FILTER', 1),
 
     # Debug
-    ('EMU_DEBUG', 1),
+    # ('EMU_DEBUG', 1),
 ]
