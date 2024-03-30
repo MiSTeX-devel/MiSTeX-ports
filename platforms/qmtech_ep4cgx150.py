@@ -43,8 +43,14 @@ _io = [
         Subsignal("we_n",  Pins("G25")),
         Subsignal("dq", Pins(
             "B25 B26 C25 C26 D25 D26 E25 E26",
-            "H23 G24 G22 F24 F23 E24 D24 C24")),
+            "H23 G24 G22 F24 F23 E24 D24 C24"),
+            Misc("FAST_OUTPUT_ENABLE_REGISTER ON"),
+            Misc("FAST_INPUT_REGISTER ON"),
+            ),
         Subsignal("dm", Pins("F26 H24")),
+        Misc("FAST_OUTPUT_REGISTER ON"),
+        Misc("ALLOW_SYNCH_CTRL_USAGE OFF"),
+        Misc('CURRENT_STRENGTH_NEW "MAXIMUM CURRENT"'),
         IOStandard("3.3-V LVTTL")
     ),
 ]
