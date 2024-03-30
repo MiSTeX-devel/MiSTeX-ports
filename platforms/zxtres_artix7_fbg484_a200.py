@@ -21,6 +21,15 @@ _io = [
     ("user_led", 0, Pins("H13"),  IOStandard("LVCMOS33")),
     ("user_led", 1, Pins("G15"),  IOStandard("LVCMOS33")),
 
+    # The core board does not have a USB serial on it,
+    # so you will have to attach an USB to serial adapter
+    # on these pins
+    #("gpio_serial", 0,
+    #    Subsignal("tx", Pins("H2")),   # Edge adaptor PMOD4_D5
+    #    Subsignal("rx", Pins("R2")),   # Edge adaptor PMOD4_D4
+    #    IOStandard("LVCMOS33")
+    #),
+
     # SPIFlash
     # 32MB SPI FLASH mx25l25645
     ("spiflash", 0,  # clock needs to be accessed through STARTUPE2
@@ -152,7 +161,7 @@ class Platform(Xilinx7SeriesPlatform):
     def __init__(self, kgates=200, toolchain="vivado", with_daughterboard=False):
         assert(kgates in [35, 100, 200], "kgates can only be 35, 100 or 200 representing a XC7A35T, XC7A100T, XC7A200T")
         self.kgates = kgates
-        device = f"xc7a{kgates}tfgg484-2"
+        device = f"xc7a{kgates}tfbg484-2"
         io = _io
         connectors = _connectors
 
