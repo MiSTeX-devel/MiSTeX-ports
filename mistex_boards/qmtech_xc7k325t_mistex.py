@@ -13,7 +13,7 @@ import yaml
 from colorama import Fore, Style
 
 from util import *
-from mistex_boards.qmtech_mistex import *
+from mistex_boards.xilinx_mistex import *
 from litex_boards.platforms import qmtech_xc7k325t
 
 def main(coredir, core):

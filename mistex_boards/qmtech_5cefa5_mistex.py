@@ -30,6 +30,8 @@ from litedram.frontend.avalon import LiteDRAMAvalonMM2Native
 
 from util import *
 
+import mistex_baseboard
+
 # CRG ----------------------------------------------------------------------------------------------
 
 # TODO: currently unused, replace top PLL
@@ -274,108 +276,7 @@ def main(coredir, core):
     platform.add_platform_command("set_global_assignment -name FITTER_AGGRESSIVE_ROUTABILITY_OPTIMIZATION ALWAYS")
     platform.add_platform_command("set_global_assignment -name SEED 1")
 
-    platform.add_extension([
-        ("serial", 0,
-            Subsignal("rx",   Pins("J3:14")),
-            Subsignal("tx",   Pins("J3:12")),
-            IOStandard("3.3-V LVTTL")
-        ),
-        ("led", 0,
-            Subsignal("hdd",   Pins("J2:51")),
-            Subsignal("user",  Pins("J2:54")),
-            Subsignal("power", Pins("J2:53")),
-            IOStandard("3.3-V LVTTL")
-        ),
-        ("button", 0,
-            Subsignal("reset", Pins("J2:49")),
-            Subsignal("osd",   Pins("J2:50")),
-            Subsignal("user",  Pins("J2:52")),
-            IOStandard("3.3-V LVTTL")
-        ),
-        ("audio", 0,
-            Subsignal("spdif",      Pins("J2:35")),
-            Subsignal("l",          Pins("J2:42")),
-            Subsignal("r",          Pins("J2:41")),
-            IOStandard("3.3-V LVTTL"),
-            Misc("CURRENT_STRENGTH_NEW 8MA")
-        ),
-        ("hps_spi", 0,
-            Subsignal("cs_n", Pins("J3:16")),
-            Subsignal("mosi", Pins("J3:11")),
-            Subsignal("miso", Pins("J3:13")),
-            Subsignal("clk",  Pins("J3:17")), # This is a clock pin on the Artix 100T
-            IOStandard("3.3-V LVTTL"),
-        ),
-        ("hps_control", 0,
-            Subsignal("core_reset",  Pins("J3:8")),
-            Subsignal("fpga_enable", Pins("J3:7")),
-            Subsignal("osd_enable",  Pins("J3:9")),
-            Subsignal("io_enable",   Pins("J3:10")),
-            IOStandard("3.3-V LVTTL"),
-        ),
-        ("rgb", 0,
-            Subsignal("d",      Pins(
-                "J2:33 J2:34 J2:31 J2:32 J2:29 J2:30 J2:27 J2:28", 
-                "J2:25 J2:26 J2:23 J2:24 J2:17 J2:18 J2:15 J2:16", 
-                "J2:13 J2:14 J2:11 J2:12 J2:9  J2:10 J2:7  J2:8"),
-                Misc("CURRENT_STRENGTH_NEW 8MA"), Misc("FAST_OUTPUT_REGISTER ON")),
-            Subsignal("de",     Pins("J2:21"), Misc("FAST_OUTPUT_REGISTER ON")),
-            Subsignal("clk",    Pins("J2:22"), Misc("FAST_OUTPUT_REGISTER ON")),
-            Subsignal("hsync",  Pins("J2:19"), Misc("FAST_OUTPUT_REGISTER ON")),
-            Subsignal("vsync",  Pins("J2:20"), Misc("FAST_OUTPUT_REGISTER ON")),
-            Subsignal("int",    Pins("J2:36")),
-            IOStandard("3.3-V LVTTL"),
-        ),
-        ("i2s", 0,
-            Subsignal("dat",    Pins("J2:37")),
-            Subsignal("mclk",   Pins("J2:38")),
-            Subsignal("lrclk",  Pins("J2:39")),
-            Subsignal("sclk",   Pins("J2:40")),
-            IOStandard("3.3-V LVTTL"),
-        ),
-        # ("spibone", 0, 
-        #     Subsignal("clk",  Pins("")),
-        #     Subsignal("mosi", Pins("")),
-        #     Subsignal("miso", Pins("")),
-        #     Subsignal("cs_n", Pins("")),
-        #     IOStandard("3.3-V LVTTL")),
-        ("i2c", 0,
-            Subsignal("sda",   Pins("J2:43")),
-            Subsignal("scl",   Pins("J2:44")),
-            IOStandard("3.3-V LVTTL"),
-        ),
-        ("snac", 0,
-            Subsignal("user",   Pins("J3:22 J3:20 J3:18 J3:19 J3:21 J3:23 J3:24")),
-            IOStandard("3.3-V LVTTL"),
-        ),
-        ("sdram", 1,
-            Subsignal("a",     Pins(
-                "J3:57 J3:58 J3:59 J3:60 J3:50 J3:47 J3:48 J3:45",
-                "J3:46 J3:43 J3:56 J3:44 J3:41")),
-            Subsignal("ba",    Pins("J3:54 J3:55")),
-            Subsignal("cs_n",  Pins("J3:53")),
-            Subsignal("clk",   Pins("J3:42")),
-            Subsignal("ras_n", Pins("J3:52")),
-            Subsignal("cas_n", Pins("J3:51")),
-            Subsignal("we_n",  Pins("J3:49")),
-            Subsignal("dq", Pins(
-                "J3:25 J3:26 J3:27 J3:28 J3:29 J3:30 J3:31 J3:32",
-                "J3:40 J3:39 J3:38 J3:37 J3:36 J3:35 J3:33 J3:34"),
-                Misc("FAST_OUTPUT_ENABLE_REGISTER ON"),
-                Misc("FAST_INPUT_REGISTER ON")),
-            IOStandard("3.3-V LVTTL"),
-            Misc("CURRENT_STRENGTH_NEW \"MAXIMUM CURRENT\""),
-            Misc("FAST_OUTPUT_REGISTER ON"),
-            Misc("ALLOW_SYNCH_CTRL_USAGE OFF"),
-        ),
-        ("sdcard", 0,
-            Subsignal("clk",  Pins("J2:58")),
-            Subsignal("cmd",  Pins("J2:57")),
-            Subsignal("data", Pins("J2:60 J2:59 J2:55 J2:56")),
-            IOStandard("3.3-V LVTTL"),
-            Misc("CURRENT_STRENGTH_NEW \"MAXIMUM CURRENT\""),
-        ),
-    ])
+    platform.add_extension(mistex_baseboard.extension("altera", sdram_index=1))
 
     build_dir = get_build_dir(core)
 
