@@ -19,6 +19,7 @@ quartus:
     - sys/pll_hdmi_0002.v
     - sys/hdmi_config.sv
     - rtl/pll_0002.v
+    - rtl/DIGDUG_CORES.v
     - upstream/rtl/dprams.v
     - upstream/rtl/pause.v
 
