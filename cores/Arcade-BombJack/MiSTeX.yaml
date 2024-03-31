@@ -38,6 +38,7 @@ quartus:
     - upstream/rtl/memory/ram_6lm.vhd
     - upstream/rtl/memory/ram_6ab.vhd
     - upstream/rtl/memory/ram_6c.vhd
+    - upstream/rtl/pause.v
     - rtl/pll/pll_0002.v
     - upstream/rtl/bombjack_top.vhd
     - upstream/rtl/bombjack/prog_roms_ramb.vhd
