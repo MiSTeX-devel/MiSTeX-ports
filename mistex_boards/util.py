@@ -11,7 +11,7 @@ def add_designfiles(platform, coredir, mistex_yaml, toolchain, build_dir=None):
 
     platform_commands = mistex_yaml[toolchain].get('platform-commands', [])
     for command in platform_commands:
-        platform.add_platform_command(command)
+        platform.add_platform_command(command.replace('${CORE_DIR}', coredir))
 
     pre_synthesis_commands = mistex_yaml[toolchain].get('pre-synthesis-commands', [])
     for command in pre_synthesis_commands:
