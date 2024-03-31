@@ -16,12 +16,36 @@ sourcedirs:
 quartus:
   sourcefiles:
     - sys/sys_top.sdc
+    - sys/pll_hdmi_0002.v
+    - sys/pll_audio_0002.v
+    - rtl/pll_0002.v
     - sys/altera_pll_reconfig_top.v
     - sys/altera_pll_reconfig_core.v
-    - sys/pll_audio_0002.v
-    - sys/pll_hdmi_0002.v
-    - upstream/rtl/pll/pll_0002.v
     - upstream/rtl/dpram.vhd
+    - upstream/rtl/sdram.sv 
+    - upstream/rtl/EEPROM_24C0x.sv
+    - upstream/rtl/SOUND/OPLL/VM2413/controller.vhd
+    - upstream/rtl/SOUND/OPLL/VM2413/envelopegenerator.vhd
+    - upstream/rtl/SOUND/OPLL/VM2413/vm2413.vhd
+    - upstream/rtl/SOUND/OPLL/VM2413/voicememory.vhd
+    - upstream/rtl/SOUND/OPLL/VM2413/voicerom.vhd
+    - upstream/rtl/cart.sv
+    - upstream/rtl/cheatcodes.sv
+    - upstream/rtl/mappers/generic.sv
+    - upstream/rtl/mappers/FDS.sv
+    - upstream/rtl/mappers/JYCompany.sv
+    - upstream/rtl/mappers/MMC5.sv
+    - upstream/rtl/mappers/MMC1.sv
+    - upstream/rtl/mappers/MMC2.sv
+    - upstream/rtl/mappers/MMC3.sv
+    - upstream/rtl/mappers/Namco.sv
+    - upstream/rtl/mappers/Sachen.sv
+    - upstream/rtl/mappers/Sunsoft.sv
+    - upstream/rtl/mappers/VRC.sv
+    - upstream/rtl/mappers/misc.sv
+    - upstream/rtl/ppu.sv
+    - upstream/rtl/apu.sv
+
 
 vivado:
   pre-synthesis-commands:

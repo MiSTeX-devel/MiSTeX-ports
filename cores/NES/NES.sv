@@ -485,7 +485,7 @@ reg         cfg_write;
 reg   [5:0] cfg_address;
 reg  [31:0] cfg_data;
 
-`ifdef ALTERA
+`ifdef CYCLONEV
 pll_cfg pll_cfg
 (
 	.mgmt_clk(CLK_50M),
@@ -531,7 +531,7 @@ always @(posedge CLK_50M) begin : cfg_block
 		endcase
 	end
 end
-`endif // ALTERA
+`endif // ALTERA CYCLONE_V
 
 
 // reset after download
