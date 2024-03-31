@@ -9,13 +9,17 @@ from shutil import copy
 def add_designfiles(platform, coredir, mistex_yaml, toolchain, build_dir=None):
     use_template_sys = mistex_yaml.get('use-template-sys', False)
 
+    def replace_coredir(s):
+        coredir_abs = os.path.abspath(coredir)
+        return s.replace('${CORE_DIR}', coredir_abs)
+
     platform_commands = mistex_yaml[toolchain].get('platform-commands', [])
     for command in platform_commands:
-        platform.add_platform_command(command.replace('${CORE_DIR}', coredir))
+        platform.add_platform_command(replace_coredir(command))
 
     pre_synthesis_commands = mistex_yaml[toolchain].get('pre-synthesis-commands', [])
     for command in pre_synthesis_commands:
-        platform.toolchain.pre_synthesis_commands.append(command.replace('${CORE_DIR}', coredir))
+        platform.toolchain.pre_synthesis_commands.append(replace_coredir(command))
 
     toolchain_specific_sources = mistex_yaml[toolchain]['sourcefiles']
     excludes = mistex_yaml['quartus']['sourcefiles'] + mistex_yaml['vivado']['sourcefiles']
