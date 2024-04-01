@@ -16,7 +16,7 @@ Usage example for the Menu core:
 
 ```sh
 $ source ./venv/bin/activate
-# export PYTHONPATH=.
+$ export PYTHONPATH=.
 # python3 [path_to_board_definition.py] [core_name]
 $ python3 mistex_boards/qmtech_xc7a100t_mistex.py cores/Menu
 ```
