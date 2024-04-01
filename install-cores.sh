@@ -16,7 +16,7 @@ do
     scp $i root@orangepizero2w.lan:/media/fat/_Arcade${SUFFIX}/cores/$DEST
   elif  [[ "$i" == */Menu_MiSTeX.bit ]] then
     scp $i root@orangepizero2w.lan:/media/fat/menu${SUFFIX}.bit
-  elif [[ "$i" == *SMS_MiST* ]] || [[ "$i" == *NeoGeo_MiST* ]] then
+  elif [[ "$i" == *SMS_MiST* ]] || [[ "$i" == *NES_MiST* ]] ||  [[ "$i" == *NeoGeo_MiST* ]] then
     scp $i root@orangepizero2w.lan:/media/fat/_Console/$DEST
   else
     scp $i root@orangepizero2w.lan:/media/fat/_Utility/$DEST
