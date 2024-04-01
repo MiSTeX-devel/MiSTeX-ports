@@ -531,7 +531,7 @@ always @(posedge CLK_50M) begin : cfg_block
 		endcase
 	end
 end
-`endif // ALTERA CYCLONE_V
+`endif // CYCLONEV
 
 
 // reset after download
