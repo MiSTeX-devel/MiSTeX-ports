@@ -92,7 +92,6 @@ class BaseSoC(SoCCore):
 class Gamecore(Module):
     def __init__(self, platform, soc, sys_clk_freq) -> None:
         led         = platform.request("led")
-        button      = platform.request("button")
         rgb         = platform.request("rgb")
         i2c         = platform.request("i2c")
         i2s         = platform.request("i2s")

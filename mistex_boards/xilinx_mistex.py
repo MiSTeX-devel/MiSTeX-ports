@@ -100,19 +100,47 @@ class BaseSoC(SoCCore):
 
 # MiSTeX core --------------------------------------------------------------------------------------------
 
+class Pmod:
+    def __init__(self, pmod):
+        self.dat     = pmod.pin9
+        self.mclk    = pmod.pin8
+        self.lrclk   = pmod.pin10
+        self.sclk    = pmod.pin7
+        self.audio_l = pmod.pin1
+        self.audio_r = pmod.pin2
+
 class Gamecore(Module):
     def __init__(self, platform, soc, sys_clk_freq) -> None:
         led         = platform.request("led")
-        button      = platform.request("button")
         rgb         = platform.request("rgb")
         i2c         = platform.request("i2c")
-        i2s         = platform.request("i2s")
         sdcard      = platform.request("sdcard")
         sdram       = platform.request("sdram")
-        audio       = platform.request("audio")
+        spdif       = platform.request("spdif")
+        pmod        = Pmod(platform.request("pmod"))
+        pmod_mode   = platform.request("pmod_mode")
         snac        = platform.request("snac")
         hps_spi     = platform.request("hps_spi")
         hps_control = platform.request("hps_control")
+
+        mclk  = Signal()
+        sclk  = Signal()
+        lrclk = Signal()
+        dat   = Signal()
+
+        audio_l = Signal()
+        audio_r = Signal()
+
+        debug   = Signal(4)
+
+        self.comb += [
+            pmod.sclk    .eq(Mux(pmod_mode, debug[0], sclk)),
+            pmod.mclk    .eq(Mux(pmod_mode, debug[1], mclk)),
+            pmod.dat     .eq(Mux(pmod_mode, debug[2], dat)),
+            pmod.lrclk   .eq(Mux(pmod_mode, debug[3], lrclk)),
+            pmod.audio_l .eq(audio_l),
+            pmod.audio_r .eq(audio_r),
+        ]
 
         if soc.debug:
             # SPIBone ----------------------------------------------------------------------------------
@@ -170,10 +198,10 @@ class Gamecore(Module):
             # io_HDMI_I2C_SDA = i2c.sda,
 
             # I2S
-            o_HDMI_MCLK   = i2s.mclk  if not soc.debug else None,
-            o_HDMI_SCLK   = i2s.sclk  if not soc.debug else None,
-            o_HDMI_LRCLK  = i2s.lrclk if not soc.debug else None,
-            o_HDMI_I2S    = i2s.dat   if not soc.debug else None,
+            o_HDMI_MCLK   = mclk,
+            o_HDMI_SCLK   = sclk,
+            o_HDMI_LRCLK  = lrclk,
+            o_HDMI_I2S    = dat,
 
             #
             o_HDMI_TX_CLK = rgb.clk,
@@ -198,9 +226,9 @@ class Gamecore(Module):
             # io_VGA_HS # NC
             # o_VGA_VS  # NC
 
-            o_AUDIO_L = audio.l,
-            o_AUDIO_R = audio.r,
-            o_AUDIO_SPDIF = audio.spdif,
+            o_AUDIO_L     = audio_l,
+            o_AUDIO_R     = audio_r,
+            o_AUDIO_SPDIF = spdif,
 
             o_LED_USER  = led.user,
             o_LED_HDD   = led.hdd,
@@ -230,7 +258,7 @@ class Gamecore(Module):
             i_HPS_IO_ENABLE   = hps_control.io_enable,
             i_HPS_CORE_RESET  = hps_control.core_reset,
 
-            # o_DEBUG = Cat(i2s.mclk, i2s.sclk, i2s.dat, i2s.lrclk),
+            o_DEBUG = debug,
 
             i_ddr3_clk_i           = ClockSignal("sys"),
             o_ddr3_address_o       = scaler_ddram.address,

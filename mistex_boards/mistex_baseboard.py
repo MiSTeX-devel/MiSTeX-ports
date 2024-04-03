@@ -46,18 +46,6 @@ def extension(vendor, sdram_index=0):
             Subsignal("power", Pins("J2:53")),
             iostandard
         ),
-        ("button", 0,
-            Subsignal("reset", Pins("J2:49")),
-            Subsignal("osd",   Pins("J2:50")),
-            Subsignal("user",  Pins("J2:52")),
-            iostandard
-        ),
-        ("audio", 0,
-            Subsignal("spdif",      Pins("J2:35")),
-            Subsignal("l",          Pins("J2:42")),
-            Subsignal("r",          Pins("J2:41")),
-            iostandard
-        ),
         ("hps_spi", 0,
             Subsignal("cs_n", Pins("J3:16")),
             Subsignal("mosi", Pins("J3:11")),
@@ -84,19 +72,27 @@ def extension(vendor, sdram_index=0):
             Subsignal("int",    Pins("J2:36")),
             iostandard
         ),
-        ("i2s", 0,
-            Subsignal("dat",    Pins("J2:37")),
-            Subsignal("mclk",   Pins("J2:38")),
-            Subsignal("lrclk",  Pins("J2:39")),
-            Subsignal("sclk",   Pins("J2:40")),
-            iostandard,
-        ),
         ("spibone", 0,
             Subsignal("clk",  Pins("J2:39")),
             Subsignal("mosi", Pins("J2:37")),
             Subsignal("miso", Pins("J2:38")),
             Subsignal("cs_n", Pins("J2:40")),
             iostandard
+        ),
+        ("spdif", 0, Pins("J2:35"), iostandard),
+        # deprecated, use via pmod
+        ("audio", 0,
+            Subsignal("l", Pins("J2:42")),
+            Subsignal("r", Pins("J2:41")),
+            iostandard
+        ),
+        # deprecated, use via pmod
+        ("i2s", 0,
+            Subsignal("dat",    Pins("J2:37")),
+            Subsignal("mclk",   Pins("J2:38")),
+            Subsignal("lrclk",  Pins("J2:39")),
+            Subsignal("sclk",   Pins("J2:40")),
+            iostandard,
         ),
         ("pmod", 0,
             Subsignal("pin1",  Pins("J2:42")),
@@ -109,6 +105,7 @@ def extension(vendor, sdram_index=0):
             Subsignal("pin10", Pins("J2:39")),
             iostandard
         ),
+        ("pmod_mode", 0, Pins("J2:49"), iostandard),
         ("i2c", 0,
             Subsignal("sda",   Pins("J2:43")),
             Subsignal("scl",   Pins("J2:44")),
