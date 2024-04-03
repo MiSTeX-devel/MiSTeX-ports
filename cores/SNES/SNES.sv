@@ -171,6 +171,10 @@ module emu
 	output reg [6:0] USER_OUT,
 
 	input         OSD_STATUS
+	`ifdef EMU_DEBUG
+	,
+	output  [3:0] DEBUG
+	`endif
 );
 
 //`define DEBUG_BUILD
@@ -230,6 +234,13 @@ pll pll
 	.locked(clock_locked)
 );
 
+`ifdef EMU_DEBUG
+	assign DEBUG[0] = clk_mem;
+	assign DEBUG[1] = CLK_VIDEO;
+	assign DEBUG[2] = clk_sys;
+	assign DEBUG[3] = clock_locked;
+`endif
+
 wire [63:0] reconfig_to_pll;
 wire [63:0] reconfig_from_pll;
 wire        cfg_waitrequest;
@@ -237,7 +248,7 @@ reg         cfg_write;
 reg   [5:0] cfg_address;
 reg  [31:0] cfg_data;
 
-`ifdef ALTERA
+`ifdef CYCLONEV
 pll_cfg pll_cfg
 (
 	.mgmt_clk(CLK_50M),
@@ -283,7 +294,7 @@ always @(posedge CLK_50M) begin
 		endcase
 	end
 end
-`endif // ALTERA
+`endif // CYCLONEV
 
 wire reset = RESET | buttons[1] | status[0] | cart_download | spc_download | bk_loading | clearing_ram | msu_data_download;
 

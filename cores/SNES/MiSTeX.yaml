@@ -2,6 +2,9 @@ mainfile: SNES.sv
 
 use-template-sys: True
 
+defines:
+  EMU_DEBUG: 1
+
 sourcedirs:
   - sys
   - upstream/rtl
