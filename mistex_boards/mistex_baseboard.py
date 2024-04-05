@@ -72,13 +72,6 @@ def extension(vendor, sdram_index=0):
             Subsignal("int",    Pins("J2:36")),
             iostandard
         ),
-        ("spibone", 0,
-            Subsignal("clk",  Pins("J2:39")),
-            Subsignal("mosi", Pins("J2:37")),
-            Subsignal("miso", Pins("J2:38")),
-            Subsignal("cs_n", Pins("J2:40")),
-            iostandard
-        ),
         ("spdif", 0, Pins("J2:35"), iostandard),
         # deprecated, use via pmod
         ("audio", 0,

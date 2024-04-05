@@ -62,7 +62,7 @@ class _CRG(LiteXModule):
 class BaseSoC(SoCCore):
     def __init__(self, platform, core_name, fpga_name, toolchain, **kwargs):
         sys_clk_freq=100e6
-        self.debug = False
+        self.use_ila = False
 
         # CRG --------------------------------------------------------------------------------------
         self.crg = _CRG(platform, sys_clk_freq)
@@ -102,14 +102,24 @@ class BaseSoC(SoCCore):
 
 class Pmod:
     def __init__(self, pmod):
+        # I2S
         self.dat     = pmod.pin9
         self.mclk    = pmod.pin8
         self.lrclk   = pmod.pin10
         self.sclk    = pmod.pin7
+
+        # Analog audio
         self.audio_l = pmod.pin1
         self.audio_r = pmod.pin2
 
-class Gamecore(Module):
+        # debug SPI
+        self.clk     = pmod.pin10
+        self.mosi    = pmod.pin9
+        self.miso    = pmod.pin8
+        self.cs_n    = pmod.pin7
+
+
+class Gamecore(LiteXModule):
     def __init__(self, platform, soc, sys_clk_freq) -> None:
         led         = platform.request("led")
         rgb         = platform.request("rgb")
@@ -134,38 +144,20 @@ class Gamecore(Module):
         debug   = Signal(4)
 
         self.comb += [
-            pmod.sclk    .eq(Mux(pmod_mode, debug[0], sclk)),
-            pmod.mclk    .eq(Mux(pmod_mode, debug[1], mclk)),
-            pmod.dat     .eq(Mux(pmod_mode, debug[2], dat)),
-            pmod.lrclk   .eq(Mux(pmod_mode, debug[3], lrclk)),
             pmod.audio_l .eq(audio_l),
             pmod.audio_r .eq(audio_r),
         ]
 
-        if soc.debug:
-            # SPIBone ----------------------------------------------------------------------------------
-            self.submodules.spibone = spibone = SPIBone(platform.request("spibone"))
-            self.add_wb_master(spibone.bus)
-
-            from litescope import LiteScopeAnalyzer
-            analyzer_signals = [
-            ]
-            self.analyzer = LiteScopeAnalyzer(analyzer_signals,
-                depth        = 2048,
-                samplerate   = sys_clk_freq,
-                clock_domain = "sys",
-                csr_csv      = "analyzer.csv")
-
         # ascal can't take more than 28 bits of address width
-        avalon_data_width = 64
-        avalon_address_width = 28
+        AVALON_DATA_WIDTH    = 64
+        AVALON_ADDRESS_WIDTH = 28
 
-        scaler_ddram_port  = soc.sdram.crossbar.get_port(data_width=avalon_data_width)
-        self.scaler_ddram = scaler_ddram   = AvalonMMInterface(data_width=avalon_data_width, adr_width=avalon_address_width)
+        scaler_ddram_port  = soc.sdram.crossbar.get_port(data_width=AVALON_DATA_WIDTH)
+        self.scaler_ddram = scaler_ddram   = AvalonMMInterface(data_width=AVALON_DATA_WIDTH, adr_width=AVALON_ADDRESS_WIDTH)
         self.submodules.scaler_avalon_port = LiteDRAMAvalonMM2Native(scaler_ddram, scaler_ddram_port)
 
-        emu_ddram_port = soc.sdram.crossbar.get_port(data_width=avalon_data_width, clock_domain="emu_ddram")
-        self.emu_ddram = emu_ddram      = AvalonMMInterface(data_width=avalon_data_width, adr_width=avalon_address_width)
+        emu_ddram_port = soc.sdram.crossbar.get_port(data_width=AVALON_DATA_WIDTH, clock_domain="emu_ddram")
+        self.emu_ddram = emu_ddram      = AvalonMMInterface(data_width=AVALON_DATA_WIDTH, adr_width=AVALON_ADDRESS_WIDTH+1)
         self.submodules.emu_avalon_port = ClockDomainsRenamer("emu_ddram")(LiteDRAMAvalonMM2Native(emu_ddram, emu_ddram_port))
 
         self.submodules.avalon_start_delay = start_delay = WaitTimer(int(3*sys_clk_freq))
@@ -184,8 +176,8 @@ class Gamecore(Module):
         ]
 
         sys_top = Instance("sys_top",
-            p_DW = avalon_data_width,
-            p_AW = avalon_address_width,
+            p_DW = AVALON_DATA_WIDTH,
+            p_AW = AVALON_ADDRESS_WIDTH,
             p_ASCAL_RAMBASE = 0x2000000,
 
             i_CLK_50        = ClockSignal("retro"),
@@ -258,7 +250,7 @@ class Gamecore(Module):
             i_HPS_IO_ENABLE   = hps_control.io_enable,
             i_HPS_CORE_RESET  = hps_control.core_reset,
 
-            o_DEBUG = debug,
+            o_DEBUG = debug if not soc.use_ila else None,
 
             i_ddr3_clk_i           = ClockSignal("sys"),
             o_ddr3_address_o       = scaler_ddram.address,
@@ -281,6 +273,36 @@ class Gamecore(Module):
             i_ram_waitrequest_i   = Mux(start_delay.done, emu_ddram.waitrequest, 1),
             i_ram_readdatavalid_i = Mux(start_delay.done, emu_ddram.readdatavalid, 0),
         )
+
+        if soc.use_ila:
+            # SPIBone ----------------------------------------------------------------------------------
+            soc.submodules.spibone = spibone = SPIBone(pmod)
+            soc.add_wb_master(spibone.bus)
+
+            from litescope import LiteScopeAnalyzer
+            analyzer_signals = [
+                emu_ddram.waitrequest,
+                emu_ddram.address,
+                emu_ddram.burstcount,
+                emu_avalon_read,
+                emu_ddram.readdata,
+                emu_ddram.readdatavalid,
+                emu_avalon_write,
+                emu_ddram.writedata,
+                emu_ddram.byteenable,
+            ]
+            soc.submodules.analyzer = analyzer = LiteScopeAnalyzer(analyzer_signals,
+                depth        = 2048,
+                samplerate   = sys_clk_freq,
+                clock_domain = "emu_ddram",
+                csr_csv      = "analyzer.csv")
+        else:
+            self.comb += [
+                pmod.sclk    .eq(Mux(pmod_mode, debug[0], sclk)),
+                pmod.mclk    .eq(Mux(pmod_mode, debug[1], mclk)),
+                pmod.dat     .eq(Mux(pmod_mode, debug[2], dat)),
+                pmod.lrclk   .eq(Mux(pmod_mode, debug[3], lrclk)),
+            ]
 
         self.specials += sys_top
 
