@@ -231,6 +231,7 @@ def main(coredir, core):
     defines = mistex_yaml.get('defines', {})
     defines.update({
         "ALTERA": 1,
+        'LARGE_FPGA': 1,
         "CLK_100_EXT": 1,
         "DISABLE_VGA": 1,
         # "SKIP_SHADOWMASK": 1,
