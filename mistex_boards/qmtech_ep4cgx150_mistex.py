@@ -224,7 +224,8 @@ def main(coredir, core):
 
     platform = qmtech_ep4cgx150.Platform(with_daughterboard=False)
 
-    add_designfiles(platform, coredir, mistex_yaml, 'quartus')
+    build_dir = get_build_dir(core)
+    add_designfiles(platform, coredir, mistex_yaml, 'quartus', build_dir)
 
     generate_build_id(platform, coredir)
     add_mainfile(platform, coredir, mistex_yaml)
@@ -277,8 +278,6 @@ def main(coredir, core):
     platform.add_platform_command("set_global_assignment -name SEED 1")
 
     platform.add_extension(mistex_baseboard.extension("altera", sdram_index=1))
-
-    build_dir = get_build_dir(core)
 
     soc = BaseSoC(platform, core_name=core)
     builder = Builder(soc,
