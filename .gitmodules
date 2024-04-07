@@ -58,3 +58,6 @@
 [submodule "cores/NES/upstream"]
 	path = cores/NES/upstream
 	url = https://github.com/MiSTer-devel/NES_MiSTer.git
+[submodule "cores/C64/upstream"]
+	path = cores/C64/upstream
+	url = https://github.com/MiSTer-devel/C64_MiSTer/
