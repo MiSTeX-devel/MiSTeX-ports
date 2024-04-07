@@ -1,0 +1,45 @@
+mainfile: C64.sv
+
+use-template-sys: True
+
+defines:
+  MISTER_FB: 1
+
+sourcedirs:
+  - sys
+  - upstream/rtl
+  - upstream/rtl/sid
+  - upstream/rtl/opl3
+  - upstream/rtl/iec_drive
+  - upstream/rtl/t65
+
+quartus:
+  sourcefiles:
+    - sys/sys_top.sdc
+    - sys/altera_pll_reconfig_top.v
+    - sys/altera_pll_reconfig_core.v
+    - sys/pll_audio_0002.v
+    - sys/pll_hdmi_0002.v
+    - sys/hdmi_config.sv
+    - rtl/sdram.v
+    - rtl/fpga64_buslogic.vhd
+    - rtl/fpga64_sid_iec.vhd
+    - rtl/iec_drive/iec_drive.sv
+    - rtl/pll.v
+    - rtl/roms/chargen.mif
+    - rtl/roms/chargenj.mif
+    - rtl/roms/dol_C64.mif
+    - rtl/roms/jab_C64.mif
+    - rtl/roms/std_C64.mif
+    - rtl/roms/std_C64GS.mif
+
+
+vivado:
+  sourcefiles:
+    - sys/sys_top.xdc
+    - rtl/pll_0002-xilinx7.v
+    - sys/xilinx7_mmcm_reconfig.v
+    - sys/xilinx_pll_reconfig_top.v
+    - sys/pll_hdmi_0002-xilinx7.v
+    - sys/pll_audio_0002-xilinx7.v
+
