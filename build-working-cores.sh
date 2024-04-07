@@ -1,5 +1,5 @@
 #!/bin/bash
-WORKING_CORES=$(awk '{ print $1 " " $5}' cores/Readme.md | grep works | awk '{ print $1 }' | sed 's/|//g')
+WORKING_CORES=$(awk '{ print $1 " " $7}' cores/Readme.md | grep works | awk '{ print $1 }' | sed 's/|//g')
 
 BOARD="$1"
 
