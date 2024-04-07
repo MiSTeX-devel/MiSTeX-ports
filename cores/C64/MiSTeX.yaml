@@ -29,10 +29,9 @@ quartus:
     - rtl/roms/chargen.mif
     - rtl/roms/chargenj.mif
     - rtl/roms/dol_C64.mif
-    - rtl/roms/jab_C64.mif
+    - rtl/roms/jap_C64.mif
     - rtl/roms/std_C64.mif
     - rtl/roms/std_C64GS.mif
-
 
 vivado:
   sourcefiles:

@@ -129,7 +129,9 @@ def main(coredir, core):
 
     platform = terasic_de10lite.Platform()
 
-    add_designfiles(platform, coredir, mistex_yaml, 'quartus')
+    build_dir  = get_build_dir(core)
+    build_name = core.replace("-", "_")
+    add_designfiles(platform, coredir, mistex_yaml, 'quartus', build_dir)
 
     generate_build_id(platform, coredir)
     add_mainfile(platform, coredir, mistex_yaml)
@@ -171,8 +173,6 @@ def main(coredir, core):
         ),
     ])
 
-    build_dir  = get_build_dir(core)
-    build_name = core.replace("-", "_")
     platform.build(Top(platform),
         build_dir  = build_dir,
         build_name = build_name)
