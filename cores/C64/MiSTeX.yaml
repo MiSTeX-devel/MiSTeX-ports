@@ -12,6 +12,7 @@ sourcedirs:
   - upstream/rtl/opl3
   - upstream/rtl/iec_drive
   - upstream/rtl/t65
+  - rtl/roms
 
 quartus:
   sourcefiles:
@@ -26,12 +27,6 @@ quartus:
     - rtl/fpga64_sid_iec.vhd
     - rtl/iec_drive/iec_drive.sv
     - rtl/pll.v
-    - rtl/roms/chargen.mif
-    - rtl/roms/chargenj.mif
-    - rtl/roms/dol_C64.mif
-    - rtl/roms/jap_C64.mif
-    - rtl/roms/std_C64.mif
-    - rtl/roms/std_C64GS.mif
 
 vivado:
   sourcefiles:
