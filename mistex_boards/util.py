@@ -141,6 +141,7 @@ def add_source(toolchain, platform, fpath, coredir, build_dir, use_template_sys)
     assert build_dir != None
     if fpath.endswith(".mif"):
         convert_mif_file(build_dir, fname, fpath, coredir, toolchain)
+        print(f" -> {fpath}")
         return
 
     print(f" -> {fpath}")
