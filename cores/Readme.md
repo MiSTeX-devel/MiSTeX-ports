@@ -12,7 +12,7 @@
 |Arcade-QBert      | untested | works    | works |
 |Arcade-SEGASYS1   | untested | untested | works |
 |Arcade-Tecmo      | untested | builds   | builds|
-|C64               | builds   | untested | - |
+|C64               | works    | untested | - |
 |FlappyBird        | untested | works    | works |
 |InputTest         | untested | works    | - |
 |MemTest           | untested | works    | - |
