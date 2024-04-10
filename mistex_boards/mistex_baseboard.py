@@ -58,6 +58,7 @@ def extension(vendor, sdram_index=0):
             Subsignal("fpga_enable", Pins("J3:7")),
             Subsignal("osd_enable",  Pins("J3:9")),
             Subsignal("io_enable",   Pins("J3:10")),
+            Subsignal("io_wide",     Pins("J2:47")),
             iostandard,
         ),
         ("rgb", 0,

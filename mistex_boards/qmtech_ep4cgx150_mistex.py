@@ -193,6 +193,7 @@ class Gamecore(Module):
             i_HPS_FPGA_ENABLE = hps_control.fpga_enable,
             i_HPS_OSD_ENABLE  = hps_control.osd_enable,
             i_HPS_IO_ENABLE   = hps_control.io_enable,
+            o_HPS_IO_WIDE     = hps_control.io_wide,
             i_HPS_CORE_RESET  = hps_control.core_reset,
 
             i_ddr3_clk_i           = ClockSignal("sys"),
