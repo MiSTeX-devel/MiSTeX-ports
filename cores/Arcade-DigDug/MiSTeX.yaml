@@ -33,3 +33,4 @@ vivado:
     - sys/pll_audio_0002-xilinx7.v
     - rtl/dprams.v
     - rtl/pause.v
+    - upstream/rtl/DIGDUG_CORES.v
