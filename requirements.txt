@@ -1,6 +1,7 @@
 # use the same migen revision, that LiteX uses
 git+https://github.com/m-labs/migen@ccaee68e14d3636e1d8fb2e0864dd89b1b1f7384
 litex
+ninja
 pyusb
 git+https://github.com/enjoy-digital/litescope/
 # litex_boards
