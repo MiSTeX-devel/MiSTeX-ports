@@ -79,15 +79,15 @@ class Top(LiteXModule):
             # SDRAM
             o_SDRAM_A      = sdram.a,
             io_SDRAM_DQ    = sdram.dq,
-            # o_SDRAM_DQML = sdram.dm[0], not connected
-            # o_SDRAM_DQMH = sdram.dm[1], not connected
+            o_SDRAM_DQML = sdram.dm[0],
+            o_SDRAM_DQMH = sdram.dm[1],
             o_SDRAM_nWE    = sdram.we_n,
             o_SDRAM_nCAS   = sdram.cas_n,
             o_SDRAM_nRAS   = sdram.ras_n,
             o_SDRAM_nCS    = sdram.cs_n,
             o_SDRAM_BA     = sdram.ba,
             o_SDRAM_CLK    = platform.request("sdram_clock"),
-            # o_SDRAM_CKE  = sdram.cke, not connected
+            o_SDRAM_CKE  = sdram.cke,
 
             o_VGA_R = Cat(False, False, [s for s in (vga.r)]),
             o_VGA_G = Cat(False, False, [s for s in (vga.g)]),
