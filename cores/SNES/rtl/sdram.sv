@@ -78,7 +78,7 @@ reg [15:0] last_data;
 reg oe;
 reg [15:0] sdram_dq;
 
-assign SDRAM_DQ = oe ? sdram_dq : 16'hZZZZ;
+assign SDRAM_DQ = oe ? sdram_dq : 'Z;
 
 // access manager
 always @(posedge clk) begin
@@ -232,6 +232,6 @@ ODDR #(
 	.R(1'b0),
 	.S(1'b0)
 );
-`endif
+`endif // XILINX
 
 endmodule
