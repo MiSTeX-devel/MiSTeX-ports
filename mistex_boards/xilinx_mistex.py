@@ -281,7 +281,7 @@ class Gamecore(LiteXModule):
             soc.add_wb_master(spibone.bus)
 
             from litescope import LiteScopeAnalyzer
-            analyzer_signals = [
+            ddr3 = [
                 emu_ddram.waitrequest,
                 emu_ddram.address,
                 emu_ddram.burstcount,
@@ -292,9 +292,19 @@ class Gamecore(LiteXModule):
                 emu_ddram.writedata,
                 emu_ddram.byteenable,
             ]
-            soc.submodules.analyzer = analyzer = LiteScopeAnalyzer(analyzer_signals,
+            sdram = [
+                sdram.a,
+                sdram.dq,
+                sdram.we_n,
+                sdram.cas_n,
+                sdram.ras_n,
+                sdram.cs_n,
+                sdram.ba,
+            ]
+            soc.submodules.analyzer = analyzer = LiteScopeAnalyzer(sdram,
                 depth        = 2048,
                 samplerate   = sys_clk_freq,
+                # In the SNES core the DDRAM clock and the SDRAM clock are the same
                 clock_domain = "emu_ddram",
                 csr_csv      = "analyzer.csv")
         else:

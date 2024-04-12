@@ -1,0 +1,34 @@
+[*]
+[*] GTKWave Analyzer v3.3.118 (w)1999-2023 BSI
+[*] Fri Apr  5 01:38:46 2024
+[*]
+[dumpfile] "/MiSTeX/ports/dump.vcd"
+[dumpfile_mtime] "Fri Apr  5 01:38:06 2024"
+[dumpfile_size] 44868
+[savefile] "/MiSTeX/ports/dump.gtkw"
+[timestart] 0
+[size] 2856 2451
+[pos] -27 -24
+*-21.299999 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[sst_width] 320
+[signals_width] 280
+[sst_expanded] 1
+[sst_vpaned_height] 798
+@28
+emu_avalon_read
+emu_avalon_write
+@22
+emu_ddram_address[28:0]
+emu_ddram_burstcount[7:0]
+emu_ddram_byteenable[7:0]
+emu_ddram_readdata[63:0]
+@28
+emu_ddram_readdatavalid
+emu_ddram_waitrequest
+@22
+emu_ddram_writedata[63:0]
+@28
+scope_clk
+scope_trig
+[pattern_trace] 1
+[pattern_trace] 0
