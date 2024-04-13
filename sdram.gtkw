@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.118 (w)1999-2023 BSI
-[*] Fri Apr 12 23:56:48 2024
+[*] Sat Apr 13 00:13:50 2024
 [*]
 [dumpfile] "/MiSTeX/ports/dump.vcd"
-[dumpfile_mtime] "Fri Apr 12 23:31:09 2024"
-[dumpfile_size] 51335
+[dumpfile_mtime] "Sat Apr 13 00:08:35 2024"
+[dumpfile_size] 51605
 [savefile] "/MiSTeX/ports/sdram.gtkw"
-[timestart] 13090400
+[timestart] 13538100
 [size] 2856 2451
 [pos] -1 -1
-*-15.000000 15400000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-15.000001 13730000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [sst_width] 320
 [signals_width] 170
 [sst_expanded] 1
@@ -20,23 +20,17 @@ scope_trig
 @22
 sdram_a[12:0]
 sdram_dq[15:0]
-@28
-sdram_ba[1:0]
-@800200
--Command
 @c02029
 ^1 /MiSTeX/ports/sdram_state.gtkw
-#{State} sdram_ras_n sdram_cas_n sdram_we_n
-@29
-sdram_ras_n
-@23
+#{Command} sdram_cas_n sdram_we_n sdram_ras_n
+@28
 sdram_cas_n
 sdram_we_n
+sdram_ras_n
 @1401201
 -group_end
-@1000200
--Command
 @28
+sdram_ba[1:0]
 sdram_cs_n
 [pattern_trace] 1
 [pattern_trace] 0
