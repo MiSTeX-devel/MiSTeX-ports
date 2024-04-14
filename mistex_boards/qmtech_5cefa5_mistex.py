@@ -92,13 +92,13 @@ class BaseSoC(SoCCore):
 class Gamecore(Module):
     def __init__(self, platform, soc, sys_clk_freq) -> None:
         led         = platform.request("led")
-        button      = platform.request("button")
         rgb         = platform.request("rgb")
         i2c         = platform.request("i2c")
         i2s         = platform.request("i2s")
         sdcard      = platform.request("sdcard")
         sdram       = platform.request("sdram", 1)
         audio       = platform.request("audio")
+        spdif       = platform.request("spdif")
         hps_spi     = platform.request("hps_spi")
         hps_control = platform.request("hps_control")
 
@@ -167,7 +167,7 @@ class Gamecore(Module):
 
             o_AUDIO_L = audio.l,
             o_AUDIO_R = audio.r,
-            o_AUDIO_SPDIF = audio.spdif,
+            o_AUDIO_SPDIF = spdif,
 
             o_LED_USER  = led.user,
             o_LED_HDD   = led.hdd,
@@ -193,6 +193,7 @@ class Gamecore(Module):
             i_HPS_FPGA_ENABLE = hps_control.fpga_enable,
             i_HPS_OSD_ENABLE  = hps_control.osd_enable,
             i_HPS_IO_ENABLE   = hps_control.io_enable,
+            o_HPS_IO_WIDE     = hps_control.io_wide,
             i_HPS_CORE_RESET  = hps_control.core_reset,
 
             i_ddr3_clk_i           = ClockSignal("sys"),
@@ -223,8 +224,9 @@ def main(coredir, core):
     mistex_yaml = yaml.load(open(join(coredir, "MiSTeX.yaml"), 'r'), Loader=yaml.FullLoader)
 
     platform = qmtech_5cefa5.Platform(with_daughterboard=False)
+    build_dir = get_build_dir(core)
 
-    add_designfiles(platform, coredir, mistex_yaml, 'quartus')
+    add_designfiles(platform, coredir, mistex_yaml, 'quartus', build_dir)
 
     generate_build_id(platform, coredir)
     add_mainfile(platform, coredir, mistex_yaml)
@@ -277,8 +279,6 @@ def main(coredir, core):
     platform.add_platform_command("set_global_assignment -name SEED 1")
 
     platform.add_extension(mistex_baseboard.extension("altera", sdram_index=1))
-
-    build_dir = get_build_dir(core)
 
     soc = BaseSoC(platform, core_name=core)
     builder = Builder(soc,
