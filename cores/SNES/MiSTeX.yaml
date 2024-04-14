@@ -31,7 +31,23 @@ quartus:
     - sys/hdmi_config.sv
     - upstream/rtl/pll/pll_0002.v
     - upstream/rtl/bram.vhd
+    - upstream/rtl/msu_fifo.v
     - upstream/rtl/chip/MSU1/msu_fifo.v
+    - upstream/rtl/chip/CX4/CX4Map.vhd
+    - upstream/rtl/chip/CX4/cx4cache.vhd
+    - upstream/rtl/chip/CX4/CX4.vhd
+    - upstream/rtl/chip/MSU1/msu_audio.v
+    - upstream/rtl/chip/MSU1/MSU.sv
+    - upstream/rtl/chip/BSX/BSX_BS.vhd
+    - upstream/rtl/chip/DSP/DSPn.vhd
+    - upstream/rtl/chip/SPC7110/SPC7110_DEC.vhd
+    - upstream/rtl/chip/GSU/GSU.vhd
+    - upstream/rtl/bram.vhd
+    - upstream/rtl/sdram.sv
+    - upstream/rtl/cheatcodes.sv
+    - upstream/rtl/lightgun.sv
+    - upstream/rtl/hps_ext.v
+
 
 vivado:
   sourcefiles:
