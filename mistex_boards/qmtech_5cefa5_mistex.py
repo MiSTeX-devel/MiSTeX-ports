@@ -237,6 +237,7 @@ def main(coredir, core):
         "CYCLONEV": 1,
         "CLK_100_EXT": 1,
         "DISABLE_VGA": 1,
+        "SKIP_ASCAL" : 1,
         # "SKIP_SHADOWMASK": 1,
         # "NO_SCANDOUBLER": 1,
         # "MISTER_DISABLE_ADAPTIVE": 1,
