@@ -1,0 +1,16 @@
+modules:
+  other:
+    # original version
+    - from: fx68k
+      unless: VERILATOR
+      get:
+      - fx68k.sv
+      - fx68kAlu.sv
+      - uaddrPla.sv
+    # Verilator-compatible version:
+    - from: fx68k/verilator
+      when: VERILATOR
+      get:
+      - fx68k.sv
+      - fx68kAlu.sv
+      - uaddrPla.sv

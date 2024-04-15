@@ -1,0 +1,140 @@
+mainfile: upstream/cores/toki/mistex/jttoki_game_sdram.v
+
+use-template-sys: false
+
+defines:
+
+  #MISTER_DEBUG_NOHDMI: 1
+  #JTFRAME_180SHIFT: 1
+  JTFRAME_MR_FASTIO: 0
+  #
+  JTFRAME_RELEASE: 1
+  #
+  ARCADE_SYS: 1
+  USE_SDRAM: 1
+  #
+  COMMIT: 57052818
+  CORENAME: TOKI
+  CORE_OSD: 
+  DATE: 240331
+  GAMETOP: jttoki_game_sdram
+  JTFRAME_ARX: 4
+  JTFRAME_ARY: 3
+  JTFRAME_BA1_START: 26'h280000
+  JTFRAME_BUTTONS: 2
+  JTFRAME_CLK48: 1
+  JTFRAME_CLK96: 1
+  JTFRAME_COLORW: 4
+  JTFRAME_COMMIT: 32'h5705281
+  JTFRAME_CREDITS: 1
+  JTFRAME_CREDITS_PAGES: 2
+  JTFRAME_DIALEMU_LEFT: 5
+  JTFRAME_DIPBASE: 16
+  JTFRAME_HEIGHT: 9'd224
+  JTFRAME_MCLK: 96000
+  JTFRAME_MEMGEN: 
+  JTFRAME_OSD_FLIP: 0
+  JTFRAME_OSD_NOLOAD: 1
+  JTFRAME_OSD_NOLOGO: 1
+  JTFRAME_OSD_SND_EN: 1
+  JTFRAME_OSD_VOL: 1
+  JTFRAME_PLLSIM: 10.416
+  JTFRAME_PXLCLK: 6
+  JTFRAME_RELEASE: 1
+  JTFRAME_SDRAM96: 1
+  JTFRAME_SDRAM_BANKS: 1
+  JTFRAME_SIGNED_SND: 1
+  JTFRAME_TIMESTAMP: 1711906614
+  JTFRAME_WIDTH: 9'd256
+  MISTER: 1
+  SEPARATOR: -;
+  TARGET: mistex
+  TOKI: 
+
+sourcedirs:
+  - upstream/modules/jtframe/target/mistex/sys
+  - upstream/modules/jtframe/target/mistex/sys/pll_cfg
+  - upstream/modules/jtframe/target/mistex/pll6144
+  - upstream/modules/jtframe/target/mistex/pll6144/jtframe_pll6144
+  - upstream/modules/jtframe/target/mistex/pll6293
+  - upstream/modules/jtframe/target/mistex/pll6293/jtframe_pll6293
+  - upstream/modules/jtframe/target/mistex/pll6671  
+  - upstream/modules/jtframe/target/mistex/pll6671/jtframe_pll6671
+  - upstream/cores/toki/mistex
+  - upstream/cores/toki/hdl
+  - upstream/modules/fx68k
+  - upstream/modules/jt6295/hdl
+  - upstream/modules/jtopl/hdl
+  - upstream/modules/jtframe/hdl
+  - upstream/modules/jtframe/hdl/ram
+  - upstream/modules/jtframe/hdl/sdram
+  - upstream/modules/jtframe/hdl/keyboard
+  - upstream/modules/jtframe/hdl/video
+  - upstream/modules/jtframe/hdl/cheat
+  - upstream/modules/jtframe/hdl/clocking
+  - upstream/modules/jtframe/hdl/cpu/pauloblaze
+
+
+sourcefiles:
+  - upstream/modules/jtframe/target/mistex/jtframe_emu.sv
+  - upstream/modules/jtframe/target/mistex/jtframe_mister.sv
+  - upstream/modules/jtframe/target/mistex/jtframe_mister_dwnld.v
+  - upstream/modules/jtframe/target/mistex/jtframe_mr_ddrmux.v
+  - upstream/modules/jtframe/target/mistex/jtframe_mr_ddrtest.v
+  - upstream/modules/jtframe/target/mistex/jtframe_joymux.v
+  - upstream/modules/jtframe/target/mistex/joydb15.v
+  - upstream/modules/jtframe/hdl/sound/jtframe_fir.v
+  - upstream/modules/jtframe/hdl/sound/jtframe_fir_mono.v
+  - upstream/modules/jtframe/hdl/sound/jtframe_mixer.v
+  - upstream/modules/jtframe/hdl/sound/jtframe_mixer_en.v
+  - upstream/modules/jtframe/hdl/sound/jtframe_uprate2_fir.v
+  - upstream/modules/jtframe/hdl/cpu/t80/T80pa.vhd
+  - upstream/modules/jtframe/hdl/cpu/t80/T80s.vhd
+  - upstream/modules/jtframe/hdl/cpu/t80/T80_Reg.vhd
+  - upstream/modules/jtframe/hdl/cpu/t80/T80_MCode.vhd
+  - upstream/modules/jtframe/hdl/cpu/t80/T80_ALU.vhd
+  - upstream/modules/jtframe/hdl/cpu/t80/T80.vhd
+  - upstream/modules/jtframe/hdl/cpu/j68/cpu_j68.v
+  - upstream/modules/jtframe/hdl/cpu/j68/j68_addsub_32.v
+  - upstream/modules/jtframe/hdl/cpu/j68/j68_alu.v
+  - upstream/modules/jtframe/hdl/cpu/j68/j68_decode.v
+  - upstream/modules/jtframe/hdl/cpu/j68/j68_decode_rom.v
+  - upstream/modules/jtframe/hdl/cpu/j68/j68_dpram_2048x20.v
+  - upstream/modules/jtframe/hdl/cpu/j68/j68_flags.v
+  - upstream/modules/jtframe/hdl/cpu/j68/j68_loop.v
+  - upstream/modules/jtframe/hdl/cpu/j68/j68_mem_io.v
+  - upstream/modules/jtframe/hdl/cpu/j68/j68_test.v
+  - upstream/modules/jtframe/hdl/cpu/j68/jtframe_j68.v
+  - upstream/modules/jtframe/hdl/cpu/jtframe_68kdma.v
+  - upstream/modules/jtframe/hdl/cpu/jtframe_68kdtack.v
+  - upstream/modules/jtframe/hdl/cpu/jtframe_68kdtack_cen.v
+  - upstream/modules/jtframe/hdl/cpu/jtframe_68kramcs.v
+  - upstream/modules/jtframe/hdl/cpu/jtframe_m68k.v
+  - upstream/modules/jtframe/hdl/cpu/jtframe_virq.v
+  - upstream/modules/jtframe/hdl/cpu/jtframe_z80.v
+  - upstream/modules/jtframe/hdl/cpu/jtframe_z80wait.v
+
+
+quartus:
+  platform-commands:
+    - 'set_global_assignment -name SEARCH_PATH "${CORE_DIR}/upstream/modules/jtframe/hdl/inc"'
+    - 'set_global_assignment -name SEARCH_PATH "${CORE_DIR}/upstream/cores/toki/mistex"'
+
+  sourcefiles:
+    - upstream/cores/toki/mistex/sys_top.sdc
+    - upstream/modules/jtframe/target/mistex/sys/pll/pll_0002.v
+    - upstream/modules/jtframe/target/mistex/sys/pll_audio/pll_audio_0002.v
+    - upstream/modules/jtframe/target/mistex/sys/pll_hdmi/pll_hdmi_0002.v
+    
+vivado:
+  pre-synthesis-commands:
+    - 'set_property -name "include_dirs" -value "[file normalize "${CORE_DIR}/upstream/modules/jtframe/hdl/inc"] [file normalize "${CORE_DIR}/upstream/cores/toki/mistex"]" -objects [current_fileset]'
+
+  sourcefiles:
+    - upstream/modules/jtframe/target/mistex/sys/sys_top.xdc
+    #- upstream/cores/toki/mistex/sys_top.xdc    
+    - upstream/modules/jtframe/target/mistex/sys/pll/pll_0002-xilinx7.v
+    - upstream/modules/jtframe/target/mistex/sys/pll_audio/pll_audio_0002-xilinx7.v        
+    - upstream/modules/jtframe/target/mistex/sys/pll_hdmi/pll_hdmi_0002-xilinx7.v
+        
+

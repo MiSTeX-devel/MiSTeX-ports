@@ -1,0 +1,10 @@
+*.vgz
+*.f
+*.wav
+*.vgm
+*.jtt
+*.fst
+*.bin
+*.raw
+obj_dir
+.DS_Store

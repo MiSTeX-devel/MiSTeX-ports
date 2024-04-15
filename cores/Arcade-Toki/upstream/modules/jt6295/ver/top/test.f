@@ -1,0 +1,11 @@
+test.v
+../../hdl/jt6295_acc.v
+../../hdl/jt6295_adpcm.v
+../../hdl/jt6295_ctrl.v
+../../hdl/jt6295_rom.v
+../../hdl/jt6295_serial.v
+../../hdl/jt6295_sh_rst.v
+../../hdl/jt6295_timing.v
+../../hdl/jt6295.v
+../../hdl/jt12_interpol.v
+../../hdl/jt12_comb.v
