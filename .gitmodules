@@ -62,5 +62,5 @@
 	path = cores/C64/upstream
 	url = https://github.com/MiSTer-devel/C64_MiSTer/
 [submodule "cores/jtcores"]
-	path = cores/jtcores
+	path = cores/Arcade-jtcores/jtcores
 	url = https://github.com/MiSTeX-devel/jtcores
