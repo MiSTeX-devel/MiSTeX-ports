@@ -1,19 +1,19 @@
 [*]
-[*] GTKWave Analyzer v3.3.118 (w)1999-2023 BSI
-[*] Sat Apr 13 00:18:23 2024
+[*] GTKWave Analyzer v3.3.117 (w)1999-2023 BSI
+[*] Sat Apr 13 00:23:05 2024
 [*]
 [dumpfile] "/MiSTeX/ports/dump.vcd"
-[dumpfile_mtime] "Sat Apr 13 00:17:14 2024"
-[dumpfile_size] 51286
+[dumpfile_mtime] "Sat Apr 13 00:21:12 2024"
+[dumpfile_size] 51335
 [savefile] "/MiSTeX/ports/sdram.gtkw"
-[timestart] 9926860
+[timestart] 15930100
 [size] 2856 2451
 [pos] -1 -1
-*-13.147945 9980000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-14.643375 16080000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [sst_width] 320
 [signals_width] 170
 [sst_expanded] 1
-[sst_vpaned_height] 798
+[sst_vpaned_height] 797
 @28
 scope_clk
 scope_trig
@@ -40,17 +40,17 @@ sdram_dq[15:0]
 (15)sdram_dq[15:0]
 @1401200
 -group_end
-@802029
+@c02029
 ^1 /MiSTeX/ports/sdram_state.gtkw
 #{Command} sdram_ras_n sdram_cas_n sdram_we_n
-@2029
+@2028
 ^1 /MiSTeX/ports/sdram_state.gtkw
 sdram_ras_n
 ^1 /MiSTeX/ports/sdram_state.gtkw
 sdram_cas_n
 ^1 /MiSTeX/ports/sdram_state.gtkw
 sdram_we_n
-@1001209
+@1401201
 -group_end
 @28
 sdram_cs_n

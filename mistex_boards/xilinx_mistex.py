@@ -301,6 +301,12 @@ class Gamecore(LiteXModule):
                 sdram.cs_n,
                 sdram.ba,
             ]
+            hps_spi = [
+                hps_spi.cs_n,
+                hps_spi.clk,
+                hps_spi.mosi,
+                hps_spi.miso,
+            ]
             soc.submodules.analyzer = analyzer = LiteScopeAnalyzer(sdram,
                 depth        = 2048,
                 samplerate   = sys_clk_freq,
