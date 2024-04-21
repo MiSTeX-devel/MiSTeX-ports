@@ -8,7 +8,7 @@
 # DE10_lite JP3 (Arduino connector 1x18 pins) is used for RPI_zero I/F
 # DE10_lite JP1 (GPIO connector    2x20 pins) is kept free for RAM extension
 # 
-# Signal       FPGA   DE10lite JP3     RPI_Zero
+# Signal       FPGA   DE10lite JP3      RPI_Zero
 # name         pin    Arduino conn.    gpio conn.
 #                        name           pin  name
 # core_reset   AB5       IO0            15   gpio22
@@ -19,12 +19,19 @@
 # miso         Y10       IO5            21   spi0_miso
 # clk          AA11      IO6            23   spi0_sclk
 # cs_n         AA12      IO7            24   spi0_ce0_n 
+# io_wide      AB17      IO8            40   gpio21 
+# -            AA17      IO9            -    -
+# -            AB19      IO10           -    -
+# -            AA19      IO11           -    -
+# -            Y19       IO12           -    -
+# btn_menu     AB20      IO13           33   gpio13 (todo)          
+# btn_osd      AB21      IO14           35   gpio19 (todo)
+# btn_user     AA20      IO15           37   gpio26 (todo)
 # GND                    GND            14   ground 
- 
-# sound_pwm_r            IO8 (reserved for future use) 
-# sound_pwm_l            IO9 (reserved for future use) 
 
- 
+# sound_pwm_r  (todo) 
+# sound_pwm_l  (todo)  
+  
 from os.path import join
 import sys
 import yaml
@@ -119,6 +126,7 @@ class Top(LiteXModule):
             i_HPS_OSD_ENABLE = hps_control.osd_enable,
             i_HPS_IO_ENABLE = hps_control.io_enable,
             i_HPS_CORE_RESET = hps_control.core_reset,
+            o_HPS_IO_WIDE = hps_control.io_wide
             # o_DEBUG = N/C
         )
         self.specials += sys_top
@@ -169,6 +177,7 @@ def main(coredir, core):
             Subsignal("osd_enable",  Pins("AB7")),
             Subsignal("io_enable",   Pins("AB8")),
             Subsignal("core_reset",  Pins("AB5")),
+            Subsignal("io_wide",     Pins("AB17")),
             IOStandard("3.3-V LVTTL"),
         ),
     ])

@@ -19,7 +19,6 @@ quartus:
     - sys/pll_hdmi_0002.v
     - sys/hdmi_config.sv
     - rtl/pll_0002.v
-    - rtl/DIGDUG_CORES.v
     - upstream/rtl/dprams.v
     - upstream/rtl/pause.v
 
@@ -33,4 +32,3 @@ vivado:
     - sys/pll_audio_0002-xilinx7.v
     - rtl/dprams.v
     - rtl/pause.v
-    - upstream/rtl/DIGDUG_CORES.v
