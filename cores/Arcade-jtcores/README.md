@@ -4,14 +4,15 @@
 
   ```sh
   #just for the first time update jtcores submodules
-  cd cores/jtcores/
+  cd cores/Arcade-jtcores/jtcores/
+  #git submodule update --init --recursive
   git -c submodule."modules/jt900h".update=none -c submodule."modules/jtframe/target/pocket".update=none submodule update --init --recursive
   ```
 
 * Build jtframe core first 
 
   ```sh
-  cd cores/jtcores/
+  cd cores/Arcade-jtcores/jtcores/
   source setprj.sh
   jtcore kicker -mistex --nodbg
   ```

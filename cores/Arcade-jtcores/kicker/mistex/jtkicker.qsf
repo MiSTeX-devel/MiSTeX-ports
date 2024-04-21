@@ -1,0 +1,129 @@
+# MiSTer top level
+
+set_global_assignment -name TOP_LEVEL_ENTITY sys_top
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+
+set_global_assignment -name LAST_QUARTUS_VERSION "17.1.0 Lite Edition"
+
+set_global_assignment -name GENERATE_RBF_FILE ON
+set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
+set_global_assignment -name NUM_PARALLEL_PROCESSORS ALL
+set_global_assignment -name SAVE_DISK_SPACE OFF
+set_global_assignment -name SMART_RECOMPILE ON
+set_global_assignment -name MIN_CORE_JUNCTION_TEMP "-40"
+set_global_assignment -name MAX_CORE_JUNCTION_TEMP 100
+set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
+set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
+set_global_assignment -name TIMEQUEST_MULTICORNER_ANALYSIS OFF
+set_global_assignment -name OPTIMIZE_POWER_DURING_FITTING OFF
+set_global_assignment -name FINAL_PLACEMENT_OPTIMIZATION ALWAYS
+set_global_assignment -name FITTER_EFFORT "STANDARD FIT"
+set_global_assignment -name OPTIMIZATION_MODE "HIGH PERFORMANCE EFFORT"
+set_global_assignment -name ALLOW_POWER_UP_DONT_CARE ON
+set_global_assignment -name QII_AUTO_PACKED_REGISTERS NORMAL
+set_global_assignment -name ROUTER_LCELL_INSERTION_AND_LOGIC_DUPLICATION ON
+set_global_assignment -name PHYSICAL_SYNTHESIS_COMBO_LOGIC ON
+set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_DUPLICATION ON
+set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_RETIMING ON
+set_global_assignment -name OPTIMIZATION_TECHNIQUE SPEED
+set_global_assignment -name MUX_RESTRUCTURE ON
+set_global_assignment -name REMOVE_REDUNDANT_LOGIC_CELLS ON
+set_global_assignment -name AUTO_DELAY_CHAINS_FOR_HIGH_FANOUT_INPUT_PINS ON
+set_global_assignment -name PHYSICAL_SYNTHESIS_COMBO_LOGIC_FOR_AREA ON
+set_global_assignment -name ADV_NETLIST_OPT_SYNTH_WYSIWYG_REMAP ON
+set_global_assignment -name SYNTH_GATED_CLOCK_CONVERSION ON
+set_global_assignment -name PRE_MAPPING_RESYNTHESIS ON
+set_global_assignment -name ROUTER_CLOCKING_TOPOLOGY_ANALYSIS ON
+set_global_assignment -name ECO_OPTIMIZE_TIMING ON
+set_global_assignment -name PERIPHERY_TO_CORE_PLACEMENT_AND_ROUTING_OPTIMIZATION ON
+set_global_assignment -name PHYSICAL_SYNTHESIS_ASYNCHRONOUS_SIGNAL_PIPELINING ON
+set_global_assignment -name ALM_REGISTER_PACKING_EFFORT LOW
+set_global_assignment -name OPTIMIZE_POWER_DURING_SYNTHESIS OFF
+
+# set_location_assignment FRACTIONALPLL_X0_Y15_N0 -to "emu:emu|jtframe_pll6144:u_base|jtframe_pll6144_0002:jtframe_pll6144_inst|altera_pll:altera_pll_i|general[0].gpll~FRACTIONAL_PLL"
+# set_location_assignment FRACTIONALPLL_X89_Y1_N0 -to "emu:emu|jtframe_pllgame:pll|jtframe_pllgame_0002:jtframe_pllgame_inst|altera_pll:altera_pll_i|general[0].gpll~FRACTIONAL_PLL"
+
+##################################################################
+## Files
+########################
+source /home/jordi/Documents/Coding/Github/MiSTeX-ports/cores/Arcade-jtcores/jtcores/modules/jtframe/target/mistex/sys/sys.tcl
+source /home/jordi/Documents/Coding/Github/MiSTeX-ports/cores/Arcade-jtcores/jtcores/modules/jtframe/target/mistex/sys/sys_analog.tcl
+
+set_global_assignment -name PRE_FLOW_SCRIPT_FILE "quartus_sh:/home/jordi/Documents/Coding/Github/MiSTeX-ports/cores/Arcade-jtcores/jtcores/modules/jtframe/target/mister/sys/build_id.tcl"
+# SDC file is copied and edited in the target folder
+set_global_assignment -name SDC_FILE sys_top.sdc
+
+# MiSTer Framework
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
+set_global_assignment -name QIP_FILE game.qip
+
+set_global_assignment -name VERILOG_MACRO "ARCADE_SYS=1"
+set_global_assignment -name VERILOG_MACRO "USE_SDRAM=1"
+#VERILOG_MACRO "MISTER=<None>" is required 
+set_global_assignment -name VERILOG_MACRO "MISTER=<None>"
+
+set_instance_assignment -name FAST_INPUT_REGISTER ON -to emu:emu|jtframe_mister:u_frame|jtframe_board:u_board|jtframe_sdram_bank:u_sdram|jtframe_sdram_bank_core:u_core|dq_ff -entity sys_top
+#set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to *
+#set_instance_assignment -name FAST_INPUT_REGISTER ON -to *
+#set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to *
+set_instance_assignment -name FAST_OUTPUT_ENABLE_REGISTER ON -to SDRAM_DQ[*]
+set_global_assignment -name FORCE_SYNCH_CLEAR ON
+set_global_assignment -name SEARCH_PATH "../hdl"
+set_global_assignment -name SEARCH_PATH "/home/jordi/Documents/Coding/Github/MiSTeX-ports/cores/Arcade-jtcores/jtcores/modules/jtframe/hdl/inc"
+# Leave the blank line
+set_global_assignment -name VERILOG_MACRO "COMMIT=37bdc011-dirty"
+set_global_assignment -name VERILOG_MACRO "CORENAME=JTKICKER"
+set_global_assignment -name VERILOG_MACRO "CORE_OSD="
+set_global_assignment -name VERILOG_MACRO "DATE=240421"
+set_global_assignment -name VERILOG_MACRO "GAMETOP=jtkicker_game_sdram"
+set_global_assignment -name VERILOG_MACRO "JTFRAME_180SHIFT=0"
+set_global_assignment -name VERILOG_MACRO "JTFRAME_ARX=4"
+set_global_assignment -name VERILOG_MACRO "JTFRAME_ARY=3"
+set_global_assignment -name VERILOG_MACRO "JTFRAME_BUTTONS=2"
+set_global_assignment -name VERILOG_MACRO "JTFRAME_CLK24=1"
+set_global_assignment -name VERILOG_MACRO "JTFRAME_COLORW=4"
+set_global_assignment -name VERILOG_MACRO "JTFRAME_COMMIT=32'h37bdc01"
+set_global_assignment -name VERILOG_MACRO "JTFRAME_CREDITS=1"
+set_global_assignment -name VERILOG_MACRO "JTFRAME_CREDITS_PAGES=3"
+set_global_assignment -name VERILOG_MACRO "JTFRAME_DIALEMU_LEFT=5"
+set_global_assignment -name VERILOG_MACRO "JTFRAME_DIPBASE=16"
+set_global_assignment -name VERILOG_MACRO "JTFRAME_FLIP_RESET=1"
+set_global_assignment -name VERILOG_MACRO "JTFRAME_HEIGHT=9'd224"
+set_global_assignment -name VERILOG_MACRO "JTFRAME_JOY_DURL=1"
+set_global_assignment -name VERILOG_MACRO "JTFRAME_MCLK=49153840"
+set_global_assignment -name VERILOG_MACRO "JTFRAME_MEMGEN="
+set_global_assignment -name VERILOG_MACRO "JTFRAME_PLL=jtframe_pll6144"
+set_global_assignment -name VERILOG_MACRO "JTFRAME_PLLSIM=10.173"
+set_global_assignment -name VERILOG_MACRO "JTFRAME_PROM_START='h1E000"
+set_global_assignment -name VERILOG_MACRO "JTFRAME_PXLCLK=6"
+set_global_assignment -name VERILOG_MACRO "JTFRAME_RELEASE=1"
+set_global_assignment -name VERILOG_MACRO "JTFRAME_SDRAM_BANKS=1"
+set_global_assignment -name VERILOG_MACRO "JTFRAME_SHIFT=1"
+set_global_assignment -name VERILOG_MACRO "JTFRAME_SIGNED_SND=1"
+set_global_assignment -name VERILOG_MACRO "JTFRAME_TIMESTAMP=1713732836"
+set_global_assignment -name VERILOG_MACRO "JTFRAME_VERTICAL=1"
+set_global_assignment -name VERILOG_MACRO "JTFRAME_WIDTH=9'd256"
+set_global_assignment -name VERILOG_MACRO "KICKER="
+set_global_assignment -name VERILOG_MACRO "MAIN_MODULE=jtkicker_main"
+set_global_assignment -name VERILOG_MACRO "MISTEX=1"
+set_global_assignment -name VERILOG_MACRO "OBJ_START='h16000"
+set_global_assignment -name VERILOG_MACRO "PCM_START='h1E000"
+set_global_assignment -name VERILOG_MACRO "SCR_START='h10000"
+set_global_assignment -name VERILOG_MACRO "SEPARATOR=-;"
+set_global_assignment -name VERILOG_MACRO "TARGET=mistex"
+set_global_assignment -name VERILOG_MACRO "VIDEO_MODULE=jtkicker_video"
+# Slew Rate
+set_instance_assignment -name SLEW_RATE 0 -to SDRAM_A[*]
+set_instance_assignment -name SLEW_RATE 0 -to SDRAM_BA[*]
+set_instance_assignment -name SLEW_RATE 0 -to SDRAM_CLK
+set_instance_assignment -name SLEW_RATE 0 -to SDRAM_DQML
+set_instance_assignment -name SLEW_RATE 0 -to SDRAM_DQMH
+set_instance_assignment -name SLEW_RATE 0 -to SDRAM_nWE
+set_instance_assignment -name SLEW_RATE 0 -to SDRAM_nCAS
+set_instance_assignment -name SLEW_RATE 0 -to SDRAM_nRAS
+set_instance_assignment -name SLEW_RATE 0 -to SDRAM_nCS
+set_instance_assignment -name SLEW_RATE 0 -to SDRAM_CKE
+
+set_global_assignment -name seed 1

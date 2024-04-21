@@ -1,4 +1,4 @@
-mainfile: ../jtcores/cores/kicker/mistex/jtkicker_game_sdram.v
+mainfile: mistex/jtkicker_game_sdram.v
 
 use-template-sys: false
 
@@ -10,12 +10,11 @@ defines:
   #
   ARCADE_SYS: 1
   USE_SDRAM: 1
-  MISTER: 1
   #
-  COMMIT: 8afcc921-dirty
+  COMMIT: 37bdc011-dirty
   CORENAME: JTKICKER
   CORE_OSD: 
-  DATE: 240416
+  DATE: 240421
   GAMETOP: jtkicker_game_sdram
   JTFRAME_180SHIFT: 0
   JTFRAME_ARX: 4
@@ -23,7 +22,7 @@ defines:
   JTFRAME_BUTTONS: 2
   JTFRAME_CLK24: 1
   JTFRAME_COLORW: 4
-  JTFRAME_COMMIT: 32'h8afcc92
+  JTFRAME_COMMIT: 32'h37bdc01
   JTFRAME_CREDITS: 1
   JTFRAME_CREDITS_PAGES: 3
   JTFRAME_DIALEMU_LEFT: 5
@@ -39,9 +38,9 @@ defines:
   JTFRAME_PXLCLK: 6
   JTFRAME_RELEASE: 1
   JTFRAME_SDRAM_BANKS: 1
-  JTFRAME_SHIFT: 0
+  JTFRAME_SHIFT: 1
   JTFRAME_SIGNED_SND: 1
-  JTFRAME_TIMESTAMP: 1713298959
+  JTFRAME_TIMESTAMP: 1713732836
   #
   JTFRAME_VERTICAL: 0
   #
@@ -52,7 +51,8 @@ defines:
   OBJ_START: 26'h16000
   PCM_START: 26'h1E000
   SCR_START: 26'h10000
-  TARGET: mister
+  SEPARATOR: -;
+  TARGET: mistex
   VIDEO_MODULE: jtkicker_video
  
 
@@ -233,12 +233,13 @@ sourcefiles:
 
 quartus:
   platform-commands:
-    - 'set_global_assignment -name SEARCH_PATH "${CORE_DIR./../jtcores/cores/kicker/mistex"'
-    - 'set_global_assignment -name SEARCH_PATH "${CORE_DIR./../jtcores/cores/kicker/mistex/../hdl"'
-    - 'set_global_assignment -name SEARCH_PATH "${CORE_DIR./../jtcores/modules/jtframe/hdl/inc"'
+    - 'set_global_assignment -name SEARCH_PATH "${CORE_DIR}/mistex"'
+    - 'set_global_assignment -name SEARCH_PATH "${CORE_DIR}/../jtcores/cores/kicker/mistex/../hdl"'
+    - 'set_global_assignment -name SEARCH_PATH "${CORE_DIR}/../jtcores/modules/jtframe/hdl/inc"'
+    - 'set_global_assignment -name VERILOG_MACRO "MISTER=<None>"'
 
   sourcefiles:
-    - ../jtcores/cores/kicker/mistex/sys_top.sdc
+    - mistex/sys_top.sdc
     - ../jtcores/modules/jtframe/target/mistex/sys/pll/pll_0002.v
     - ../jtcores/modules/jtframe/target/mistex/sys/pll_audio/pll_audio_0002.v
     - ../jtcores/modules/jtframe/target/mistex/sys/pll_hdmi/pll_hdmi_0002.v
@@ -246,11 +247,11 @@ quartus:
     
 vivado:
   pre-synthesis-commands:
-    - 'set_property -name "include_dirs" -value "[file normalize /../jtcores/cores/kicker/mistex"] [file normalize /../jtcores/cores/kicker/mistex/../hdl"] [file normalize /../jtcores/modules/jtframe/hdl/inc"]" -objects [current_fileset]'
+    - 'set_property -name "include_dirs" -value "[file normalize mistex"] [file normalize ../jtcores/cores/kicker/mistex/../hdl"] [file normalize /../jtcores/modules/jtframe/hdl/inc"]" -objects [current_fileset]'
 
   sourcefiles:
     - ../jtcores/modules/jtframe/target/mistex/sys/sys_top.xdc
-    #- ../jtcores/cores/kicker/mistex/sys_top.xdc
+    #- mistex/sys_top.xdc
     - ../jtcores/modules/jtframe/target/mistex/sys/pll/pll_0002-xilinx7.v
     - ../jtcores/modules/jtframe/target/mistex/sys/pll_audio/pll_audio_0002-xilinx7.v        
     - ../jtcores/modules/jtframe/target/mistex/sys/pll_hdmi/pll_hdmi_0002-xilinx7.v
