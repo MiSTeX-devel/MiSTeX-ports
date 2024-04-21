@@ -26,10 +26,18 @@ quartus:
     - sys/pll_hdmi_0002.v
     - sys/hdmi_config.sv
     - rtl/pll_0002.v
-    - upstream/rtl/mem/single_port_rom.vhd
+    - upstream/lib/fixed_pkg/fixed_float_types_c.vhd
+    - upstream/lib/fixed_pkg/fixed_pkg_c.vhd
+    - upstream/lib/opl2/opl2.v
+    - upstream/lib/opl2/timer.v
+    - upstream/lib/t80/T80.vhd
+    - upstream/rtl/gpu/sprite_layer.vhd
+    - upstream/rtl/gpu/video_gen.vhd
+    - upstream/rtl/snd/mixer.vhd
     - upstream/rtl/mem/true_dual_port_ram.vhd
     - upstream/rtl/mem/dual_port_ram.vhd
     - upstream/rtl/mem/single_port_ram.vhd
+    - upstream/rtl/tecmo.vhd
 
 vivado:
   sourcefiles:
