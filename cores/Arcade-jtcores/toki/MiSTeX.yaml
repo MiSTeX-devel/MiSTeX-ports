@@ -5,7 +5,7 @@ use-template-sys: false
 defines:
 
   #MISTER_DEBUG_NOHDMI: 1
-  JTFRAME_MR_FASTIO: 0
+  # JTFRAME_MR_FASTIO: 0
   #JTFRAME_RELEASE: 1
   #
   ARCADE_SYS: 1
