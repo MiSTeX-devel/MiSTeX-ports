@@ -6,15 +6,14 @@ defines:
 
   #MISTER_DEBUG_NOHDMI: 1
   #JTFRAME_MR_FASTIO: 0
-  JTFRAME_RELEASE: 1
   #
   ARCADE_SYS: 1
   USE_SDRAM: 1
   #
-  COMMIT: 37bdc011-dirty
+  COMMIT: 3f311c33
   CORENAME: JTKICKER
   CORE_OSD: 
-  DATE: 240421
+  DATE: 240425
   GAMETOP: jtkicker_game_sdram
   JTFRAME_180SHIFT: 0
   JTFRAME_ARX: 4
@@ -22,7 +21,7 @@ defines:
   JTFRAME_BUTTONS: 2
   JTFRAME_CLK24: 1
   JTFRAME_COLORW: 4
-  JTFRAME_COMMIT: 32'h37bdc01
+  JTFRAME_COMMIT: 32'h3f311c3
   JTFRAME_CREDITS: 1
   JTFRAME_CREDITS_PAGES: 3
   JTFRAME_DIALEMU_LEFT: 5
@@ -40,7 +39,7 @@ defines:
   JTFRAME_SDRAM_BANKS: 1
   JTFRAME_SHIFT: 1
   JTFRAME_SIGNED_SND: 1
-  JTFRAME_TIMESTAMP: 1713732836
+  JTFRAME_TIMESTAMP: 1714074593
   #
   JTFRAME_VERTICAL: 0
   #
@@ -70,40 +69,37 @@ sourcefiles:
   #### sys folder
   - ../jtcores/modules/jtframe/target/mistex/sys/sys_top.v
   # - ../jtcores/modules/jtframe/target/mistex/sys/sys_top.sdc
-  - ../jtcores/modules/jtframe/target/mistex/sys/ascal.vhd
+  - ../jtcores/modules/jtframe/target/mister/sys/ascal.vhd
   - ../jtcores/modules/jtframe/target/mistex/sys/pll_hdmi_adj.vhd
   - ../jtcores/modules/jtframe/target/mistex/sys/hq2x.sv
   - ../jtcores/modules/jtframe/target/mistex/sys/scandoubler.v
   - ../jtcores/modules/jtframe/target/mistex/sys/scanlines.v
-  - ../jtcores/modules/jtframe/target/mistex/sys/video_cleaner.sv
-  - ../jtcores/modules/jtframe/target/mistex/sys/shadowmask.sv
-  - ../jtcores/modules/jtframe/target/mistex/sys/gamma_corr.sv
+  - ../jtcores/modules/jtframe/target/mister/sys/video_cleaner.sv
+  - ../jtcores/modules/jtframe/target/mister/sys/shadowmask.sv
+  - ../jtcores/modules/jtframe/target/mister/sys/gamma_corr.sv
   - ../jtcores/modules/jtframe/target/mistex/sys/video_mixer.sv
-  - ../jtcores/modules/jtframe/target/mistex/sys/video_freezer.sv
-  - ../jtcores/modules/jtframe/target/mistex/sys/video_freak.sv
+  - ../jtcores/modules/jtframe/target/mister/sys/video_freezer.sv
+  - ../jtcores/modules/jtframe/target/mister/sys/video_freak.sv
   - ../jtcores/modules/jtframe/target/mistex/sys/arcade_video.v
-  - ../jtcores/modules/jtframe/target/mistex/sys/math.sv
+  - ../jtcores/modules/jtframe/target/mister/sys/math.sv
   - ../jtcores/modules/jtframe/target/mistex/sys/f2sdram_safe_terminator.sv
   - ../jtcores/modules/jtframe/target/mistex/sys/osd.sv
-  - ../jtcores/modules/jtframe/target/mistex/sys/vga_out.sv
-  - ../jtcores/modules/jtframe/target/mistex/sys/yc_out.sv
+  - ../jtcores/modules/jtframe/target/mister/sys/vga_out.sv
+  - ../jtcores/modules/jtframe/target/mister/sys/yc_out.sv
   - ../jtcores/modules/jtframe/target/mistex/sys/i2c.v
-  - ../jtcores/modules/jtframe/target/mistex/sys/alsa.sv
+  - ../jtcores/modules/jtframe/target/mister/sys/alsa.sv
   - ../jtcores/modules/jtframe/target/mistex/sys/i2s.v
   - ../jtcores/modules/jtframe/target/mistex/sys/spi-slave.v
-  - ../jtcores/modules/jtframe/target/mistex/sys/spdif.v
+  - ../jtcores/modules/jtframe/target/mister/sys/spdif.v
   - ../jtcores/modules/jtframe/target/mistex/sys/audio_out.v
   - ../jtcores/modules/jtframe/target/mistex/sys/iir_filter.v
-  - ../jtcores/modules/jtframe/target/mistex/sys/ltc2308.sv
-  - ../jtcores/modules/jtframe/target/mistex/sys/sigma_delta_dac.v
-  - ../jtcores/modules/jtframe/target/mistex/sys/mt32pi.sv
-  - ../jtcores/modules/jtframe/target/mistex/sys/mcp23009.sv
+  - ../jtcores/modules/jtframe/target/mister/sys/ltc2308.sv
+  - ../jtcores/modules/jtframe/target/mister/sys/sigma_delta_dac.v
+  - ../jtcores/modules/jtframe/target/mister/sys/mcp23009.sv
   - ../jtcores/modules/jtframe/target/mistex/sys/ddr_svc.sv
-  - ../jtcores/modules/jtframe/target/mistex/sys/sysmem.sv
-  - ../jtcores/modules/jtframe/target/mistex/sys/sd_card.sv
+  - ../jtcores/modules/jtframe/target/mister/sys/sysmem.sv
   - ../jtcores/modules/jtframe/target/mistex/sys/hps_io.v
-  - ../jtcores/modules/jtframe/target/mistex/sys/video_calc.v
-  - ../jtcores/modules/jtframe/target/mistex/sys/mister_clksync.v
+  - ../jtcores/modules/jtframe/target/mister/sys/video_calc.v
   - ../jtcores/modules/jtframe/target/mistex/sys/hps_interface.v
   - ../jtcores/modules/jtframe/target/mistex/sys/top_crg.v
   - ../jtcores/modules/jtframe/target/mistex/sys/pll.v
@@ -216,13 +212,13 @@ sourcefiles:
   - ../jtcores/modules/jtframe/hdl/video/jtframe_tilemap.v
   - ../jtcores/modules/jtframe/hdl/video/jtframe_vtimer.v
   - ../jtcores/modules/jtframe/hdl/video/jtframe_wirebw.v
-  - ../jtcores/modules/jtframe/target/mistex/joydb15.v
+  - ../jtcores/modules/jtframe/target/mister/joydb15.v
   - ../jtcores/modules/jtframe/target/mistex/jtframe_emu.sv
-  - ../jtcores/modules/jtframe/target/mistex/jtframe_joymux.v
-  - ../jtcores/modules/jtframe/target/mistex/jtframe_mister.sv
-  - ../jtcores/modules/jtframe/target/mistex/jtframe_mister_dwnld.v
-  - ../jtcores/modules/jtframe/target/mistex/jtframe_mr_ddrmux.v
-  - ../jtcores/modules/jtframe/target/mistex/jtframe_mr_ddrtest.v
+  - ../jtcores/modules/jtframe/target/mister/jtframe_joymux.v
+  - ../jtcores/modules/jtframe/target/mister/jtframe_mister.sv
+  - ../jtcores/modules/jtframe/target/mister/jtframe_mister_dwnld.v
+  - ../jtcores/modules/jtframe/target/mister/jtframe_mr_ddrmux.v
+  - ../jtcores/modules/jtframe/target/mister/jtframe_mr_ddrtest.v
   #- ../jtcores/cores/kicker/mistex/jtkicker_game_sdram.v
   
   - ../jtcores/modules/jt89/hdl/jt89.v

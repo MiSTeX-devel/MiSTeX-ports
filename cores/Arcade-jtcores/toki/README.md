@@ -1,21 +1,27 @@
-## notes to get toki working
+# Toki development notes
 
-**jtcores**
+### **Modified sys files**
 
-Needed an up to date version of mistex target. Latest development is in setup branch and this [PR](https://github.com/MiSTeX-devel/jtcores/pull/1) is needed.
+​    \- ../jtcores/modules/jtframe/target/mistex/jtframe_emu.sv
+​    \- ../jtcores/modules/jtframe/target/mistex/sys/pll/pll_0002.v
 
-**Modified sys files needed**
+Cyclone IV PLL has one less output than Cyclone V PLLs.  In Cyclone V the last one (clk5) is used for the phase shifted 96 MHz clock.   
 
-​    \- rtl/jtframe_emu.sv
-​    \- ../jtcores/modules/jtframe/target/mistex/sys/pll/pll_0002_96.v
+As Toki runs at 96 MHz (JTFRAME_SDRAM96: 1) it needs that phase shifted 96 MHz clock. 
 
-Cyclone IV PLL has one less output than Cyclone V PLLs.  In Cyclone V the last one is used for the phase shifted 96 MHz.   
+I modified sys/pll/pll_0002.v  and assigned the clk1 phase shifted 48 MHz (clk48sh) with the phase shifted 96 MHz  or 48 MHz depending on the JTFRAME_SDRAM96 define.
 
-As Toki runs at 96 MHz (JTFRAME_SDRAM96: 1) it needs that PS 96 MHz. 
+```verilog
+    `ifdef JTFRAME_SDRAM96
+		altpll_component.clk1_multiply_by = 48,
+    `else
+		altpll_component.clk1_multiply_by = 24,
+    `endif
+```
 
-For now I'm just replacing the phase shifted 48 MHz (clk48sh) with the phase shifted 96 MHz (using pll_0002_96.v) and using a modified jtframe_emu.sv  with    `assign SDRAM_CLK   = clk48sh;` instead of         `assign SDRAM_CLK   = clk96sh;`
+and using a modified jtframe_emu.sv  with    `assign SDRAM_CLK   = clk48sh;`     instead of         `assign SDRAM_CLK   = clk96sh;`
 
-**Defines needed**
+### **Defines needed**
 
 ```sh
 #JTFRAME_MR_FASTIO: 0
