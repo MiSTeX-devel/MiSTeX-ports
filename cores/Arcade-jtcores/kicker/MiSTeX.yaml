@@ -6,6 +6,7 @@ defines:
 
   #MISTER_DEBUG_NOHDMI: 1
   #JTFRAME_MR_FASTIO: 0
+  MISTER: 1
   #
   ARCADE_SYS: 1
   USE_SDRAM: 1
@@ -56,14 +57,11 @@ defines:
  
 
 sourcedirs:
-  - ../jtcores/modules/jtframe/target/mistex/sys/pll_cfg
   - ../jtcores/modules/jtframe/target/mistex/pll6144
-  - ../jtcores/modules/jtframe/target/mistex/pll6144/jtframe_pll6144
   - ../jtcores/modules/jtframe/target/mistex/pll6293
-  - ../jtcores/modules/jtframe/target/mistex/pll6293/jtframe_pll6293
   - ../jtcores/modules/jtframe/target/mistex/pll6671  
-  - ../jtcores/modules/jtframe/target/mistex/pll6671/jtframe_pll6671  
-  - ../jtcores/modules/jtframe/hdl/cpu/pauloblaze/
+  - ../jtcores/modules/jtframe/target/mistex/sys/pll_cfg
+  - ../jtcores/modules/jtframe/hdl/cpu/pauloblaze
 
 sourcefiles:
   #### sys folder
@@ -89,7 +87,7 @@ sourcefiles:
   - ../jtcores/modules/jtframe/target/mistex/sys/i2c.v
   - ../jtcores/modules/jtframe/target/mister/sys/alsa.sv
   - ../jtcores/modules/jtframe/target/mistex/sys/i2s.v
-  - ../jtcores/modules/jtframe/target/mistex/sys/spi-slave.v
+  - ../jtcores/modules/jtframe/target/mistex/sys/spi_slave.vhd
   - ../jtcores/modules/jtframe/target/mister/sys/spdif.v
   - ../jtcores/modules/jtframe/target/mistex/sys/audio_out.v
   - ../jtcores/modules/jtframe/target/mistex/sys/iir_filter.v
@@ -117,6 +115,11 @@ sourcefiles:
   - ../jtcores/cores/kicker/hdl/jtkicker_scroll.v
   - ../jtcores/cores/kicker/hdl/jtkicker_video.v
   - ../jtcores/cores/kicker/hdl/jtkicker_vtimer.v
+  - ../jtcores/modules/jt89/hdl/jt89.v
+  - ../jtcores/modules/jt89/hdl/jt89_mixer.v
+  - ../jtcores/modules/jt89/hdl/jt89_noise.v
+  - ../jtcores/modules/jt89/hdl/jt89_tone.v
+  - ../jtcores/modules/jt89/hdl/jt89_vol.v  
   - ../jtcores/modules/jtframe/hdl/cheat/jtframe_cheat.v
   - ../jtcores/modules/jtframe/hdl/cheat/jtframe_cheat_rom.v
   - ../jtcores/modules/jtframe/hdl/clocking/jtframe_cen48.v
@@ -130,6 +133,7 @@ sourcefiles:
   - ../jtcores/modules/jtframe/hdl/cpu/jtframe_sys6809.v
   - ../jtcores/modules/jtframe/hdl/cpu/jtframe_z80wait.v
   - ../jtcores/modules/jtframe/hdl/cpu/mc6809i.v
+  # - ../jtcores/modules/jtframe/hdl/cpu/pauloblaze/pauloblaze.qip
   - ../jtcores/modules/jtframe/hdl/jtframe_bcd_cnt.v
   - ../jtcores/modules/jtframe/hdl/jtframe_board.v
   - ../jtcores/modules/jtframe/hdl/jtframe_debug.v
@@ -213,41 +217,51 @@ sourcefiles:
   - ../jtcores/modules/jtframe/hdl/video/jtframe_vtimer.v
   - ../jtcores/modules/jtframe/hdl/video/jtframe_wirebw.v
   - ../jtcores/modules/jtframe/target/mister/joydb15.v
-  - ../jtcores/modules/jtframe/target/mistex/jtframe_emu.sv
   - ../jtcores/modules/jtframe/target/mister/jtframe_joymux.v
   - ../jtcores/modules/jtframe/target/mister/jtframe_mister.sv
   - ../jtcores/modules/jtframe/target/mister/jtframe_mister_dwnld.v
   - ../jtcores/modules/jtframe/target/mister/jtframe_mr_ddrmux.v
   - ../jtcores/modules/jtframe/target/mister/jtframe_mr_ddrtest.v
+  - ../jtcores/modules/jtframe/target/mistex/jtframe_emu.sv
+  # - ../jtcores/modules/jtframe/target/mistex/pll6144/jtframe_pll6144.qip
+  # - ../jtcores/modules/jtframe/target/mistex/pll6293/jtframe_pll6293.qip
+  # - ../jtcores/modules/jtframe/target/mistex/pll6671/jtframe_pll6671.qip
+  # - ../jtcores/modules/jtframe/target/mistex/sys/pll.qip
+  # - ../jtcores/modules/jtframe/target/mistex/sys/sys.qip
   #- ../jtcores/cores/kicker/mistex/jtkicker_game_sdram.v
-  
-  - ../jtcores/modules/jt89/hdl/jt89.v
-  - ../jtcores/modules/jt89/hdl/jt89_mixer.v
-  - ../jtcores/modules/jt89/hdl/jt89_noise.v
-  - ../jtcores/modules/jt89/hdl/jt89_tone.v
-  - ../jtcores/modules/jt89/hdl/jt89_vol.v
 
 quartus:
   platform-commands:
     - 'set_global_assignment -name SEARCH_PATH "${CORE_DIR}/mistex"'
-    - 'set_global_assignment -name SEARCH_PATH "${CORE_DIR}/../jtcores/cores/kicker/mistex/../hdl"'
+    - 'set_global_assignment -name SEARCH_PATH "${CORE_DIR}/../jtcores/cores/kicker/hdl"'
     - 'set_global_assignment -name SEARCH_PATH "${CORE_DIR}/../jtcores/modules/jtframe/hdl/inc"'
     - 'set_global_assignment -name VERILOG_MACRO "MISTER=<None>"'
 
   sourcefiles:
     - mistex/sys_top.sdc
+    - ../jtcores/modules/jtframe/target/mistex/pll6144/jtframe_pll6144/jtframe_pll6144_0002.v
+    - ../jtcores/modules/jtframe/target/mistex/pll6293/jtframe_pll6293/jtframe_pll6293_0002.v
+    - ../jtcores/modules/jtframe/target/mistex/pll6671/jtframe_pll6671/jtframe_pll6671_0002.v
     - ../jtcores/modules/jtframe/target/mistex/sys/pll/pll_0002.v
     - ../jtcores/modules/jtframe/target/mistex/sys/pll_audio/pll_audio_0002.v
     - ../jtcores/modules/jtframe/target/mistex/sys/pll_hdmi/pll_hdmi_0002.v
     # - ../jtcores/modules/jtframe/target/mistex/sys/sys_top_nosdram.sdc
     
 vivado:
-  pre-synthesis-commands:
-    - 'set_property -name "include_dirs" -value "[file normalize mistex"] [file normalize ../jtcores/cores/kicker/mistex/../hdl"] [file normalize /../jtcores/modules/jtframe/hdl/inc"]" -objects [current_fileset]'
+  #pre-synthesis-commands:  
+    #- 'set_property include_dirs {{${CORE_DIR}/mistex ${CORE_DIR}/../jtcores/cores/kicker/hdl ${CORE_DIR}/../jtcores/modules/jtframe/hdl/inc}} [current_fileset]'
+
+  verilog-include-paths:
+    - ${CORE_DIR}/mistex
+    - ${CORE_DIR}/../jtcores/cores/kicker/hdl
+    - ${CORE_DIR}/../jtcores/modules/jtframe/hdl/inc
 
   sourcefiles:
     - ../jtcores/modules/jtframe/target/mistex/sys/sys_top.xdc
     #- mistex/sys_top.xdc
+    - ../jtcores/modules/jtframe/target/mistex/pll6144/jtframe_pll6144/jtframe_pll6144_0002-xilinx7.v
+    - ../jtcores/modules/jtframe/target/mistex/pll6293/jtframe_pll6293/jtframe_pll6293_0002-xilinx7.v
+    - ../jtcores/modules/jtframe/target/mistex/pll6671/jtframe_pll6671/jtframe_pll6671_0002-xilinx7.v    
     - ../jtcores/modules/jtframe/target/mistex/sys/pll/pll_0002-xilinx7.v
     - ../jtcores/modules/jtframe/target/mistex/sys/pll_audio/pll_audio_0002-xilinx7.v        
     - ../jtcores/modules/jtframe/target/mistex/sys/pll_hdmi/pll_hdmi_0002-xilinx7.v
