@@ -5,7 +5,8 @@ use-template-sys: false
 defines:
 
   #MISTER_DEBUG_NOHDMI: 1
-  # JTFRAME_MR_FASTIO: 0
+  #JTFRAME_MR_FASTIO: 0
+  MISTER: 1
   #
   ARCADE_SYS: 1
   USE_SDRAM: 1
@@ -47,15 +48,11 @@ defines:
   TOKI: 
 
 sourcedirs:
-  - ../jtcores/modules/jtframe/target/mistex/sys/pll_cfg
   - ../jtcores/modules/jtframe/target/mistex/pll6144
-  - ../jtcores/modules/jtframe/target/mistex/pll6144/jtframe_pll6144
   - ../jtcores/modules/jtframe/target/mistex/pll6293
-  - ../jtcores/modules/jtframe/target/mistex/pll6293/jtframe_pll6293
   - ../jtcores/modules/jtframe/target/mistex/pll6671  
-  - ../jtcores/modules/jtframe/target/mistex/pll6671/jtframe_pll6671
+  - ../jtcores/modules/jtframe/target/mistex/sys/pll_cfg
   - ../jtcores/modules/jtframe/hdl/cpu/pauloblaze
-
 
 sourcefiles:
   #### sys folder
@@ -81,7 +78,7 @@ sourcefiles:
   - ../jtcores/modules/jtframe/target/mistex/sys/i2c.v
   - ../jtcores/modules/jtframe/target/mister/sys/alsa.sv
   - ../jtcores/modules/jtframe/target/mistex/sys/i2s.v
-  - ../jtcores/modules/jtframe/target/mistex/sys/spi-slave.v
+  - ../jtcores/modules/jtframe/target/mistex/sys/spi_slave.vhd
   - ../jtcores/modules/jtframe/target/mister/sys/spdif.v
   - ../jtcores/modules/jtframe/target/mistex/sys/audio_out.v
   - ../jtcores/modules/jtframe/target/mistex/sys/iir_filter.v
@@ -237,12 +234,12 @@ sourcefiles:
   - ../jtcores/modules/jtframe/hdl/video/jtframe_tilemap.v
   - ../jtcores/modules/jtframe/hdl/video/jtframe_wirebw.v
   - ../jtcores/modules/jtframe/target/mister/joydb15.v
-  - ../jtcores/modules/jtframe/target/mistex/jtframe_emu.sv
   - ../jtcores/modules/jtframe/target/mister/jtframe_joymux.v
   - ../jtcores/modules/jtframe/target/mister/jtframe_mister.sv
   - ../jtcores/modules/jtframe/target/mister/jtframe_mister_dwnld.v
   - ../jtcores/modules/jtframe/target/mister/jtframe_mr_ddrmux.v
   - ../jtcores/modules/jtframe/target/mister/jtframe_mr_ddrtest.v
+  - ../jtcores/modules/jtframe/target/mistex/jtframe_emu.sv
   # - ../jtcores/modules/jtframe/target/mistex/pll6144/jtframe_pll6144.qip
   # - ../jtcores/modules/jtframe/target/mistex/pll6293/jtframe_pll6293.qip
   # - ../jtcores/modules/jtframe/target/mistex/pll6671/jtframe_pll6671.qip
@@ -297,21 +294,31 @@ quartus:
 
   sourcefiles:
     - mistex/sys_top.sdc
+    - ../jtcores/modules/jtframe/target/mistex/pll6144/jtframe_pll6144/jtframe_pll6144_0002.v
+    - ../jtcores/modules/jtframe/target/mistex/pll6293/jtframe_pll6293/jtframe_pll6293_0002.v
+    - ../jtcores/modules/jtframe/target/mistex/pll6671/jtframe_pll6671/jtframe_pll6671_0002.v
     - ../jtcores/modules/jtframe/target/mistex/sys/pll/pll_0002.v
     - ../jtcores/modules/jtframe/target/mistex/sys/pll_audio/pll_audio_0002.v
     - ../jtcores/modules/jtframe/target/mistex/sys/pll_hdmi/pll_hdmi_0002.v
     # - ../jtcores/modules/jtframe/target/mistex/sys/sys_top_nosdram.sdc
     
 vivado:
-  pre-synthesis-commands:
-    - 'set_property -name "include_dirs" -value "[file normalize mistex"] [file normalize ../jtcores/cores/toki/hdl"] [file normalize /../jtcores/modules/jtframe/hdl/inc"]" -objects [current_fileset]'
+  #pre-synthesis-commands:  
+    #- 'set_property include_dirs {{${CORE_DIR}/mistex ${CORE_DIR}/../jtcores/cores/kicker/hdl ${CORE_DIR}/../jtcores/modules/jtframe/hdl/inc}} [current_fileset]'
+
+  verilog-include-paths:
+    - ${CORE_DIR}/mistex
+    - ${CORE_DIR}/../jtcores/cores/toki/hdl
+    - ${CORE_DIR}/../jtcores/modules/jtframe/hdl/inc
 
   sourcefiles:
     - ../jtcores/modules/jtframe/target/mistex/sys/sys_top.xdc
-    #- mistex/sys_top.xdc    
+    #- mistex/sys_top.xdc
+    - ../jtcores/modules/jtframe/target/mistex/pll6144/jtframe_pll6144/jtframe_pll6144_0002-xilinx7.v
+    - ../jtcores/modules/jtframe/target/mistex/pll6293/jtframe_pll6293/jtframe_pll6293_0002-xilinx7.v
+    - ../jtcores/modules/jtframe/target/mistex/pll6671/jtframe_pll6671/jtframe_pll6671_0002-xilinx7.v    
     - ../jtcores/modules/jtframe/target/mistex/sys/pll/pll_0002-xilinx7.v
     - ../jtcores/modules/jtframe/target/mistex/sys/pll_audio/pll_audio_0002-xilinx7.v        
     - ../jtcores/modules/jtframe/target/mistex/sys/pll_hdmi/pll_hdmi_0002-xilinx7.v
     # - ../jtcores/modules/jtframe/target/mistex/sys/sys_top_nosdram.xdc    
-        
 
