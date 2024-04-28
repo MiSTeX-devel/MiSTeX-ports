@@ -17,6 +17,10 @@ def add_designfiles(platform, coredir, mistex_yaml, toolchain, build_dir=None):
     for command in platform_commands:
         platform.add_platform_command(replace_coredir(command))
 
+    verilog_includes = mistex_yaml[toolchain].get('verilog-include-paths', [])
+    for command in verilog_includes:
+        platform.add_verilog_include_path(replace_coredir(command))
+
     pre_synthesis_commands = mistex_yaml[toolchain].get('pre-synthesis-commands', [])
     for command in pre_synthesis_commands:
         platform.toolchain.pre_synthesis_commands.append(replace_coredir(command))
