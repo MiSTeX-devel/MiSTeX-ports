@@ -151,7 +151,6 @@ def main(coredir, core):
         # "HARDWARE_HDMI_INIT": 1,
         # "NO_SCANDOUBLER": 1,
         # "DISABLE_VGA": 1,
-        "SKIP_ASCAL": 1,
         # "MISTER_DISABLE_ADAPTIVE": 1,
         # "MISTER_SMALL_VBUF": 1,
         "MISTER_DEBUG_NOHDMI": 1,
