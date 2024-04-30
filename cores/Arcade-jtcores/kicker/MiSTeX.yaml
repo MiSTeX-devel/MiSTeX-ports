@@ -223,11 +223,6 @@ sourcefiles:
   - ../jtcores/modules/jtframe/target/mister/jtframe_mr_ddrmux.v
   - ../jtcores/modules/jtframe/target/mister/jtframe_mr_ddrtest.v
   - ../jtcores/modules/jtframe/target/mistex/jtframe_emu.sv
-  # - ../jtcores/modules/jtframe/target/mistex/pll6144/jtframe_pll6144.qip
-  # - ../jtcores/modules/jtframe/target/mistex/pll6293/jtframe_pll6293.qip
-  # - ../jtcores/modules/jtframe/target/mistex/pll6671/jtframe_pll6671.qip
-  # - ../jtcores/modules/jtframe/target/mistex/sys/pll.qip
-  # - ../jtcores/modules/jtframe/target/mistex/sys/sys.qip
   #- ../jtcores/cores/kicker/mistex/jtkicker_game_sdram.v
 
 quartus:
@@ -245,12 +240,14 @@ quartus:
     - ../jtcores/modules/jtframe/target/mistex/sys/pll/pll_0002.v
     - ../jtcores/modules/jtframe/target/mistex/sys/pll_audio/pll_audio_0002.v
     - ../jtcores/modules/jtframe/target/mistex/sys/pll_hdmi/pll_hdmi_0002.v
+    # - ../jtcores/modules/jtframe/target/mistex/pll6144/jtframe_pll6144.qip
+    # - ../jtcores/modules/jtframe/target/mistex/pll6293/jtframe_pll6293.qip
+    # - ../jtcores/modules/jtframe/target/mistex/pll6671/jtframe_pll6671.qip
+    # - ../jtcores/modules/jtframe/target/mistex/sys/pll.qip
+    # - ../jtcores/modules/jtframe/target/mistex/sys/sys.qip
     # - ../jtcores/modules/jtframe/target/mistex/sys/sys_top_nosdram.sdc
     
 vivado:
-  #pre-synthesis-commands:  
-    #- 'set_property include_dirs {{${CORE_DIR}/mistex ${CORE_DIR}/../jtcores/cores/kicker/hdl ${CORE_DIR}/../jtcores/modules/jtframe/hdl/inc}} [current_fileset]'
-
   verilog-include-paths:
     - ${CORE_DIR}/mistex
     - ${CORE_DIR}/../jtcores/cores/kicker/hdl
@@ -258,7 +255,6 @@ vivado:
 
   sourcefiles:
     - ../jtcores/modules/jtframe/target/mistex/sys/sys_top.xdc
-    #- mistex/sys_top.xdc
     - ../jtcores/modules/jtframe/target/mistex/pll6144/jtframe_pll6144/jtframe_pll6144_0002-xilinx7.v
     - ../jtcores/modules/jtframe/target/mistex/pll6293/jtframe_pll6293/jtframe_pll6293_0002-xilinx7.v
     - ../jtcores/modules/jtframe/target/mistex/pll6671/jtframe_pll6671/jtframe_pll6671_0002-xilinx7.v    
