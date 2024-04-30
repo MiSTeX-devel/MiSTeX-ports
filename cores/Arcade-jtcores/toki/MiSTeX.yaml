@@ -148,13 +148,13 @@ sourcefiles:
   - ../jtcores/modules/jtframe/hdl/cpu/jtframe_virq.v
   - ../jtcores/modules/jtframe/hdl/cpu/jtframe_z80.v
   - ../jtcores/modules/jtframe/hdl/cpu/jtframe_z80wait.v
-  - ../jtcores/modules/jtframe/hdl/cpu/pauloblaze/op_codes.vhd ]
-  - ../jtcores/modules/jtframe/hdl/cpu/pauloblaze/alu.vhd ]
-  - ../jtcores/modules/jtframe/hdl/cpu/pauloblaze/decoder.vhd ]
-  - ../jtcores/modules/jtframe/hdl/cpu/pauloblaze/io_module.vhd ]
-  - ../jtcores/modules/jtframe/hdl/cpu/pauloblaze/pauloBlaze.vhd ]
-  - ../jtcores/modules/jtframe/hdl/cpu/pauloblaze/program_counter.vhd ]
-  - ../jtcores/modules/jtframe/hdl/cpu/pauloblaze/regFile.vhd ]
+  - ../jtcores/modules/jtframe/hdl/cpu/pauloblaze/op_codes.vhd
+  - ../jtcores/modules/jtframe/hdl/cpu/pauloblaze/alu.vhd
+  - ../jtcores/modules/jtframe/hdl/cpu/pauloblaze/decoder.vhd
+  - ../jtcores/modules/jtframe/hdl/cpu/pauloblaze/io_module.vhd
+  - ../jtcores/modules/jtframe/hdl/cpu/pauloblaze/pauloBlaze.vhd
+  - ../jtcores/modules/jtframe/hdl/cpu/pauloblaze/program_counter.vhd
+  - ../jtcores/modules/jtframe/hdl/cpu/pauloblaze/regFile.vhd
   - ../jtcores/modules/jtframe/hdl/jtframe_bcd_cnt.v
   - ../jtcores/modules/jtframe/hdl/jtframe_board.v
   - ../jtcores/modules/jtframe/hdl/jtframe_debug.v
