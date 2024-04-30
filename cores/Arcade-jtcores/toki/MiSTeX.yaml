@@ -3,7 +3,6 @@ mainfile: mistex/jttoki_game_sdram.v
 use-template-sys: false
 
 defines:
-
   #MISTER_DEBUG_NOHDMI: 1
   #JTFRAME_MR_FASTIO: 0
   MISTER: 1
@@ -52,12 +51,10 @@ sourcedirs:
   - ../jtcores/modules/jtframe/target/mistex/pll6293
   - ../jtcores/modules/jtframe/target/mistex/pll6671  
   - ../jtcores/modules/jtframe/target/mistex/sys/pll_cfg
-  - ../jtcores/modules/jtframe/hdl/cpu/pauloblaze
 
 sourcefiles:
   #### sys folder
   - ../jtcores/modules/jtframe/target/mistex/sys/sys_top.v
-  # - ../jtcores/modules/jtframe/target/mistex/sys/sys_top.sdc
   - ../jtcores/modules/jtframe/target/mister/sys/ascal.vhd
   - ../jtcores/modules/jtframe/target/mistex/sys/pll_hdmi_adj.vhd
   - ../jtcores/modules/jtframe/target/mistex/sys/hq2x.sv
@@ -151,7 +148,13 @@ sourcefiles:
   - ../jtcores/modules/jtframe/hdl/cpu/jtframe_virq.v
   - ../jtcores/modules/jtframe/hdl/cpu/jtframe_z80.v
   - ../jtcores/modules/jtframe/hdl/cpu/jtframe_z80wait.v
-  # - ../jtcores/modules/jtframe/hdl/cpu/pauloblaze/pauloblaze.qip
+  - ../jtcores/modules/jtframe/hdl/cpu/pauloblaze/op_codes.vhd
+  - ../jtcores/modules/jtframe/hdl/cpu/pauloblaze/alu.vhd
+  - ../jtcores/modules/jtframe/hdl/cpu/pauloblaze/decoder.vhd
+  - ../jtcores/modules/jtframe/hdl/cpu/pauloblaze/io_module.vhd
+  - ../jtcores/modules/jtframe/hdl/cpu/pauloblaze/pauloBlaze.vhd
+  - ../jtcores/modules/jtframe/hdl/cpu/pauloblaze/program_counter.vhd
+  - ../jtcores/modules/jtframe/hdl/cpu/pauloblaze/regFile.vhd
   - ../jtcores/modules/jtframe/hdl/jtframe_bcd_cnt.v
   - ../jtcores/modules/jtframe/hdl/jtframe_board.v
   - ../jtcores/modules/jtframe/hdl/jtframe_debug.v
@@ -239,6 +242,7 @@ sourcefiles:
   - ../jtcores/modules/jtframe/target/mister/jtframe_mister_dwnld.v
   - ../jtcores/modules/jtframe/target/mister/jtframe_mr_ddrmux.v
   - ../jtcores/modules/jtframe/target/mister/jtframe_mr_ddrtest.v
+  - ../jtcores/modules/jtframe/target/mister/jtframe_emu.sv
   - ../jtcores/modules/jtopl/hdl/jtopl.v
   - ../jtcores/modules/jtopl/hdl/jtopl2.v
   - ../jtcores/modules/jtopl/hdl/jtopl_acc.v
@@ -277,7 +281,6 @@ sourcefiles:
   - ../jtcores/modules/jtframe/hdl/cpu/t80/T80_ALU.vhd
   - ../jtcores/modules/jtframe/hdl/cpu/t80/T80.vhd
 
-
 quartus:
   platform-commands:
     - 'set_global_assignment -name SEARCH_PATH "${CORE_DIR}/mistex"'
@@ -293,15 +296,10 @@ quartus:
     - ../jtcores/modules/jtframe/target/mistex/sys/pll/pll_0002.v
     - ../jtcores/modules/jtframe/target/mistex/sys/pll_audio/pll_audio_0002.v
     - ../jtcores/modules/jtframe/target/mistex/sys/pll_hdmi/pll_hdmi_0002.v
-    - ../jtcores/modules/jtframe/target/mistex/jtframe_emu.sv
-    # - ../jtcores/modules/jtframe/target/mistex/pll6144/jtframe_pll6144.qip
-    # - ../jtcores/modules/jtframe/target/mistex/pll6293/jtframe_pll6293.qip
-    # - ../jtcores/modules/jtframe/target/mistex/pll6671/jtframe_pll6671.qip
-    # - ../jtcores/modules/jtframe/target/mistex/sys/pll.qip
-    # - ../jtcores/modules/jtframe/target/mistex/sys/sys.qip
-    # - ../jtcores/modules/jtframe/target/mistex/sys/sys_top_nosdram.sdc
     
 vivado:
+  #pre-synthesis-commands:  
+
   verilog-include-paths:
     - ${CORE_DIR}/mistex
     - ${CORE_DIR}/../jtcores/cores/toki/hdl
@@ -309,13 +307,10 @@ vivado:
 
   sourcefiles:
     - ../jtcores/modules/jtframe/target/mistex/sys/sys_top.xdc
-    #- mistex/sys_top.xdc
+    # - mistex/sys_top.xdc    #still not generated, should replace xdc above
     - ../jtcores/modules/jtframe/target/mistex/pll6144/jtframe_pll6144/jtframe_pll6144_0002-xilinx7.v
     - ../jtcores/modules/jtframe/target/mistex/pll6293/jtframe_pll6293/jtframe_pll6293_0002-xilinx7.v
     - ../jtcores/modules/jtframe/target/mistex/pll6671/jtframe_pll6671/jtframe_pll6671_0002-xilinx7.v    
     - ../jtcores/modules/jtframe/target/mistex/sys/pll/pll_0002-xilinx7.v
     - ../jtcores/modules/jtframe/target/mistex/sys/pll_audio/pll_audio_0002-xilinx7.v        
     - ../jtcores/modules/jtframe/target/mistex/sys/pll_hdmi/pll_hdmi_0002-xilinx7.v
-    - ../jtcores/modules/jtframe/target/mister/jtframe_emu.sv
-    # - ../jtcores/modules/jtframe/target/mistex/sys/sys_top_nosdram.xdc    
-
