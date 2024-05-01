@@ -20,6 +20,11 @@ def extension(vendor, sdram_index=0):
         snac_attrs   = [ pullup_attr, Misc("DRIVE 16") ]
         sdcard_attrs = [ Misc("SLEW FAST") ]
 
+        sdram_attrs = [
+            Misc("DRIVE 16"),
+            Misc("IOB TRUE")
+        ]
+
     if vendor == "altera":
         iostandard   =   IOStandard("3.3-V LVTTL")
         rgb_attrs    = [ Misc("FAST_OUTPUT_REGISTER ON") ]
