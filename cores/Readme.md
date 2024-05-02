@@ -8,6 +8,9 @@ Arcade-DigDug           | works    | untested | works
 Arcade-DonkeyKong       | works    | untested | builds
 Arcade-Galaga           | works    | untested | works
 Arcade-jtcores/1942     | untested | untested | works
+Arcade-jtcores/1943     | untested | untested | works
+Arcade-jtcores/bubl     | untested | untested | works
+Arcade-jtcores/cps2     | untested | untested | builds
 Arcade-jtcores/kicker   | works    | untested | works
 Arcade-jtcores/toki     | works    | untested | works
 Arcade-Pacman           | works    | untested | builds
