@@ -29,7 +29,7 @@ use-template-sys: false
 defines:
 EOF
 
-sed 's/#.*$//g' jt${CORE}.qsf | grep VERILOG_MACRO | cut -d\" -f2 | sed -e 's/=/: /'  -e 's/^/  /g' >> $YAML
+sed 's/#.*$//g' jt${CORE}.qsf | grep VERILOG_MACRO | cut -d\" -f2 | sed -e 's/=/: /'  -e 's/^/  /g' | sed "s/ 'h/ 32'h/g" >> $YAML
 
 cat <<EOF >>$YAML
 
