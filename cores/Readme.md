@@ -11,6 +11,7 @@ Arcade-jtcores/1942     | untested | untested | works
 Arcade-jtcores/1943     | untested | untested | works
 Arcade-jtcores/bubl     | untested | untested | works
 Arcade-jtcores/cps2     | untested | untested | builds
+Arcade-jtcores/dd       | untested | untested | works
 Arcade-jtcores/kicker   | works    | untested | works
 Arcade-jtcores/kiwi     | untested | untested | works
 Arcade-jtcores/pang     | untested | untested | works
