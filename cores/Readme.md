@@ -10,6 +10,7 @@ Arcade-Galaga           | works    | untested | works
 Arcade-jtcores/1942     | untested | untested | works
 Arcade-jtcores/1943     | untested | untested | works
 Arcade-jtcores/bubl     | untested | untested | works
+Arcade-jtcores/contra   | untested | untested | works
 Arcade-jtcores/cps2     | untested | untested | builds
 Arcade-jtcores/dd       | untested | untested | works
 Arcade-jtcores/dd2      | untested | untested | works
