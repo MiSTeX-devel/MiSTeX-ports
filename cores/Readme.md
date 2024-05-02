@@ -16,6 +16,7 @@ Arcade-jtcores/dd2      | untested | untested | works
 Arcade-jtcores/kicker   | works    | untested | works
 Arcade-jtcores/kiwi     | untested | untested | works
 Arcade-jtcores/pang     | untested | untested | works
+Arcade-jtcores/roadf    | untested | untested | works
 Arcade-jtcores/s16      | untested | untested | works
 Arcade-jtcores/s16b     | untested | untested | works
 Arcade-jtcores/sf       | untested | untested | works
