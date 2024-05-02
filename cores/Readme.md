@@ -13,7 +13,9 @@ Arcade-jtcores/bubl     | untested | untested | works
 Arcade-jtcores/cps2     | untested | untested | builds
 Arcade-jtcores/kicker   | works    | untested | works
 Arcade-jtcores/kiwi     | untested | untested | works
+Arcade-jtcores/pang     | untested | untested | works
 Arcade-jtcores/s16      | untested | untested | works
+Arcade-jtcores/s16b     | untested | untested | works
 Arcade-jtcores/sf       | untested | untested | works
 Arcade-jtcores/toki     | works    | untested | works
 Arcade-Pacman           | works    | untested | builds
