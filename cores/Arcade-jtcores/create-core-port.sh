@@ -1,6 +1,7 @@
 #!/bin/bash
 # NOTE: for successfully running this script, you will need
 # a working golang installation to run the jtcore binary
+
 CORE="$(basename $1)"
 if [ -z "$CORE" ]; then
   echo "Usage: $0 <corename>"
@@ -8,6 +9,7 @@ if [ -z "$CORE" ]; then
 fi
 mkdir -p $CORE/generated
 cd jtcores
+source setprj.sh
 jtcore $CORE -mistex
 cp -Pv cores/${CORE}/mistex/* ../${CORE}/generated
 cd ../${CORE}/generated
