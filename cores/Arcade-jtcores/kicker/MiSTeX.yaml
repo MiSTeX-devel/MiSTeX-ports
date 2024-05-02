@@ -1,4 +1,4 @@
-mainfile: mistex/jtkicker_game_sdram.v
+mainfile: generated/jtkicker_game_sdram.v
 
 use-template-sys: false
 
@@ -229,7 +229,7 @@ sourcefiles:
 
 quartus:
   platform-commands:
-    - 'set_global_assignment -name SEARCH_PATH "${CORE_DIR}/mistex"'
+    - 'set_global_assignment -name SEARCH_PATH "${CORE_DIR}/generated"'
     - 'set_global_assignment -name SEARCH_PATH "${CORE_DIR}/../jtcores/cores/kicker/hdl"'
     - 'set_global_assignment -name SEARCH_PATH "${CORE_DIR}/../jtcores/modules/jtframe/hdl/inc"'
     - 'set_global_assignment -name VERILOG_MACRO "MISTER=<None>"'
@@ -247,7 +247,7 @@ vivado:
   #pre-synthesis-commands:  
 
   verilog-include-paths:
-    - ${CORE_DIR}/mistex
+    - ${CORE_DIR}/generated
     - ${CORE_DIR}/../jtcores/cores/kicker/hdl
     - ${CORE_DIR}/../jtcores/modules/jtframe/hdl/inc
 
