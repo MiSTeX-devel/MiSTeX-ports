@@ -7,6 +7,7 @@ Arcade-BurgerTime       | works    | untested | works
 Arcade-DigDug           | works    | untested | works
 Arcade-DonkeyKong       | works    | untested | builds
 Arcade-Galaga           | works    | untested | works
+Arcade-jtcores/1942     | untested | untested | works
 Arcade-jtcores/kicker   | works    | untested | works
 Arcade-jtcores/toki     | works    | untested | works
 Arcade-Pacman           | works    | untested | builds

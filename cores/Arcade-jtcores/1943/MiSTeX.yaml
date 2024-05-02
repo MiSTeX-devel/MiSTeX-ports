@@ -1,0 +1,302 @@
+mainfile: generated/jt1943_game_sdram.v
+
+use-template-sys: false
+
+defines:
+  ARCADE_SYS: 1
+  USE_SDRAM: 1
+  JTFRAME_RELEASE: 1
+  MISTER: 1
+  _1943: 
+  CHAR_START: 32'h30000
+  COMMIT: f41a98e3
+  CORENAME: JT1943
+  CORE_OSD: 
+  DATE: 240502
+  GAMETOP: jt1943_game_sdram
+  JTFRAME_180SHIFT: 0
+  JTFRAME_ARX: 5
+  JTFRAME_ARY: 4
+  JTFRAME_BA1_START: 32'h38000
+  JTFRAME_BA2_START: 32'h48000
+  JTFRAME_BA3_START: 32'h98000
+  JTFRAME_BUTTONS: 3
+  JTFRAME_COLORW: 4
+  JTFRAME_COMMIT: 32'hf41a98e
+  JTFRAME_CREDITS: 1
+  JTFRAME_CREDITS_PAGES: 1
+  JTFRAME_DIALEMU_LEFT: 5
+  JTFRAME_DIPBASE: 16
+  JTFRAME_HEIGHT: 9'd224
+  JTFRAME_MCLK: 48000000
+  JTFRAME_MEMGEN: 
+  JTFRAME_OSD_FLIP: 1
+  JTFRAME_PLLSIM: 10.416
+  JTFRAME_PROM_START: 32'hD8000
+  JTFRAME_PXLCLK: 6
+  JTFRAME_SDRAM_BANKS: 
+  JTFRAME_SHIFT: 1
+  JTFRAME_SIGNED_SND: 1
+  JTFRAME_TIMESTAMP: 1714644919
+  JTFRAME_VERTICAL: 1
+  JTFRAME_WIDTH: 9'd256
+  MAP1_START: 32'h38000
+  MAP2_START: 32'h40000
+  MISTEX: 1
+  OBJ_START:  32'h98000
+  SCR1_START: 32'h48000
+  SCR2_START: 32'h88000
+  SEPARATOR: -;
+  SND_START: 32'h28000
+  TARGET: mistex
+
+sourcedirs:
+  - ../jtcores/modules/jtframe/target/mistex/pll6144
+  - ../jtcores/modules/jtframe/target/mistex/pll6293
+  - ../jtcores/modules/jtframe/target/mistex/pll6671
+  - ../jtcores/modules/jtframe/target/mistex/sys/pll_cfg
+
+sourcefiles:
+  #### sys folder
+  - ../jtcores/modules/jtframe/target/mistex/sys/sys_top.v
+  - ../jtcores/modules/jtframe/target/mister/sys/ascal.vhd
+  - ../jtcores/modules/jtframe/target/mistex/sys/pll_hdmi_adj.vhd
+  - ../jtcores/modules/jtframe/target/mistex/sys/hq2x.sv
+  - ../jtcores/modules/jtframe/target/mistex/sys/scandoubler.v
+  - ../jtcores/modules/jtframe/target/mistex/sys/scanlines.v
+  - ../jtcores/modules/jtframe/target/mister/sys/video_cleaner.sv
+  - ../jtcores/modules/jtframe/target/mister/sys/shadowmask.sv
+  - ../jtcores/modules/jtframe/target/mister/sys/gamma_corr.sv
+  - ../jtcores/modules/jtframe/target/mistex/sys/video_mixer.sv
+  - ../jtcores/modules/jtframe/target/mister/sys/video_freezer.sv
+  - ../jtcores/modules/jtframe/target/mister/sys/video_freak.sv
+  - ../jtcores/modules/jtframe/target/mistex/sys/arcade_video.v
+  - ../jtcores/modules/jtframe/target/mister/sys/math.sv
+  - ../jtcores/modules/jtframe/target/mistex/sys/f2sdram_safe_terminator.sv
+  - ../jtcores/modules/jtframe/target/mistex/sys/osd.sv
+  - ../jtcores/modules/jtframe/target/mister/sys/vga_out.sv
+  - ../jtcores/modules/jtframe/target/mister/sys/yc_out.sv
+  - ../jtcores/modules/jtframe/target/mistex/sys/i2c.v
+  - ../jtcores/modules/jtframe/target/mister/sys/alsa.sv
+  - ../jtcores/modules/jtframe/target/mistex/sys/i2s.v
+  - ../jtcores/modules/jtframe/target/mistex/sys/spi_slave.vhd
+  - ../jtcores/modules/jtframe/target/mister/sys/spdif.v
+  - ../jtcores/modules/jtframe/target/mistex/sys/audio_out.v
+  - ../jtcores/modules/jtframe/target/mistex/sys/iir_filter.v
+  - ../jtcores/modules/jtframe/target/mister/sys/ltc2308.sv
+  - ../jtcores/modules/jtframe/target/mister/sys/sigma_delta_dac.v
+  - ../jtcores/modules/jtframe/target/mister/sys/mcp23009.sv
+  - ../jtcores/modules/jtframe/target/mistex/sys/ddr_svc.sv
+  - ../jtcores/modules/jtframe/target/mister/sys/sysmem.sv
+  - ../jtcores/modules/jtframe/target/mistex/sys/hps_io.v
+  - ../jtcores/modules/jtframe/target/mister/sys/video_calc.v
+  - ../jtcores/modules/jtframe/target/mistex/sys/hps_interface.v
+  - ../jtcores/modules/jtframe/target/mistex/sys/top_crg.v
+  - ../jtcores/modules/jtframe/target/mistex/sys/pll.v
+  - ../jtcores/modules/jtframe/target/mistex/sys/pll_audio.v
+  - ../jtcores/modules/jtframe/target/mistex/sys/pll_cfg.v
+  - ../jtcores/modules/jtframe/target/mistex/sys/pll_cfg_hdmi.v
+  - ../jtcores/modules/jtframe/target/mistex/sys/pll_hdmi.v
+
+  #### core files (game.qip)
+  - ../jtcores/cores/1943/hdl/jt1943_colmix.v
+  - ../jtcores/cores/1943/hdl/jt1943_game.v
+  - ../jtcores/cores/1943/hdl/jt1943_main.v
+  - ../jtcores/cores/1943/hdl/jt1943_map.v
+  - ../jtcores/cores/1943/hdl/jt1943_map_cache.v
+  - ../jtcores/cores/1943/hdl/jt1943_scroll.v
+  - ../jtcores/cores/1943/hdl/jt1943_security.v
+  - ../jtcores/cores/1943/hdl/jt1943_video.v
+  - ../jtcores/cores/gng/hdl/jtgng_char.v
+  - ../jtcores/cores/gng/hdl/jtgng_colmix.v
+  - ../jtcores/cores/gng/hdl/jtgng_dual_ram.v
+  - ../jtcores/cores/gng/hdl/jtgng_obj.v
+  - ../jtcores/cores/gng/hdl/jtgng_objbuf.v
+  - ../jtcores/cores/gng/hdl/jtgng_objcnt.v
+  - ../jtcores/cores/gng/hdl/jtgng_objdma.v
+  - ../jtcores/cores/gng/hdl/jtgng_objdraw.v
+  - ../jtcores/cores/gng/hdl/jtgng_objpxl.v
+  - ../jtcores/cores/gng/hdl/jtgng_scroll.v
+  - ../jtcores/cores/gng/hdl/jtgng_sound.v
+  - ../jtcores/cores/gng/hdl/jtgng_tile3.v
+  - ../jtcores/cores/gng/hdl/jtgng_tile4.v
+  - ../jtcores/cores/gng/hdl/jtgng_tilemap.v
+  - ../jtcores/cores/gng/hdl/jtgng_timer.v
+  - ../jtcores/cores/gng/hdl/jtgng_video.v
+  - ../jtcores/modules/jt12/hdl/jt03.v
+  - ../jtcores/modules/jt12/hdl/jt03_acc.v
+  - ../jtcores/modules/jt12/hdl/jt12_csr.v
+  - ../jtcores/modules/jt12/hdl/jt12_div.v
+  - ../jtcores/modules/jt12/hdl/jt12_dout.v
+  - ../jtcores/modules/jt12/hdl/jt12_eg.v
+  - ../jtcores/modules/jt12/hdl/jt12_eg_cnt.v
+  - ../jtcores/modules/jt12/hdl/jt12_eg_comb.v
+  - ../jtcores/modules/jt12/hdl/jt12_eg_ctrl.v
+  - ../jtcores/modules/jt12/hdl/jt12_eg_final.v
+  - ../jtcores/modules/jt12/hdl/jt12_eg_pure.v
+  - ../jtcores/modules/jt12/hdl/jt12_eg_step.v
+  - ../jtcores/modules/jt12/hdl/jt12_exprom.v
+  - ../jtcores/modules/jt12/hdl/jt12_kon.v
+  - ../jtcores/modules/jt12/hdl/jt12_lfo.v
+  - ../jtcores/modules/jt12/hdl/jt12_logsin.v
+  - ../jtcores/modules/jt12/hdl/jt12_mmr.v
+  - ../jtcores/modules/jt12/hdl/jt12_mod.v
+  - ../jtcores/modules/jt12/hdl/jt12_op.v
+  - ../jtcores/modules/jt12/hdl/jt12_pg.v
+  - ../jtcores/modules/jt12/hdl/jt12_pg_comb.v
+  - ../jtcores/modules/jt12/hdl/jt12_pg_dt.v
+  - ../jtcores/modules/jt12/hdl/jt12_pg_inc.v
+  - ../jtcores/modules/jt12/hdl/jt12_pg_sum.v
+  - ../jtcores/modules/jt12/hdl/jt12_pm.v
+  - ../jtcores/modules/jt12/hdl/jt12_reg.v
+  - ../jtcores/modules/jt12/hdl/jt12_reg_ch.v
+  - ../jtcores/modules/jt12/hdl/jt12_rst.v
+  - ../jtcores/modules/jt12/hdl/jt12_sh.v
+  - ../jtcores/modules/jt12/hdl/jt12_sh24.v
+  - ../jtcores/modules/jt12/hdl/jt12_sh_rst.v
+  - ../jtcores/modules/jt12/hdl/jt12_single_acc.v
+  - ../jtcores/modules/jt12/hdl/jt12_sumch.v
+  - ../jtcores/modules/jt12/hdl/jt12_timers.v
+  - ../jtcores/modules/jt12/hdl/jt12_top.v
+  - ../jtcores/modules/jt12/jt49/hdl/filter/jt49_dcrm2.v
+  - ../jtcores/modules/jt12/jt49/hdl/jt49.v
+  - ../jtcores/modules/jt12/jt49/hdl/jt49_bus.v
+  - ../jtcores/modules/jt12/jt49/hdl/jt49_cen.v
+  - ../jtcores/modules/jt12/jt49/hdl/jt49_div.v
+  - ../jtcores/modules/jt12/jt49/hdl/jt49_eg.v
+  - ../jtcores/modules/jt12/jt49/hdl/jt49_exp.v
+  - ../jtcores/modules/jt12/jt49/hdl/jt49_noise.v
+  - ../jtcores/modules/jtframe/hdl/cheat/jtframe_cheat.v
+  - ../jtcores/modules/jtframe/hdl/cheat/jtframe_cheat_rom.v
+  - ../jtcores/modules/jtframe/hdl/clocking/jtframe_cencross_strobe.v
+  - ../jtcores/modules/jtframe/hdl/clocking/jtframe_frac_cen.v
+  - ../jtcores/modules/jtframe/hdl/clocking/jtframe_freqinfo.v
+  - ../jtcores/modules/jtframe/hdl/clocking/jtframe_gated_cen.v
+  - ../jtcores/modules/jtframe/hdl/clocking/jtframe_pxlcen.v
+  - ../jtcores/modules/jtframe/hdl/clocking/jtframe_rst_sync.v
+  - ../jtcores/modules/jtframe/hdl/clocking/jtframe_sync.v
+  - ../jtcores/modules/jtframe/hdl/cpu/jtframe_z80.v
+  - ../jtcores/modules/jtframe/hdl/cpu/jtframe_z80wait.v
+  - ../jtcores/modules/jtframe/hdl/jtframe_bcd_cnt.v
+  - ../jtcores/modules/jtframe/hdl/jtframe_board.v
+  - ../jtcores/modules/jtframe/hdl/jtframe_debug.v
+  - ../jtcores/modules/jtframe/hdl/jtframe_dip.v
+  - ../jtcores/modules/jtframe/hdl/jtframe_enlarger.v
+  - ../jtcores/modules/jtframe/hdl/jtframe_led.v
+  - ../jtcores/modules/jtframe/hdl/jtframe_reset.v
+  - ../jtcores/modules/jtframe/hdl/jtframe_rsthold.v
+  - ../jtcores/modules/jtframe/hdl/jtframe_sh.v
+  - ../jtcores/modules/jtframe/hdl/jtframe_sys_info.v
+  - ../jtcores/modules/jtframe/hdl/jtframe_uart.v
+  - ../jtcores/modules/jtframe/hdl/keyboard/jt4701.v
+  - ../jtcores/modules/jtframe/hdl/keyboard/jtframe_4wayjoy.v
+  - ../jtcores/modules/jtframe/hdl/keyboard/jtframe_dial.v
+  - ../jtcores/modules/jtframe/hdl/keyboard/jtframe_inputs.v
+  - ../jtcores/modules/jtframe/hdl/keyboard/jtframe_keyboard.v
+  - ../jtcores/modules/jtframe/hdl/keyboard/jtframe_mouse.v
+  - ../jtcores/modules/jtframe/hdl/keyboard/jtframe_paddle.v
+  - ../jtcores/modules/jtframe/hdl/keyboard/jtframe_rec_inputs.v
+  - ../jtcores/modules/jtframe/hdl/keyboard/ps2_intf_v.v
+  - ../jtcores/modules/jtframe/hdl/ram/jtframe_bram_rom.v
+  - ../jtcores/modules/jtframe/hdl/ram/jtframe_dual_nvram.v
+  - ../jtcores/modules/jtframe/hdl/ram/jtframe_dual_ram.v
+  - ../jtcores/modules/jtframe/hdl/ram/jtframe_dual_ram16.v
+  - ../jtcores/modules/jtframe/hdl/ram/jtframe_ioctl_dump.v
+  - ../jtcores/modules/jtframe/hdl/ram/jtframe_prom.v
+  - ../jtcores/modules/jtframe/hdl/ram/jtframe_ram.v
+  - ../jtcores/modules/jtframe/hdl/ram/jtframe_rpwp_ram.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_dwnld.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_ram1_1slot.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_ram1_2slots.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_ram1_3slots.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_ram1_4slots.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_ram1_5slots.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_ram2_4slots.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_ram2_5slots.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_ram2_6slots.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_ram_rq.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_ramslot_ctrl.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_rom.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_rom_1slot.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_rom_2slots.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_rom_3slots.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_rom_4slots.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_rom_5slots.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_rom_6slots.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_rom_7slots.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_rom_sync.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_romrq.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_romrq_bcache.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_romrq_xscache.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_sdram.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_sdram64.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_sdram64_bank.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_sdram64_init.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_sdram64_latch.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_sdram64_rfsh.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_sdram_stats.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_shadow.v
+  - ../jtcores/modules/jtframe/hdl/sdram/jtframe_ucache.v
+  - ../jtcores/modules/jtframe/hdl/sound/jtframe_dcrm.v
+  - ../jtcores/modules/jtframe/hdl/sound/jtframe_fir.v
+  - ../jtcores/modules/jtframe/hdl/sound/jtframe_iir2.v
+  - ../jtcores/modules/jtframe/hdl/sound/jtframe_limsum.v
+  - ../jtcores/modules/jtframe/hdl/sound/jtframe_mixer.v
+  - ../jtcores/modules/jtframe/hdl/sound/jtframe_mixer_en.v
+  - ../jtcores/modules/jtframe/hdl/sound/jtframe_pole.v
+  - ../jtcores/modules/jtframe/hdl/sound/jtframe_rcmix.v
+  - ../jtcores/modules/jtframe/hdl/sound/jtframe_sndchain.v
+  - ../jtcores/modules/jtframe/hdl/sound/jtframe_vumeter.sv
+  - ../jtcores/modules/jtframe/hdl/video/jtframe_credits.v
+  - ../jtcores/modules/jtframe/hdl/video/jtframe_hsize.v
+  - ../jtcores/modules/jtframe/hdl/video/jtframe_lfbuf_ddr.v
+  - ../jtcores/modules/jtframe/hdl/video/jtframe_lfbuf_ddr_ctrl.v
+  - ../jtcores/modules/jtframe/hdl/video/jtframe_lfbuf_line.v
+  - ../jtcores/modules/jtframe/hdl/video/jtframe_logo.v
+  - ../jtcores/modules/jtframe/hdl/video/jtframe_resync.v
+  - ../jtcores/modules/jtframe/hdl/video/jtframe_tilemap.v
+  - ../jtcores/modules/jtframe/hdl/video/jtframe_wirebw.v
+  - ../jtcores/modules/jtframe/target/mister/joydb15.v
+  - ../jtcores/modules/jtframe/target/mister/jtframe_emu.sv
+  - ../jtcores/modules/jtframe/target/mister/jtframe_joymux.v
+  - ../jtcores/modules/jtframe/target/mister/jtframe_mister.sv
+  - ../jtcores/modules/jtframe/target/mister/jtframe_mister_dwnld.v
+  - ../jtcores/modules/jtframe/target/mister/jtframe_mr_ddrmux.v
+  - ../jtcores/modules/jtframe/target/mister/jtframe_mr_ddrtest.v
+  - ../jtcores/modules/jtframe/hdl/cpu/t80/T80pa.vhd
+  - ../jtcores/modules/jtframe/hdl/cpu/t80/T80s.vhd
+  - ../jtcores/modules/jtframe/hdl/cpu/t80/T80_Reg.vhd
+  - ../jtcores/modules/jtframe/hdl/cpu/t80/T80_MCode.vhd
+  - ../jtcores/modules/jtframe/hdl/cpu/t80/T80_ALU.vhd
+  - ../jtcores/modules/jtframe/hdl/cpu/t80/T80.vhd
+
+quartus:
+  platform-commands:
+    - 'set_global_assignment -name SEARCH_PATH "${CORE_DIR}/generated"'
+    - 'set_global_assignment -name SEARCH_PATH "${CORE_DIR}/../jtcores/cores/1943/hdl"'
+    - 'set_global_assignment -name SEARCH_PATH "${CORE_DIR}/../jtcores/modules/jtframe/hdl/inc"'
+    - 'set_global_assignment -name VERILOG_MACRO "MISTER=<None>"'
+
+  sourcefiles:
+    - mistex/sys_top.sdc
+    - ../jtcores/modules/jtframe/target/mistex/pll6144/jtframe_pll6144/jtframe_pll6144_0002.v
+    - ../jtcores/modules/jtframe/target/mistex/pll6293/jtframe_pll6293/jtframe_pll6293_0002.v
+    - ../jtcores/modules/jtframe/target/mistex/pll6671/jtframe_pll6671/jtframe_pll6671_0002.v
+    - ../jtcores/modules/jtframe/target/mistex/sys/pll/pll_0002.v
+    - ../jtcores/modules/jtframe/target/mistex/sys/pll_audio/pll_audio_0002.v
+    - ../jtcores/modules/jtframe/target/mistex/sys/pll_hdmi/pll_hdmi_0002.v
+
+vivado:
+  verilog-include-paths:
+    - ${CORE_DIR}/generated
+    - ${CORE_DIR}/../jtcores/cores/1943/hdl
+    - ${CORE_DIR}/../jtcores/modules/jtframe/hdl/inc
+
+  sourcefiles:
+    - ../jtcores/modules/jtframe/target/mistex/sys/sys_top.xdc
+    - ../jtcores/modules/jtframe/target/mistex/pll6144/jtframe_pll6144/jtframe_pll6144_0002-xilinx7.v
+    - ../jtcores/modules/jtframe/target/mistex/pll6293/jtframe_pll6293/jtframe_pll6293_0002-xilinx7.v
+    - ../jtcores/modules/jtframe/target/mistex/pll6671/jtframe_pll6671/jtframe_pll6671_0002-xilinx7.v
+    - ../jtcores/modules/jtframe/target/mistex/sys/pll/pll_0002-xilinx7.v
+    - ../jtcores/modules/jtframe/target/mistex/sys/pll_audio/pll_audio_0002-xilinx7.v
+    - ../jtcores/modules/jtframe/target/mistex/sys/pll_hdmi/pll_hdmi_0002-xilinx7.v
