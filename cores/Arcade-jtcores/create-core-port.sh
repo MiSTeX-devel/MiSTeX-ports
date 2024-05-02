@@ -17,3 +17,14 @@ for f in *; do
   fi
 done
 ls -l --color $PWD
+YAML=../MiSTeX.yaml
+MAINFILE=$(echo jt${CORE}_game*.v)
+cat <<EOF >$YAML
+mainfile: generated/$MAINFILE
+
+use-template-sys: false
+
+defines:
+EOF
+
+sed 's/#.*$//g' jt${CORE}.qsf | grep VERILOG_MACRO | cut -d\" -f2 | sed -e 's/=/: /'  -e 's/^/  /g' >> $YAML
