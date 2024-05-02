@@ -9,6 +9,7 @@ if [ -z "$CORE" ]; then
 fi
 mkdir -p $CORE/generated
 cd jtcores
+shift # get rid of $1, because setprj.sh tries to execute it
 source setprj.sh
 jtcore $CORE -mistex
 cp -Pv cores/${CORE}/mistex/* ../${CORE}/generated
