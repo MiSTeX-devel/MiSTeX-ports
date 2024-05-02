@@ -1,14 +1,3 @@
-## jtcores port status
-
-| **Core** | **Max10/Cyclone IV** | **Cyclone V** | **Xilinx7** |
-| -------- | -------------------- | ------------- | ----------- |
-| kicker   | works                | untested      | untested    |
-| toki     | works                | untested      | untested    |
-|          |                      |               |             |
-|          |                      |               |             |
-
-
-
 ## Build instructions
 
 * Prepare Jotego's jtframe environment as descrived in [compilation.md](../jtcores/modules/jtframe/doc/compilation.md)
