@@ -11,6 +11,7 @@ Arcade-jtcores/1942     | untested | untested | works
 Arcade-jtcores/1943     | untested | untested | works
 Arcade-jtcores/bubl     | untested | untested | works
 Arcade-jtcores/contra   | untested | untested | works
+Arcade-jtcores/cop      | untested | untested | works
 Arcade-jtcores/cps2     | untested | untested | builds
 Arcade-jtcores/dd       | untested | untested | works
 Arcade-jtcores/dd2      | untested | untested | works
@@ -22,6 +23,7 @@ Arcade-jtcores/s16      | untested | untested | works
 Arcade-jtcores/s16b     | untested | untested | works
 Arcade-jtcores/sf       | untested | untested | works
 Arcade-jtcores/toki     | works    | untested | works
+Arcade-jtcores/tmnt     | untested | untested | works
 Arcade-Pacman           | works    | untested | builds
 Arcade-Popeye           | works    | untested | works
 Arcade-QBert            | builds   | works    | works
