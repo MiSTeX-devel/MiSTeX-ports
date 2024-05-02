@@ -20,7 +20,8 @@ Arcade-jtcores/commnd   | untested | untested | works
 Arcade-jtcores/comsc    | untested | untested | works
 Arcade-jtcores/cop      | untested | untested | works
 Arcade-jtcores/cop      | untested | untested | works
-Arcade-jtcores/cps2     | untested | untested | builds
+Arcade-jtcores/cps1     | untested | untested | -
+Arcade-jtcores/cps2     | untested | untested | -
 Arcade-jtcores/dd       | untested | untested | works
 Arcade-jtcores/dd2      | untested | untested | works
 Arcade-jtcores/exed     | untested | untested | works
@@ -42,7 +43,7 @@ Arcade-jtcores/roadf    | untested | untested | works
 Arcade-jtcores/roc      | untested | untested | hangs
 Arcade-jtcores/rumble   | untested | untested | works
 Arcade-jtcores/sarms    | untested | untested | works
-Arcade-jtcores/shanon   | untested | untested | 
+Arcade-jtcores/shanon   | untested | untested | works
 Arcade-jtcores/sbaskt   | untested | untested | builds
 Arcade-jtcores/sectnz   | untested | untested | works
 Arcade-jtcores/slyspy   | untested | untested | -
