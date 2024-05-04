@@ -20,13 +20,14 @@ Arcade-jtcores/commnd   | untested | untested | works
 Arcade-jtcores/comsc    | untested | untested | works
 Arcade-jtcores/cop      | untested | untested | works
 Arcade-jtcores/cop      | untested | untested | works
-Arcade-jtcores/cps1     | untested | untested | -
-Arcade-jtcores/cps15    | untested | untested | -
-Arcade-jtcores/cps2     | untested | untested | -
+Arcade-jtcores/cps1     | untested | untested | bad_mem
+Arcade-jtcores/cps15    | untested | untested | crash
+Arcade-jtcores/cps2     | untested | untested | dead
 Arcade-jtcores/dd       | untested | untested | works
 Arcade-jtcores/dd2      | untested | untested | works
 Arcade-jtcores/exed     | untested | untested | works
 Arcade-jtcores/flane    | untested | untested | works
+Arcade-jtcores/fround   | untested | untested | bad_sprites
 Arcade-jtcores/gunsmk   | untested | untested | works
 Arcade-jtcores/gng      | untested | untested | works
 Arcade-jtcores/karnov   | untested | untested | works
@@ -47,6 +48,7 @@ Arcade-jtcores/roc      | untested | untested | hangs
 Arcade-jtcores/rumble   | untested | untested | works
 Arcade-jtcores/sarms    | untested | untested | works
 Arcade-jtcores/shanon   | untested | untested | works
+Arcade-jtcores/shouse   | untested | untested | works
 Arcade-jtcores/sbaskt   | untested | untested | builds
 Arcade-jtcores/sectnz   | untested | untested | works
 Arcade-jtcores/simson   | untested | untested | works
