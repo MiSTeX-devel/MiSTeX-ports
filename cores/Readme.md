@@ -49,6 +49,7 @@ Arcade-jtcores/sarms    | untested | untested | works
 Arcade-jtcores/shanon   | untested | untested | works
 Arcade-jtcores/sbaskt   | untested | untested | builds
 Arcade-jtcores/sectnz   | untested | untested | works
+Arcade-jtcores/simson   | untested | untested | works
 Arcade-jtcores/slyspy   | untested | untested | works
 Arcade-jtcores/s16      | untested | untested | works
 Arcade-jtcores/s16b     | untested | untested | works
