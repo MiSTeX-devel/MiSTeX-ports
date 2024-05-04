@@ -21,6 +21,7 @@ Arcade-jtcores/comsc    | untested | untested | works
 Arcade-jtcores/cop      | untested | untested | works
 Arcade-jtcores/cop      | untested | untested | works
 Arcade-jtcores/cps1     | untested | untested | -
+Arcade-jtcores/cps15    | untested | untested | -
 Arcade-jtcores/cps2     | untested | untested | -
 Arcade-jtcores/dd       | untested | untested | works
 Arcade-jtcores/dd2      | untested | untested | works
