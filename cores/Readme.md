@@ -26,8 +26,10 @@ Arcade-jtcores/cps2     | untested | untested | -
 Arcade-jtcores/dd       | untested | untested | works
 Arcade-jtcores/dd2      | untested | untested | works
 Arcade-jtcores/exed     | untested | untested | works
+Arcade-jtcores/flane    | untested | untested | works
 Arcade-jtcores/gunsmk   | untested | untested | works
 Arcade-jtcores/gng      | untested | untested | works
+Arcade-jtcores/karnov   | untested | untested | works
 Arcade-jtcores/kchamp   | untested | untested | works
 Arcade-jtcores/kicker   | works    | untested | works
 Arcade-jtcores/kiwi     | untested | untested | works
