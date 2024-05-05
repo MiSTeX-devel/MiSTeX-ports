@@ -89,7 +89,7 @@ class BaseSoC(SoCCore):
             phy           = self.ddrphy,
             module        = MT41K128M16(sys_clk_freq, "1:4"),
             l2_cache_size = 0,
-            controller_settings=ControllerSettings(with_auto_precharge=False))
+            controller_settings=ControllerSettings(with_auto_precharge=True))
         #self.add_constant("SDRAM_TEST_DISABLE")
 
         self.gamecore = Gamecore(platform, self, sys_clk_freq)

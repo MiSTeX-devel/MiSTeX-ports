@@ -27,7 +27,7 @@ Arcade-jtcores/dd       | untested | untested | works
 Arcade-jtcores/dd2      | untested | untested | works
 Arcade-jtcores/exed     | untested | untested | works
 Arcade-jtcores/flane    | untested | untested | works
-Arcade-jtcores/fround   | untested | untested | bad_sprites
+Arcade-jtcores/fround   | untested | untested | works
 Arcade-jtcores/gunsmk   | untested | untested | works
 Arcade-jtcores/gng      | untested | untested | works
 Arcade-jtcores/karnov   | untested | untested | works
