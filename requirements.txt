@@ -6,8 +6,7 @@ pyusb
 git+https://github.com/enjoy-digital/litescope/
 # litex_boards
 git+https://github.com/litex-hub/litex-boards.git
-# We need the fix in this branch for the avalon frontent, until it is merged upstream
-git+https://github.com/hansfbaier/litedram.git@downconvert-cleanup
+git+https://github.com/enjoy-digital/litedram.git
 icecream
 pythondata_software_compiler_rt
 pythondata_software_picolibc
