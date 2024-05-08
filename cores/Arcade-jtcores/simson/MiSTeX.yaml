@@ -101,11 +101,11 @@ sourcefiles:
   - ../jtcores/cores/aliens/hdl/jt052109.v
   - ../jtcores/cores/simson/hdl/jt053246.sv
   - ../jtcores/cores/simson/hdl/jt053246_dma.v
-  - ../jtcores/cores/simson/hdl/jt053246_mmr.v
+  - jt053246_mmr.v
   - ../jtcores/cores/simson/hdl/jt053260.v
   - ../jtcores/cores/simson/hdl/jtcolmix_053251.v
   - ../jtcores/cores/simson/hdl/jtk054000.v
-  - ../jtcores/cores/simson/hdl/jtk054000_mmr.v
+  - jtk054000_mmr.v
   - ../jtcores/cores/simson/hdl/jtsimson_colmix.v
   - ../jtcores/cores/simson/hdl/jtsimson_game.v
   - ../jtcores/cores/simson/hdl/jtsimson_main.v
