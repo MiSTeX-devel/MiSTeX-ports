@@ -99,8 +99,8 @@ sourcefiles:
   - ../jtcores/cores/shouse/hdl/jtc117.v
   - ../jtcores/cores/shouse/hdl/jtshouse_cenloop.v
   - ../jtcores/cores/shouse/hdl/jtshouse_colmix.v
-  - ../jtcores/cores/shouse/hdl/jtshouse_cus116_mmr.v
-  - ../jtcores/cores/shouse/hdl/jtshouse_cus30_mmr.v
+  - jtshouse_cus116_mmr.v
+  - jtshouse_cus30_mmr.v
   - ../jtcores/cores/shouse/hdl/jtcus30.sv
   - ../jtcores/cores/shouse/hdl/jtshouse_scr.sv
   - ../jtcores/cores/shouse/hdl/jtshouse_game.v
@@ -109,8 +109,8 @@ sourcefiles:
   - ../jtcores/cores/shouse/hdl/jtshouse_mcu.v
   - ../jtcores/cores/shouse/hdl/jtshouse_obj.v
   - ../jtcores/cores/shouse/hdl/jtshouse_obj_dma.v
-  - ../jtcores/cores/shouse/hdl/jtshouse_obj_mmr.v
-  - ../jtcores/cores/shouse/hdl/jtshouse_scr_mmr.v
+  - jtshouse_obj_mmr.v
+  - jtshouse_scr_mmr.v
   - ../jtcores/cores/shouse/hdl/jtshouse_sound.v
   - ../jtcores/cores/shouse/hdl/jtshouse_triram.v
   - ../jtcores/cores/shouse/hdl/jtshouse_video.v
