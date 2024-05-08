@@ -19,7 +19,6 @@ Arcade-jtcores/contra   | untested | untested | works
 Arcade-jtcores/commnd   | untested | untested | works
 Arcade-jtcores/comsc    | untested | untested | works
 Arcade-jtcores/cop      | untested | untested | works
-Arcade-jtcores/cop      | untested | untested | works
 Arcade-jtcores/cps1     | untested | untested | bad_mem
 Arcade-jtcores/cps15    | untested | untested | crash
 Arcade-jtcores/cps2     | untested | untested | dead
