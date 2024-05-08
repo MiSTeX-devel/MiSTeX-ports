@@ -15,13 +15,13 @@ do
   if grep -q jtcores $TCL; then
     DEST=${BASE/_MiSTeX/}
     scp $i root@${HOST}:/media/fat/_Arcade${SUFFIX}/cores/jt${DEST}
-  elif [[ "$i" == *Arcade_* ]] then
+  elif [[ "$i" == *Arcade_* ]]; then
     DEST=${BASE/Arcade_/Arcade-}
     DEST=${DEST/_MiSTeX/}
     scp $i root@${HOST}:/media/fat/_Arcade${SUFFIX}/cores/$DEST
-  elif  [[ "$i" == */Menu_MiSTeX.bit ]] then
+  elif  [[ "$i" == */Menu_MiSTeX.bit ]]; then
     scp $i root@${HOST}:/media/fat/menu${SUFFIX}.bit
-  elif [[ "$i" == *SMS_MiST* ]] || [[ "$i" == *NES_MiST* ]] ||  [[ "$i" == *NeoGeo_MiST* ]] then
+  elif [[ "$i" == *SMS_MiST* ]] || [[ "$i" == *NES_MiST* ]] ||  [[ "$i" == *NeoGeo_MiST* ]]; then
     scp $i root@${HOST}:/media/fat/_Console/$DEST
   else
     scp $i root@${HOST}:/media/fat/_Utility/$DEST
