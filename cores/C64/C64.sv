@@ -1128,7 +1128,8 @@ iec_drive #(.PARPORT(0), .DUALROM(0), .DRIVES(1)) iec_drive
 	.img_mounted(img_mounted),
 	.img_size(img_size),
 	.img_readonly(img_readonly),
-	.img_type(&ioctl_index[7:6] ? 2'b11 : 2'b01),
+//	.img_type(&ioctl_index[7:6] ? 2'b11 : 2'b01), // -- GCR generated at host level
+	.img_type(&ioctl_index[7:6] ? 2'b10 : 2'b00), // -- GCR generated at fpga level
 
 	.led(drive_led),
 	.disk_ready(disk_ready),
