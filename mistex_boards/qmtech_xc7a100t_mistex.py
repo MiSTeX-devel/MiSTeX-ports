@@ -74,6 +74,11 @@ def main(coredir, core):
         for line in lines:
             if line.startswith("# Add pre-optimize commands"):
                 result.append('}\n\nproc post_ila {} {\n')
+            # TMP TMP TMP correct speedgrade until litex PR is merged
+            if line.startswith("create_project"):
+                result.append(line.replace("-1", "-2"))
+                continue
+
             result.append(line)
 
         result += [
