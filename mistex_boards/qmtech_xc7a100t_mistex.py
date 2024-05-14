@@ -26,6 +26,7 @@ def main(coredir, core):
         gui = True
     if toolchain is None:
         toolchain = "vivado"
+
     platform = qmtech_artix7_fgg676.Platform(with_daughterboard=False, toolchain=toolchain)
     #platform.add_platform_command("set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets {{hps_spi_clk_IBUF}}]")
     platform.add_platform_command("create_clock -name spi_clk -period 33.33 [get_ports {{hps_spi_clk}}]")
