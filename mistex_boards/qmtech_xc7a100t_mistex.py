@@ -76,7 +76,7 @@ def main(coredir, core):
                 result.append('}\n\nproc post_ila {} {\n')
             # TMP TMP TMP correct speedgrade until litex PR is merged
             if line.startswith("create_project"):
-                result.append(line.replace("-1", "-2"))
+                result.append(line.replace("676-1", "676-2"))
                 continue
 
             result.append(line)
