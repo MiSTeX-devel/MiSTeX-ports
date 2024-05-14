@@ -20,6 +20,10 @@ def main(coredir, core):
     mistex_yaml = yaml.load(open(join(coredir, "MiSTeX.yaml"), 'r'), Loader=yaml.FullLoader)
 
     toolchain = os.environ.get('MISTEX_TOOLCHAIN')
+    gui = False
+    if toolchain == 'vivado-gui':
+        toolchain="vivado"
+        gui = True
     if toolchain is None:
         toolchain = "vivado"
     platform = qmtech_artix7_fgg676.Platform(with_daughterboard=False, toolchain=toolchain)
@@ -54,7 +58,36 @@ def main(coredir, core):
         #bios_console="lite"
     )
 
-    builder.build(build_name = get_build_name(core))
+    build_name = get_build_name(core)
+    builder.build(build_name = build_name, run=not gui)
+    if gui:
+        lines  = []
+        result = []
+        cwd = os.getcwd()
+        tclpath = join(build_dir, build_name + ".tcl")
+        shname = "build_" + build_name + ".sh"
+        shpath = join(build_dir, shname)
+        with open(tclpath, 'r+') as f:
+            lines = f.readlines()
+        result.append('proc init {} {')
+        for line in lines:
+            if line.startswith("# Add pre-optimize commands"):
+                result.append('}\n\nproc post_ila {} {\n')
+            result.append(line)
+
+        result += [
+            "\n}\n\n",
+            "init\n",
+            "start_gui\n",
+            'puts "type \'post_ila\' at the TCL console after you insert the debug core"\n'
+        ]
+
+        with open(tclpath, 'w') as f:
+            f.writelines(result)
+        os.chmod(shpath, 0o755)
+        os.chdir(build_dir)
+        from subprocess import call
+        call(join(cwd, shpath), shell=True)
 
 if __name__ == "__main__":
     handle_main(main)
