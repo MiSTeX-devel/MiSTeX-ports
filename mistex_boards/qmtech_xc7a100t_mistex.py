@@ -73,7 +73,7 @@ def main(coredir, core):
         result.append('proc init {} {')
         for line in lines:
             if line.startswith("# Add pre-optimize commands"):
-                result.append('}\n\nproc post_ila {} {\n')
+                result.append('}\n\nproc build {} {\n')
             # TMP TMP TMP correct speedgrade until litex PR is merged
             if line.startswith("create_project"):
                 result.append(line.replace("676-1", "676-2"))
@@ -85,7 +85,7 @@ def main(coredir, core):
             "\n}\n\n",
             "init\n",
             "start_gui\n",
-            'puts "type \'post_ila\' at the TCL console after you insert the debug core"\n'
+            'puts "type \'build\' at the TCL console after you insert the debug core"\n'
         ]
 
         with open(tclpath, 'w') as f:
