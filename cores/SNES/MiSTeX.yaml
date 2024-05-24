@@ -51,36 +51,29 @@ quartus:
 
 vivado:
   sourcefiles:
-    - sys/sys_top.xdc
-    - sys/sys_top.xdc
-    - rtl/pll_0002-xilinx7.v
-    - sys/xilinx7_mmcm_reconfig.v
-    - sys/xilinx_pll_reconfig_top.v
-    - sys/pll_hdmi_0002-xilinx7.v
-    - sys/pll_audio_0002-xilinx7.v
-    - rtl/sdram.sv
-    - rtl/spram.vhd
-    - rtl/spram_sz.vhd
-    - rtl/dpram.vhd
-    - rtl/dpram_dif.vhd
-    - rtl/dpram_difclk.vhd
-    - rtl/spram.vhd
-    - rtl/dpram_dif.vhd
-    - rtl/pll_0002-xilinx7.v
-    - rtl/sdram.sv
-    - rtl/spram_sz.vhd
-    - rtl/msu_fifo.v
-    - rtl/chip/CX4/CX4Map.vhd
+
+    - rtl/cheatcodes.sv
+    - rtl/chip/BSX/BSX_BS.vhd
     - rtl/chip/CX4/cx4cache.vhd
+    - rtl/chip/CX4/CX4Map.vhd
     - rtl/chip/CX4/CX4.vhd
+    - rtl/chip/DSP/DSPn.vhd
+    - rtl/chip/GSU/GSU.vhd
     - rtl/chip/MSU1/msu_audio.v
     - rtl/chip/MSU1/MSU.sv
-    - rtl/chip/BSX/BSX_BS.vhd
-    - rtl/chip/DSP/DSPn.vhd
     - rtl/chip/SPC7110/SPC7110_DEC.vhd
-    - rtl/chip/GSU/GSU.vhd
-    - rtl/dpram.vhd
-    - rtl/cheatcodes.sv
-    - rtl/lightgun.sv
     - rtl/dpram_difclk.vhd
+    - rtl/dpram_dif.vhd
+    - rtl/dpram.vhd
     - rtl/hps_ext.v
+    - rtl/lightgun.sv
+    - rtl/msu_fifo.v
+    - rtl/pll_0002-xilinx7.v
+    - rtl/sdram.sv
+    - rtl/spram_sz.vhd
+    - rtl/spram.vhd
+    - sys/pll_audio_0002-xilinx7.v
+    - sys/pll_hdmi_0002-xilinx7.v
+    - sys/sys_top.xdc
+    - sys/xilinx7_mmcm_reconfig.v
+    - sys/xilinx_pll_reconfig_top.v
