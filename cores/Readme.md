@@ -72,6 +72,7 @@ FlappyBird              | untested | works    | works
 InputTest               | untested | works    | -
 MemTest                 | untested | works    | -
 Menu                    | works    | works    | works
+Minimig-AGA             | untested | untested | bios_works
 NeoGeo                  | untested | untested | builds
 SMS                     | untested | untested | works
 SNES                    | untested | untested | builds

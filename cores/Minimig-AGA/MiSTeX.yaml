@@ -1,0 +1,72 @@
+mainfile: Minimig.sv
+
+use-template-sys: True
+
+defines:
+  # EMU_DEBUG: 1
+  MISTER_FB: 1
+  MISTER_FB_PALETTE: 1
+
+sourcedirs:
+  - sys
+  - upstream/rtl
+  - upstream/rtl/fx68k
+  - upstream/rtl/fpga-toccata/
+  - upstream/rtl/tg68k/
+
+quartus:
+  sourcefiles:
+    - sys/sys_top.sdc
+    - sys/altera_pll_reconfig_top.v
+    - sys/altera_pll_reconfig_core.v
+    - sys/pll_audio_0002.v
+    - sys/pll_hdmi_0002.v
+    - sys/hdmi_config.sv
+    - upstream/rtl/pll/pll_0002.v
+    - upstream/rtl/bram.vhd
+    - upstream/rtl/denise_colortable_ram_mf.v
+    - upstream/hps_ext.v
+    - upstream/rtl/agnus_bitplanedma.v
+    - upstream/rtl/akiko.v
+    - upstream/rtl/cart.v
+    - upstream/rtl/cdda.v
+    - upstream/rtl/ciaa.v
+    - upstream/rtl/cpu_wrapper.v
+    - upstream/rtl/ddram_ctrl.v
+    - upstream/rtl/denise_bitplanes.v
+    - upstream/rtl/denise_sprites_shifter.v
+    - upstream/rtl/fpga-toccata/toccata_volume.sv
+    - upstream/rtl/gayle.v
+    - upstream/rtl/ide.v
+    - upstream/rtl/minimig.v
+    - upstream/rtl/sdram_ctrl.v
+    - upstream/rtl/userio.v    
+
+vivado:
+  sourcefiles:
+    - sys/sys_top.xdc
+    - sys/sys_top.xdc
+    - rtl/pll_0002-xilinx7.v
+    - sys/xilinx7_mmcm_reconfig.v
+    - sys/xilinx_pll_reconfig_top.v
+    - sys/pll_hdmi_0002-xilinx7.v
+    - sys/pll_audio_0002-xilinx7.v
+    - rtl/dpram.vhd
+    - rtl/pll_0002-xilinx7.v
+    - rtl/denise_colortable_ram_mf.v
+    - hps_ext.v
+    - rtl/agnus_bitplanedma.v
+    - rtl/akiko.v
+    - rtl/cart.v
+    - rtl/cdda.v
+    - rtl/ciaa.v
+    - rtl/cpu_wrapper.v
+    - rtl/ddram_ctrl.v
+    - rtl/denise_bitplanes.v
+    - rtl/denise_sprites_shifter.v
+    - rtl/fpga-toccata/toccata_volume.sv
+    - rtl/gayle.v
+    - rtl/ide.v
+    - rtl/minimig.v
+    - rtl/sdram_ctrl.v
+    - rtl/userio.v    

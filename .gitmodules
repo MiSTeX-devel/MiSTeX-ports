@@ -64,3 +64,6 @@
 [submodule "cores/jtcores"]
 	path = cores/Arcade-jtcores/jtcores
 	url = https://github.com/MiSTeX-devel/jtcores
+[submodule "cores/Minimig-AGA/upstream"]
+	path = cores/Minimig-AGA/upstream
+	url = https://github.com/MiSTer-devel/Minimig-AGA_MiSTer.git
