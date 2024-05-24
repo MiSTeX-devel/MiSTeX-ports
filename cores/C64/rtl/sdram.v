@@ -24,7 +24,7 @@ module sdram (
 
 	// interface to the MT48LC16M16 chip
 	output reg [12:0]	sd_addr,    // 13 bit multiplexed address bus
-	inout  reg [15:0]	sd_data,
+	inout      [15:0]	sd_data,
 	output reg [ 1:0]	sd_ba,      // two banks
 	output 				sd_cs,      // a single chip select
 	output 				sd_we,      // write enable
@@ -59,6 +59,12 @@ localparam MODE = { 3'b000, NO_WRITE_BURST, OP_MODE, CAS_LATENCY, ACCESS_TYPE, B
 // ---------------------------------------------------------------------
 // ------------------------ cycle state machine ------------------------
 // ---------------------------------------------------------------------
+
+reg        dq_oen;
+reg [15:0] dq_out;
+wire       sd_data;
+
+assign sd_data = dq_oen ? dq_out : 16'bZ;
 
 localparam STATE_CMD_START = 3'd0;   // state in which a new command can be started
 localparam STATE_CMD_CONT  = STATE_CMD_START  + RASCAS_DELAY; // command can be continued
@@ -111,18 +117,18 @@ assign sd_cs  = 0;
 assign sd_ras = sd_cmd[2];
 assign sd_cas = sd_cmd[1];
 assign sd_we  = sd_cmd[0];
-assign sd_dqm = 2'b00; // sd_addr[12:11]; Dar
+assign sd_dqm = sd_addr[12:11];
 
 reg bt;
 reg [15:0] dout_r;
 
 assign dout = bt ? dout_r[15:8] : dout_r[7:0];
 
-always @(posedge clk) begin
+always @(posedge clk) begin : state_block
 	reg [8:0] caddr;
 
 	sd_cmd  <= CMD_NOP;
-	sd_data <= 16'bZ;
+	dq_oen  <= 1'b0;
 
 	if(q == STATE_READ) dout_r <= sd_data;
 
@@ -150,38 +156,57 @@ always @(posedge clk) begin
 			bt      <= addr[24];
 		end
 		if(q == STATE_CMD_CONT) begin
-			if(we) sd_data <= {din, din};
+			if(we) begin
+				dq_oen  <= 1'b0;
+				dq_out  <= {din, din};
+			end
 			sd_cmd  <= we ? CMD_WRITE : CMD_READ;
 			sd_addr <= {~bt & we, bt & we, 2'b10, caddr};
 		end
 	end
 end
 
-assign sd_clk = ~clk;
+`ifdef ALTERA
+altddio_out
+#(
+	.extend_oe_disable("OFF"),
+	.intended_device_family("Cyclone V"),
+	.invert_output("OFF"),
+	.lpm_hint("UNUSED"),
+	.lpm_type("altddio_out"),
+	.oe_reg("UNREGISTERED"),
+	.power_up_high("OFF"),
+	.width(1)
+)
+sdramclk_ddr
+(
+	.datain_h(1'b0),
+	.datain_l(1'b1),
+	.outclock(clk),
+	.dataout(sd_clk),
+	.aclr(1'b0),
+	.aset(1'b0),
+	.oe(1'b1),
+	.outclocken(1'b1),
+	.sclr(1'b0),
+	.sset(1'b0)
+);
+`endif // ALTERA
 
-//altddio_out
-//#(
-//	.extend_oe_disable("OFF"),
-//	.intended_device_family("Cyclone V"),
-//	.invert_output("OFF"),
-//	.lpm_hint("UNUSED"),
-//	.lpm_type("altddio_out"),
-//	.oe_reg("UNREGISTERED"),
-//	.power_up_high("OFF"),
-//	.width(1)
-//)
-//sdramclk_ddr
-//(
-//	.datain_h(1'b0),
-//	.datain_l(1'b1),
-//	.outclock(clk),
-//	.dataout(sd_clk),
-//	.aclr(1'b0),
-//	.aset(1'b0),
-//	.oe(1'b1),
-//	.outclocken(1'b1),
-//	.sclr(1'b0),
-//	.sset(1'b0)
-//);
+`ifdef XILINX
+ODDR #(
+	.DDR_CLK_EDGE("OPPOSITE_EDGE"),
+	.INIT(1'b0),
+	.SRTYPE("SYNC")
+) ODDR_inst (
+	.Q(sd_clk),
+	.C(clk),
+	.CE(1'b1),
+	.D1(1'b0),
+	.D2(1'b1),
+	.R(1'b0),
+	.S(1'b0)
+);
+`endif //XILINX
 
 endmodule

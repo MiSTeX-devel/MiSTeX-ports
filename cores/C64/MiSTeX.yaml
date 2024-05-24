@@ -34,4 +34,22 @@ vivado:
     - sys/pll_hdmi_0002-xilinx7.v
     - sys/pll_audio_0002-xilinx7.v
     - rtl/iec_drive/iec_drive.sv
+    - rtl/c1351.v
+    - rtl/c1530.vhd
+    - rtl/cartridge.v
+    - rtl/cpu_6510.vhd
+    - rtl/iec_drive/c1541_gcr.sv
+    - rtl/iec_drive/c1541_multi.sv
+    - rtl/iec_drive/c1581_multi.sv
+    - rtl/iec_drive/fdc1772.v
+    - rtl/iec_drive/iecdrv_mos8520.v
+    - rtl/mos6526.v
+    - rtl/opl3/NextZ80Reg.v
+    - rtl/opl3/compressor.sv
+    - rtl/reu.v
+    - rtl/sdram.v
+    - rtl/sid/sid_dac.sv
+    - rtl/sid/sid_filter.sv
+    - rtl/sid/sid_tables.sv
+    - rtl/sid/sid_top.sv    
 

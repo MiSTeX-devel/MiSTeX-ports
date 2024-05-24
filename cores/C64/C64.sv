@@ -161,10 +161,10 @@ module emu
 `endif
 
 	input         UART_CTS,
-	output        UART_RTS,
+	output reg    UART_RTS,
 	input         UART_RXD,
-	output        UART_TXD,
-	output        UART_DTR,
+	output reg    UART_TXD,
+	output reg    UART_DTR,
 	input         UART_DSR,
 
 	// Open-drain User port.
@@ -172,8 +172,8 @@ module emu
 	// 1 - D-/TX
 	// 2..6 - USR2..USR6
 	// Set USER_OUT to 1 to read from USER_IN.
-	input   [6:0] USER_IN,
-	output  [6:0] USER_OUT,
+	input      [6:0] USER_IN,
+	output reg [6:0] USER_OUT,
 
 	input         OSD_STATUS
 );
@@ -1092,8 +1092,8 @@ wire       c64_iec_atn;
 wire       drive_iec_clk  = drive_iec_clk_o  & ext_iec_clk;
 wire       drive_iec_data = drive_iec_data_o & ext_iec_data;
 
-wire [7:0] drive_par_i;
-wire       drive_stb_i;
+reg  [7:0] drive_par_i;
+reg        drive_stb_i;
 wire [7:0] drive_par_o;
 wire       drive_stb_o;
 wire       drive_iec_clk_o;
@@ -1533,12 +1533,16 @@ ltc2308_tape #(.CLK_RATE(32000000)) ltc2308_tape
 
 //------------- USER PORT -----------------
 
-wire [7:0] pb_i, pb_o;
-wire       pa2_i, pa2_o;
+reg  [7:0] pb_i;
+wire [7:0] pb_o;
+reg        pa2_i;
+wire       pa2_o;
 wire       pc2_n_o;
-wire       flag2_n_i;
-wire       sp2_i, sp2_o, sp1_o, sp1_i;
-wire       cnt2_i, cnt2_o, cnt1_o, cnt1_i;
+reg        flag2_n_i;
+reg        sp2_i, sp1_i;
+wire       sp2_o, sp1_o;
+reg        cnt1_i, cnt2_i;
+wire       cnt2_o, cnt1_o;
 
 always_comb begin
 	pa2_i       = 1;
@@ -1557,8 +1561,8 @@ always_comb begin
 	USER_OUT[1] = 1;
 
 	if(disk_parport & disk_access) begin
-		drive_par_i = pb_o;
 		drive_stb_i = pc2_n_o;
+		drive_par_i = pb_o;
 		pb_i        = drive_par_o;
 		flag2_n_i   = drive_stb_o;
 	end

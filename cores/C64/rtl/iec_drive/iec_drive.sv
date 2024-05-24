@@ -41,14 +41,14 @@ module iec_drive #(parameter PARPORT=1,DUALROM=1,DRIVES=2)
 	//clk_sys ports
 	input         clk_sys,
 
-	output [31:0] sd_lba[NDR],
-	output  [5:0] sd_blk_cnt[NDR],
-	output  [N:0] sd_rd,
-	output  [N:0] sd_wr,
-	input   [N:0] sd_ack,
-	input  [13:0] sd_buff_addr,
-	input   [7:0] sd_buff_dout,
-	output  [7:0] sd_buff_din[NDR],
+	output reg [31:0] sd_lba[NDR],
+	output reg [5:0]  sd_blk_cnt[NDR],
+	output reg [N:0]  sd_rd,
+	output reg [N:0]  sd_wr,
+	input      [N:0]  sd_ack,
+	input     [13:0]  sd_buff_addr,
+	input      [7:0]  sd_buff_dout,
+	output reg [7:0]  sd_buff_din[NDR],
 	input         sd_buff_wr,
 
 	input  [15:0] rom_addr,
