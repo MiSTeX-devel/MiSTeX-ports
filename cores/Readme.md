@@ -2,6 +2,7 @@
 
  **Core** | **Type** | **Max10/Cyclone IV** | **Cyclone V** | **Xilinx7**
 --|--|--|--|--
+Amstrad                 | Computer | untested | untested | builds
 Arcade-BombJack         | Arcade   | works    | works    | works
 Arcade-BurgerTime       | Arcade   | works    | untested | works
 Arcade-DigDug           | Arcade   | works    | untested | works

@@ -1,0 +1,47 @@
+mainfile: Amstrad.sv
+
+use-template-sys: True
+
+# defines:
+#   MISTER_FB: 1
+
+sourcedirs:
+  - sys
+  - upstream/rtl
+  - upstream/rtl/GA40010
+  - upstream/rtl/T80
+  - upstream/rtl/playcity
+  - upstream/rtl/playcity/Z80CTC
+  - upstream/rtl/u765
+
+quartus:
+  sourcefiles:
+    - sys/sys_top.sdc
+    - sys/altera_pll_reconfig_top.v
+    - sys/altera_pll_reconfig_core.v
+    - sys/pll_audio_0002.v
+    - sys/pll_hdmi_0002.v
+    - sys/hdmi_config.sv
+    - upstream/rtl/pll/pll_0002.v
+
+vivado:
+  sourcefiles:
+    - sys/sys_top.xdc
+    - rtl/pll_0002-xilinx7.v
+    - sys/xilinx7_mmcm_reconfig.v
+    - sys/xilinx_pll_reconfig_top.v
+    - sys/pll_hdmi_0002-xilinx7.v
+    - sys/pll_audio_0002-xilinx7.v
+    - rtl/Amstrad_MMU.v
+    - rtl/Amstrad_motherboard.v
+    - rtl/GA40010/syncgen_sync.v
+    - rtl/UM6845R.v
+    - rtl/hid.sv
+    - rtl/i8255.v
+    - rtl/kempston_mouse.v
+    - rtl/multiplay_mouse.v
+    - rtl/playcity/playcity.v
+    - rtl/progressbar.v
+    - rtl/sdram.v
+    - rtl/symbiface_mouse.v
+
