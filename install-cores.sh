@@ -23,6 +23,8 @@ do
     scp $i root@${HOST}:/media/fat/menu${SUFFIX}.bit
   elif [[ "$i" == *SMS_MiST* ]] || [[ "$i" == *NES_MiST* ]] ||  [[ "$i" == *NeoGeo_MiST* ]]; then
     scp $i root@${HOST}:/media/fat/_Console/$DEST
+  elif [[ "$i" == *Minimig-AGA_MiST* ]] || [[ "$i" == *C64_MiST* ]]; then
+    scp $i root@${HOST}:/media/fat/_Computer/$DEST
   else
     scp $i root@${HOST}:/media/fat/_Utility/$DEST
   fi
