@@ -1,80 +1,80 @@
 ## Core port status
 
- **Core** | **Max10/Cyclone IV** | **Cyclone V** | **Xilinx7**
---|--|--|--
-Arcade-BombJack         | works    | works    | works
-Arcade-BurgerTime       | works    | untested | works
-Arcade-DigDug           | works    | untested | works
-Arcade-DonkeyKong       | works    | untested | builds
-Arcade-Galaga           | works    | untested | works
-Arcade-jtcores/1942     | untested | untested | works
-Arcade-jtcores/1943     | untested | untested | works
-Arcade-jtcores/aliens   | untested | untested | works
-Arcade-jtcores/bubl     | untested | untested | works
-Arcade-jtcores/biocom   | untested | untested | works
-Arcade-jtcores/bionic   | untested | untested | works
-Arcade-jtcores/btiger   | untested | untested | works
-Arcade-jtcores/castle   | untested | untested | works
-Arcade-jtcores/commnd   | untested | untested | works
-Arcade-jtcores/comsc    | untested | untested | works
-Arcade-jtcores/contra   | untested | untested | works
-Arcade-jtcores/cop      | untested | untested | works
-Arcade-jtcores/cps1     | untested | untested | bad_mem
-Arcade-jtcores/cps15    | untested | untested | crash
-Arcade-jtcores/cps2     | untested | untested | dead
-Arcade-jtcores/dd       | untested | untested | works
-Arcade-jtcores/dd2      | untested | untested | works
-Arcade-jtcores/exed     | untested | untested | works
-Arcade-jtcores/flane    | untested | untested | works
-Arcade-jtcores/fround   | untested | untested | works
-Arcade-jtcores/gng      | untested | untested | works
-Arcade-jtcores/gunsmk   | untested | untested | works
-Arcade-jtcores/karnov   | untested | untested | works
-Arcade-jtcores/kchamp   | untested | untested | works
-Arcade-jtcores/kicker   | works    | untested | works
-Arcade-jtcores/kiwi     | untested | untested | works
-Arcade-jtcores/kunio    | untested | untested | works
-Arcade-jtcores/labrun   | untested | untested | works
-Arcade-jtcores/mx5k     | untested | untested | works
-Arcade-jtcores/mikie    | untested | untested | works
-Arcade-jtcores/midres   | untested | untested | works
-Arcade-jtcores/ninja    | untested | untested | works
-Arcade-jtcores/outrun   | untested | untested | nosprites
-Arcade-jtcores/pang     | untested | untested | works
-Arcade-jtcores/pinpon   | untested | untested | works
-Arcade-jtcores/rastan   | untested | untested | compilerr
-Arcade-jtcores/roadf    | untested | untested | works
-Arcade-jtcores/roc      | untested | untested | hangs
-Arcade-jtcores/rumble   | untested | untested | works
-Arcade-jtcores/s16      | untested | untested | works
-Arcade-jtcores/s16b     | untested | untested | works
-Arcade-jtcores/sarms    | untested | untested | works
-Arcade-jtcores/sbaskt   | untested | untested | builds
-Arcade-jtcores/sectnz   | untested | untested | works
-Arcade-jtcores/sf       | untested | untested | works
-Arcade-jtcores/shanon   | untested | untested | works
-Arcade-jtcores/shouse   | untested | untested | works
-Arcade-jtcores/simson   | untested | untested | works
-Arcade-jtcores/slyspy   | untested | untested | works
-Arcade-jtcores/tmnt     | untested | untested | works
-Arcade-jtcores/toki     | works    | untested | works
-Arcade-jtcores/tora     | untested | untested | works
-Arcade-jtcores/trojan   | untested | untested | works
-Arcade-jtcores/vigil    | untested | untested | works
-Arcade-jtcores/yiear    | untested | untested | hangs
-Arcade-Pacman           | works    | untested | builds
-Arcade-Popeye           | works    | untested | works
-Arcade-QBert            | builds   | works    | works
-Arcade-SEGASYS1         | untested | untested | works
-Arcade-Tecmo            | untested | builds   | builds
-C64                     | works    | untested | -
-FlappyBird              | untested | works    | works
-InputTest               | untested | works    | -
-MemTest                 | untested | works    | -
-Menu                    | works    | works    | works
-Minimig-AGA             | untested | untested | bios_works
-NeoGeo                  | untested | untested | builds
-SMS                     | untested | untested | works
-SNES                    | untested | untested | builds
-NES                     | untested | untested | works
-Template                | works    | works    | works
+ **Core** | **Type** | **Max10/Cyclone IV** | **Cyclone V** | **Xilinx7**
+--|--|--|--|--
+Arcade-BombJack         | Arcade   | works    | works    | works
+Arcade-BurgerTime       | Arcade   | works    | untested | works
+Arcade-DigDug           | Arcade   | works    | untested | works
+Arcade-DonkeyKong       | Arcade   | works    | untested | builds
+Arcade-Galaga           | Arcade   | works    | untested | works
+Arcade-jtcores/1942     | Arcade   | untested | untested | works
+Arcade-jtcores/1943     | Arcade   | untested | untested | works
+Arcade-jtcores/aliens   | Arcade   | untested | untested | works
+Arcade-jtcores/bubl     | Arcade   | untested | untested | works
+Arcade-jtcores/biocom   | Arcade   | untested | untested | works
+Arcade-jtcores/bionic   | Arcade   | untested | untested | works
+Arcade-jtcores/btiger   | Arcade   | untested | untested | works
+Arcade-jtcores/castle   | Arcade   | untested | untested | works
+Arcade-jtcores/commnd   | Arcade   | untested | untested | works
+Arcade-jtcores/comsc    | Arcade   | untested | untested | works
+Arcade-jtcores/contra   | Arcade   | untested | untested | works
+Arcade-jtcores/cop      | Arcade   | untested | untested | works
+Arcade-jtcores/cps1     | Arcade   | untested | untested | bad_mem
+Arcade-jtcores/cps15    | Arcade   | untested | untested | crash
+Arcade-jtcores/cps2     | Arcade   | untested | untested | dead
+Arcade-jtcores/dd       | Arcade   | untested | untested | works
+Arcade-jtcores/dd2      | Arcade   | untested | untested | works
+Arcade-jtcores/exed     | Arcade   | untested | untested | works
+Arcade-jtcores/flane    | Arcade   | untested | untested | works
+Arcade-jtcores/fround   | Arcade   | untested | untested | works
+Arcade-jtcores/gng      | Arcade   | untested | untested | works
+Arcade-jtcores/gunsmk   | Arcade   | untested | untested | works
+Arcade-jtcores/karnov   | Arcade   | untested | untested | works
+Arcade-jtcores/kchamp   | Arcade   | untested | untested | works
+Arcade-jtcores/kicker   | Arcade   | works    | untested | works
+Arcade-jtcores/kiwi     | Arcade   | untested | untested | works
+Arcade-jtcores/kunio    | Arcade   | untested | untested | works
+Arcade-jtcores/labrun   | Arcade   | untested | untested | works
+Arcade-jtcores/mx5k     | Arcade   | untested | untested | works
+Arcade-jtcores/mikie    | Arcade   | untested | untested | works
+Arcade-jtcores/midres   | Arcade   | untested | untested | works
+Arcade-jtcores/ninja    | Arcade   | untested | untested | works
+Arcade-jtcores/outrun   | Arcade   | untested | untested | nosprites
+Arcade-jtcores/pang     | Arcade   | untested | untested | works
+Arcade-jtcores/pinpon   | Arcade   | untested | untested | works
+Arcade-jtcores/rastan   | Arcade   | untested | untested | compilerr
+Arcade-jtcores/roadf    | Arcade   | untested | untested | works
+Arcade-jtcores/roc      | Arcade   | untested | untested | hangs
+Arcade-jtcores/rumble   | Arcade   | untested | untested | works
+Arcade-jtcores/s16      | Arcade   | untested | untested | works
+Arcade-jtcores/s16b     | Arcade   | untested | untested | works
+Arcade-jtcores/sarms    | Arcade   | untested | untested | works
+Arcade-jtcores/sbaskt   | Arcade   | untested | untested | builds
+Arcade-jtcores/sectnz   | Arcade   | untested | untested | works
+Arcade-jtcores/sf       | Arcade   | untested | untested | works
+Arcade-jtcores/shanon   | Arcade   | untested | untested | works
+Arcade-jtcores/shouse   | Arcade   | untested | untested | works
+Arcade-jtcores/simson   | Arcade   | untested | untested | works
+Arcade-jtcores/slyspy   | Arcade   | untested | untested | works
+Arcade-jtcores/tmnt     | Arcade   | untested | untested | works
+Arcade-jtcores/toki     | Arcade   | works    | untested | works
+Arcade-jtcores/tora     | Arcade   | untested | untested | works
+Arcade-jtcores/trojan   | Arcade   | untested | untested | works
+Arcade-jtcores/vigil    | Arcade   | untested | untested | works
+Arcade-jtcores/yiear    | Arcade   | untested | untested | hangs
+Arcade-Pacman           | Arcade   | works    | untested | builds
+Arcade-Popeye           | Arcade   | works    | untested | works
+Arcade-QBert            | Arcade   | builds   | works    | works
+Arcade-SEGASYS1         | Arcade   | untested | untested | works
+Arcade-Tecmo            | Arcade   | untested | builds   | builds
+C64                     | Computer | works    | untested | -
+FlappyBird              | Utility  | untested | works    | works
+InputTest               | Utility  | untested | works    | -
+MemTest                 | Utility  | untested | works    | -
+Menu                    | Utility  | works    | works    | works
+Minimig-AGA             | Computer | untested | untested | bios_works
+NeoGeo                  | Arcade   | untested | untested | builds
+SMS                     | Console  | untested | untested | works
+SNES                    | Console  | untested | untested | builds
+NES                     | Console  | untested | untested | works
+Template                | Utility  | works    | works    | works
