@@ -13,7 +13,7 @@ def main(coredir, core):
     def platform_factory(toolchain):
         return qmtech_artix7_fgg676.Platform(kgates=200, with_daughterboard=False, toolchain=toolchain)
 
-        build_xilinx(platform_factory, coredir, core, "XC7A200T")
+    build_xilinx(platform_factory, coredir, core, "XC7A200T")
 
 if __name__ == "__main__":
     handle_main(main)
