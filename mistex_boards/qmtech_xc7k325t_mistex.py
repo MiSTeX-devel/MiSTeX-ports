@@ -6,13 +6,6 @@
 # SPDX-License-Identifier: BSD-2-Clause
 #
 
-from os.path import join
-import sys
-import yaml
-
-from colorama import Fore, Style
-
-from util import *
 from mistex_boards.xilinx_mistex import *
 from litex_boards.platforms import qmtech_xc7k325t
 
