@@ -6,7 +6,6 @@
 # SPDX-License-Identifier: BSD-2-Clause
 #
 
-from util import *
 from mistex_boards.xilinx_mistex import *
 from litex_boards.platforms import qmtech_artix7_fbg484
 
