@@ -45,11 +45,11 @@ module pll (
 	PLLE2_ADV #(
 		.CLKFBOUT_MULT(6'd53),
 		.CLKIN1_PERIOD(20.0),
-		.CLKOUT0_DIVIDE(7'd42),
+		.CLKOUT0_DIVIDE(7'd21),
 		.CLKOUT0_PHASE(1'd0),
-		.CLKOUT1_DIVIDE(7'd84),
+		.CLKOUT1_DIVIDE(7'd42),
 		.CLKOUT1_PHASE(1'd0),
-		.DIVCLK_DIVIDE(1'd1),
+		.DIVCLK_DIVIDE(8'd2),
 		.REF_JITTER1(0.01),
 		.STARTUP_WAIT("FALSE")
 	) plle2_adv_inst2 (
@@ -57,7 +57,7 @@ module pll (
 		.CLKIN1(inclk0),
 		.PWRDWN(1'b0),
 		.RST(areset),
-		.CLKFBOUT(feedback),
+		.CLKFBOUT(feedback2),
 		.CLKOUT0(outclk_1_bufg),
 		.CLKOUT1(outclk_2_bufg),
 		.LOCKED(locked2)
