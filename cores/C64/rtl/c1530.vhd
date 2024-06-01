@@ -3,7 +3,7 @@
 -- http://darfpga.blogspot.fr
 -- also darfpga on sourceforge
 --
--- tap/wav player 
+-- tap/wav player
 -- Converted to 8 bit FIFO - Slingshot
 ---------------------------------------------------------------------------------
 
@@ -163,7 +163,7 @@ begin
 
 		if playing = '0' and ear_input_detected = '0' then
 			cass_read <= '1';
-		end if;	
+		end if;
 
 		tap_fifo_rdreq <= '0';
 
@@ -206,10 +206,10 @@ begin
 						cass_read <= '1';
 					else
 						cass_read <= '0';
-					end if;	
+					end if;
 				end if;
 
-				tap_player_tick_cnt <= "000000"; 
+				tap_player_tick_cnt <= "000000";
 				wave_cnt <= wave_cnt + 1;
 
 				if wave_cnt = wave_len - 1 then
@@ -278,8 +278,8 @@ end struct;
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 
-LIBRARY altera_mf;
-USE altera_mf.all;
+Library UNIMACRO;
+use UNIMACRO.vcomponents.all;
 
 ENTITY tap_fifo IS
 	PORT
@@ -296,63 +296,29 @@ ENTITY tap_fifo IS
 END tap_fifo;
 
 ARCHITECTURE SYN OF tap_fifo IS
-
-	SIGNAL sub_wire0	: STD_LOGIC ;
-	SIGNAL sub_wire1	: STD_LOGIC ;
-	SIGNAL sub_wire2	: STD_LOGIC_VECTOR (7 DOWNTO 0);
-
-	COMPONENT scfifo
-	GENERIC (
-		add_ram_output_register		: STRING;
-		intended_device_family		: STRING;
-		lpm_numwords		: NATURAL;
-		lpm_showahead		: STRING;
-		lpm_type		: STRING;
-		lpm_width		: NATURAL;
-		lpm_widthu		: NATURAL;
-		overflow_checking		: STRING;
-		underflow_checking		: STRING;
-		use_eab		: STRING
-	);
-	PORT (
-			aclr	: IN STD_LOGIC ;
-			clock	: IN STD_LOGIC ;
-			data	: IN STD_LOGIC_VECTOR (7 DOWNTO 0);
-			rdreq	: IN STD_LOGIC ;
-			empty	: OUT STD_LOGIC ;
-			full	: OUT STD_LOGIC ;
-			q	: OUT STD_LOGIC_VECTOR (7 DOWNTO 0);
-			wrreq	: IN STD_LOGIC 
-	);
-	END COMPONENT;
-
 BEGIN
-	empty    <= sub_wire0;
-	full    <= sub_wire1;
-	q    <= sub_wire2(7 DOWNTO 0);
-
-	scfifo_component : scfifo
-	GENERIC MAP (
-		add_ram_output_register => "OFF",
-		intended_device_family => "Cyclone III",
-		lpm_numwords => 64,
-		lpm_showahead => "OFF",
-		lpm_type => "scfifo",
-		lpm_width => 8,
-		lpm_widthu => 6,
-		overflow_checking => "ON",
-		underflow_checking => "ON",
-		use_eab => "ON"
-	)
-	PORT MAP (
-		aclr => aclr,
-		clock => clock,
-		data => data,
-		rdreq => rdreq,
-		wrreq => wrreq,
-		empty => sub_wire0,
-		full => sub_wire1,
-		q => sub_wire2
+	scfifo_component : FIFO_SYNC_MACRO
+	generic map (
+	   DEVICE => "7SERIES",            -- Target Device: "VIRTEX5, "VIRTEX6", "7SERIES"
+	   ALMOST_FULL_OFFSET => X"0080",  -- Sets almost full threshold
+	   ALMOST_EMPTY_OFFSET => X"0080", -- Sets the almost empty threshold
+	   DATA_WIDTH => 8,   -- Valid values are 1-72 (37-72 only valid when FIFO_SIZE="36Kb")
+	   FIFO_SIZE => "18Kb")            -- Target BRAM, "18Kb" or "36Kb"
+	port map (
+	   ALMOSTEMPTY => open,   -- 1-bit output almost empty
+	   ALMOSTFULL  => open,   -- 1-bit output almost full
+	   DO          => q,      -- Output data, width defined by DATA_WIDTH parameter
+	   EMPTY       => empty,  -- 1-bit output empty
+	   FULL        => full,   -- 1-bit output full
+	   RDCOUNT     => open,   -- Output read count, width determined by FIFO depth
+	   RDERR       => open,   -- 1-bit output read error
+	   WRCOUNT 	   => open,   -- Output write count, width determined by FIFO depth
+	   WRERR 	   => open,   -- 1-bit output write error
+	   CLK         => clock,  -- 1-bit input clock
+	   DI          => data,   -- Input data, width defined by DATA_WIDTH parameter
+	   RDEN        => rdreq,  -- 1-bit input read enable
+	   RST         => aclr,   -- 1-bit input reset
+	   WREN        => wrreq   -- 1-bit input write enable
 	);
 
 END SYN;
