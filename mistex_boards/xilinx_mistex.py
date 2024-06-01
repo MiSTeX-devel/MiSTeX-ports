@@ -390,6 +390,10 @@ def run_gui(build_name, build_dir):
             result.append(line.replace("676-1", "676-2"))
             continue
 
+        # omit the quit command to leave the GUI open for analysis
+        if line.startswith("# End"):
+            break
+
         result.append(line)
 
     result += [
