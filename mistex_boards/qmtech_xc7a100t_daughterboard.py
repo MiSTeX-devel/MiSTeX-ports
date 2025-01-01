@@ -312,7 +312,9 @@ def main(coredir, core):
         toolchain = "vivado"
     platform = qmtech_artix7_fgg676.Platform(with_daughterboard=True, toolchain=toolchain)
 
-    add_designfiles(platform, coredir, mistex_yaml, 'vivado')
+    build_dir = get_build_dir(core)
+
+    add_designfiles(platform, coredir, mistex_yaml, 'vivado',build_dir=build_dir)
 
     defines = [
         ('XILINX', 1),
@@ -406,8 +408,6 @@ def main(coredir, core):
             Subsignal("cs_n", Pins("J1:17")),
             IOStandard("LVCMOS33")),
     ])
-
-    build_dir = get_build_dir(core)
 
     soc = BaseSoC(platform, core_name=core, toolchain=toolchain)
     builder = Builder(soc,
